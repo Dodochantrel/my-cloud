@@ -1,0 +1,7 @@
+<div class="container">
+    <app-left-navigation [isOpenNaviation]="isOpenNaviation"></app-left-navigation>
+    <div class="router-container">
+        <app-header (changeNavigation)="handleNavigation($event)"></app-header>
+        <router-outlet></router-outlet>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* PRIME ICON */
+@import "primeicons/primeicons.css";
+
+/* ANGULAR CALENDAR */
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+    --first-color: #6366F1;
+    --background-color: #F1F5F9;
+    --border: 1px solid #dfe7ef;
+    --text-color: #4b5563;
+
+    --green-light: #a0e6ba;
+    --green-dark: #136c34;
+
+    --yellow-light: #f6de95;
+    --yellow-dark: #816204;
+
+    --red-light: #fca5a5;
+    --red-dark: #9b2c2c;
+
+    --purple-light: #d7aefb;
+    --purple-dark: #4c1d95;
+
+    --blue-light: #93c5fd;
+    --blue-dark: #1e3a8a;
+
+    --box-shadow: rgba(221, 224, 255, .54)
+}
+
+.bloc-default {
+    border: var(--border);
+    padding: 2rem;
+    box-shadow: 0px 4px 30px var(--box-shadow);
+    border-radius: 12px;
+    background-color: white;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.p-inputtext, .buttons, .p-button, .input-container, .p-password, .p-password-input, .p-select, .p-datepicker-input {
+    width: 100%;
+}
+
+.p-error {
+    color: var(--p-inputtext-invalid-placeholder-color);
+}
+
+p {
+    margin: 0;
+}
+
+.p-overlay {
+    z-index: 999999 !important;
+}
+
+.p-autocomplete-input, .p-select-label, .p-datepicker-input, .p-password-input {
+    padding-left: 35px !important;
+}
+
+p-autocomplete, ::ng-deep .p-autocomplete {
+    width: 100%;
+    display: block;
+}
+
+p-dialog p-iconfield .p-inputicon {
+    z-index: 111111;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.ql-editor {
+    flex: 1;
+    height: auto !important;
+    min-height: 100%;
+}
