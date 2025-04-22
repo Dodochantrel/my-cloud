@@ -1,9 +1,12 @@
+import { Group } from 'src/groups/group.entity';
+import { Recipe } from 'src/recipes/recipe.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
@@ -42,9 +45,12 @@ export class User {
   })
   public createdAt: Date;
 
-  @ManyToMany(() => User, (user) => user.groups)
+  @ManyToMany(() => Group, (group) => group.users)
   @JoinTable()
-  groups: Relation<User[]>;
+  groups: Relation<Group[]>;
+
+  @OneToMany(() => Recipe, (recipe) => recipe.user)
+  recipes: Relation<Recipe[]>;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

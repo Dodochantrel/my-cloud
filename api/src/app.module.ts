@@ -10,12 +10,18 @@ import { UsersService } from './users/users.service';
 import { User } from './users/user.entity';
 import { Group } from './groups/group.entity';
 import { HashsService } from './utils/hashs.service';
+import { RecipesService } from './recipes/recipes.service';
+import { RecipesController } from './recipes/recipes.controller';
+import { Recipe } from './recipes/recipe.entity';
+import { FileData } from './files/file-data.entity';
+import { GroupsController } from './groups/groups.controller';
+import { GroupsService } from './groups/groups.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     DatabaseModule,
-    TypeOrmModule.forFeature([User, Group]),
+    TypeOrmModule.forFeature([User, Group, Recipe, FileData]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -27,12 +33,14 @@ import { HashsService } from './utils/hashs.service';
       }),
     }),
   ],
-  controllers: [AuthenticationsController],
+  controllers: [AuthenticationsController, RecipesController, GroupsController],
   providers: [
     TokensService,
     AuthenticationsService,
     UsersService,
     HashsService,
+    RecipesService,
+    GroupsService,
   ],
 })
 export class AppModule {}

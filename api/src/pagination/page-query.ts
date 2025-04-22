@@ -40,8 +40,8 @@ export class PageQuery {
   }
 
   constructor(page?: number, limit?: number) {
-    this.page = page ?? PageQuery.DEFAULT_PAGE;
-    this.limit = limit ?? PageQuery.DEFAULT_LIMIT;
+    this.page = Number(page) ?? PageQuery.DEFAULT_PAGE;
+    this.limit = Number(limit) ?? PageQuery.DEFAULT_LIMIT;
   }
 }
 
