@@ -6,6 +6,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -34,8 +36,9 @@ export class Recipe {
   @ManyToOne(() => User, (user) => user.recipes)
   user: Relation<User>;
 
-  @ManyToOne(() => Group, (group) => group.recipes)
-  group: Relation<Group>;
+  @ManyToMany(() => Group, (group) => group.recipes)
+  @JoinTable()
+  groups: Relation<Group[]>;
 
   @UpdateDateColumn({
     type: 'timestamp',

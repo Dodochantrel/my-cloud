@@ -19,6 +19,20 @@ export class GroupResponseDto {
   name: string;
 
   @ApiProperty({
+    type: 'string',
+    description: 'The date when the group was created',
+    example: '2023-10-01T12:00:00Z',
+  })
+  createdAt: string;
+
+  @ApiProperty({
+    type: 'string',
+    description: 'The date when the group was last updated',
+    example: '2023-10-01T12:00:00Z',
+  })
+  updatedAt: string;
+
+  @ApiProperty({
     description: 'Users of the group',
   })
   users: UserResponseDto[];
@@ -30,6 +44,8 @@ export const mapFromGroupToGroupResponseDto = (
   return {
     id: group.id,
     name: group.name,
+    createdAt: group.createdAt.toISOString(),
+    updatedAt: group.updatedAt.toISOString(),
     users: group.users ? mapFromUsersToUsersResponseDto(group.users) : [],
   };
 };

@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   Entity,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
   Relation,
   UpdateDateColumn,
@@ -22,7 +21,7 @@ export class Group {
   @ManyToMany(() => User, (user) => user.groups)
   users: Relation<User[]>;
 
-  @OneToMany(() => Recipe, (recipe) => recipe.group)
+  @ManyToMany(() => Recipe, (recipe) => recipe.groups)
   recipes: Relation<Recipe[]>;
 
   @UpdateDateColumn({

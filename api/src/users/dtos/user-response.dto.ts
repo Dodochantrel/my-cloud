@@ -40,7 +40,6 @@ export class UserResponseDto {
 }
 
 export const mapFromUserToUserResponseDto = (user: User): UserResponseDto => {
-  console.log('user', user);
   return {
     id: user.id,
     firstName: user.firstName,
