@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Group } from './group.entity';
 import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -46,11 +50,32 @@ export class GroupsService {
       where: { id: group.id, users: { id: userId } },
       relations: ['users'],
     });
-    if (!groupInDb) {
-      throw new NotFoundException('Group not found');
-    }
+    this.checkIfCanEdit(groupInDb, userId);
     groupInDb.name = group.name;
     groupInDb.users.push(...usersId.map((userId) => new User({ id: userId })));
     return this.userRepository.save(groupInDb);
+  }
+
+  async addUsers(
+    userId: number,
+    groupId: number,
+    usersId: number[],
+  ): Promise<Group> {
+    const groupInDb = await this.userRepository.findOne({
+      where: { id: groupId, users: { id: userId } },
+      relations: ['users'],
+    });
+    this.checkIfCanEdit(groupInDb, userId);
+    groupInDb.users.push(...usersId.map((userId) => new User({ id: userId })));
+    return this.userRepository.save(groupInDb);
+  }
+
+  checkIfCanEdit(group: Group, userId: number): void {
+    if (!group) {
+      throw new NotFoundException('Group not found');
+    }
+    if (!group.users.some((user) => user.id === userId)) {
+      throw new UnauthorizedException('You are not allowed to edit this group');
+    }
   }
 }

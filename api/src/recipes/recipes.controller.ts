@@ -69,11 +69,14 @@ export class RecipesController {
   async getMy(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Query() params: QueryGetWithParamsDto,
+    @Query('type') type: string,
   ): Promise<PaginatedResponse<RecipeResponseDto>> {
     const paginatedResponse = await this.recipesService.getMy(
       tokenPayload.id,
       tokenPayload.groupsId,
       new PageQuery(params.page, params.limit),
+      type,
+      params.search,
     );
     return new PaginatedResponse<RecipeResponseDto>(
       mapFromRecipesToRecipesResponseDto(paginatedResponse.data),

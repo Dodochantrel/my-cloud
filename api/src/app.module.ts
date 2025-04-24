@@ -17,12 +17,18 @@ import { FileData } from './files/file-data.entity';
 import { GroupsController } from './groups/groups.controller';
 import { GroupsService } from './groups/groups.service';
 import { FilesManager } from './files/files.manager';
+import { VideosService } from './videos/videos.service';
+import { HttpModule } from '@nestjs/axios';
+import { TmdbRepositoryRepository } from './videos/tmdb/tmdb-repository.repository';
+import { VideosController } from './videos/videos.controller';
+import { Video } from './videos/video.entity';
 
 @Module({
   imports: [
+    HttpModule,
     ConfigModule.forRoot(),
     DatabaseModule,
-    TypeOrmModule.forFeature([User, Group, Recipe, FileData]),
+    TypeOrmModule.forFeature([User, Group, Recipe, FileData, Video]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -34,7 +40,12 @@ import { FilesManager } from './files/files.manager';
       }),
     }),
   ],
-  controllers: [AuthenticationsController, RecipesController, GroupsController],
+  controllers: [
+    AuthenticationsController,
+    RecipesController,
+    GroupsController,
+    VideosController,
+  ],
   providers: [
     TokensService,
     AuthenticationsService,
@@ -43,6 +54,8 @@ import { FilesManager } from './files/files.manager';
     RecipesService,
     GroupsService,
     FilesManager,
+    VideosService,
+    TmdbRepositoryRepository,
   ],
 })
 export class AppModule {}

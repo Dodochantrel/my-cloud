@@ -1,0 +1,40 @@
+<div class="auth-pages">
+
+    <form class="form" [formGroup]="form" class="form">
+
+
+        <h2>Connexion</h2>
+
+        <div class="input-container">
+            <label for="email" class="label">Adresse email</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="michel.dumas@orange.fr" formControlName="email"
+                    [ngClass]="{'p-invalid': form.get('email')?.invalid && form.get('email')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('email')?.invalid && form.get('email')?.dirty) {
+            <small class="p-error block error-message">L'email est requis</small>
+            }
+        </div>
+
+        <div class="input-container">
+            <label for="password" class="label">Mot de passe</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('password')?.invalid && form.get('password')?.dirty}"
+                    styleClass="pi pi-lock" />
+                <p-password formControlName="password" [toggleMask]="true" placeholder="Votre mot de passe"
+                    [ngClass]="{'p-invalid': form.get('password')?.invalid && form.get('password')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('password')?.invalid && form.get('password')?.dirty) {
+            <small class="p-error block error-message">Votre mot de passe est requis</small>
+            }
+        </div>
+
+        <div class="buttons-container">
+            <p-button label="Connexion" (onClick)="submit()" />
+        </div>
+
+    </form>
+
+</div>

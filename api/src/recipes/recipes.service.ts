@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Recipe } from './recipe.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { Brackets, DeleteResult, Repository } from 'typeorm';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { PageQuery } from 'src/pagination/page-query';
 import { FilesManager } from 'src/files/files.manager';
@@ -20,18 +24,23 @@ export class RecipesService {
     userId: number,
     groupsId: number[],
     pageQuery: PageQuery,
+    type: string,
+    search: string,
   ): Promise<PaginatedResponse<Recipe>> {
     const query = this.userRepository
       .createQueryBuilder('recipe')
       .leftJoinAndSelect('recipe.user', 'user')
       .leftJoinAndSelect('recipe.groups', 'group')
-      .where('user.id = :userId', { userId });
-
-    if (groupsId.length > 0) {
-      query.orWhere('group.id IN (:...groupsId)', { groupsId });
-    }
-
-    query
+      .where(
+        new Brackets((qb) => {
+          qb.where('user.id = :userId', { userId });
+          if (groupsId.length > 0) {
+            qb.orWhere('group.id IN (:...groupsId)', { groupsId });
+          }
+        }),
+      )
+      .andWhere('recipe.type = :type', { type })
+      .andWhere('recipe.name LIKE :search', { search: `%${search}%` })
       .skip((pageQuery.page - 1) * pageQuery.limit)
       .take(pageQuery.limit)
       .orderBy('recipe.createdAt', 'DESC');
@@ -125,7 +134,10 @@ export class RecipesService {
       !recipe.groups.some((group) => group.id === userId) &&
       recipe.user.id !== userId
     ) {
-      throw new NotFoundException('Recipe not found');
+      // Throw unauthorized
+      throw new UnauthorizedException(
+        'You are not authorized to access this recipe',
+      );
     }
   }
 }

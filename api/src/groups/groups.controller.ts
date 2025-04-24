@@ -20,7 +20,8 @@ import {
 } from './dtos/group-response.dto';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { ApiPaginatedResponse } from 'src/pagination/response-paginated.decorator';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { AddUserGroupRequestDto } from './dtos/add-user-group-request.dto';
 
 @Controller('groups')
 export class GroupsController {
@@ -83,6 +84,30 @@ export class GroupsController {
           id: Number(id),
           name: dto.name,
         }),
+        dto.usersId,
+      ),
+    );
+  }
+
+  @Post(':id/add-users')
+  @ApiResponse({
+    status: 200,
+    description: 'Users added to group successfully',
+    type: GroupResponseDto,
+  })
+  @ApiBody({
+    description: 'Users id to add to group',
+    type: AddUserGroupRequestDto,
+  })
+  async addUsers(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+    @Body() dto: AddUserGroupRequestDto,
+  ): Promise<GroupResponseDto> {
+    return mapFromGroupToGroupResponseDto(
+      await this.groupsService.addUsers(
+        tokenPayload.id,
+        Number(id),
         dto.usersId,
       ),
     );

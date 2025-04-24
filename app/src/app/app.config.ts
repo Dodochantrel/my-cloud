@@ -9,11 +9,12 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import { MyPreset } from './config.prime';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from "primelocale/fr.json";
+import { BearerTokenInterceptor } from './interceptors/bearer-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([]), withFetch()),
+    provideHttpClient(withInterceptors([BearerTokenInterceptor]), withFetch()),
     provideClientHydration(),
     provideAnimationsAsync(),
     providePrimeNG({

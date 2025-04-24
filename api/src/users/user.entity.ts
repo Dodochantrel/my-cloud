@@ -1,5 +1,6 @@
 import { Group } from 'src/groups/group.entity';
 import { Recipe } from 'src/recipes/recipe.entity';
+import { Video } from 'src/videos/video.entity';
 import {
   Column,
   CreateDateColumn,
@@ -54,6 +55,9 @@ export class User {
 
   @OneToMany(() => Recipe, (recipe) => recipe.user)
   filesData: Relation<Recipe[]>;
+
+  @OneToMany(() => Video, (video) => video.user)
+  videos: Relation<Video[]>;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

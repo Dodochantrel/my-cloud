@@ -11,7 +11,10 @@ async function bootstrap() {
 
   // Définition d'un préfixe globale de l'API
   app.setGlobalPrefix('my-cloud-api');
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('My-Cloud API')

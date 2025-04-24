@@ -50,6 +50,15 @@ export class LeftNavigationComponent {
         },
       ],
     },
+    {
+      name: 'Ma cuisine',
+      icon: 'pi pi-video',
+      path: null,
+      isOpen: false,
+      subNavigationItems: [
+        { name: 'Entrées', icon: 'pi pi-address-book', path: '/recipes/starters' },
+      ],
+    },
     { name: 'Clients', icon: 'pi pi-address-book', path: '/customer' },
   ];
 
