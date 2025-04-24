@@ -2,8 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  Patch,
   Post,
   Query,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,6 +28,7 @@ import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RecipeFileResponseDto } from './dtos/recipe-file-request.dto';
+import { Response } from 'express';
 
 @Controller('recipes')
 export class RecipesController {
@@ -84,11 +88,38 @@ export class RecipesController {
     description: 'Upload a file',
     type: RecipeFileResponseDto,
   })
-  uploadFile(
+  async uploadFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @UploadedFile() file: Express.Multer.File,
     @Body() dto: RecipeFileResponseDto,
+    @Res() res: Response,
   ) {
-    return this.recipesService.uploadFile(file, dto.id, tokenPayload.id);
+    return res.sendFile(
+      await this.recipesService.uploadFile(file, dto.id, tokenPayload.id),
+    );
+  }
+
+  @Get('files/:id')
+  async getFile(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
+    return res.sendFile(
+      await this.recipesService.getFile(Number(id), tokenPayload.id),
+    );
+  }
+
+  @Patch('files/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateFile(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
+    return res.sendFile(
+      await this.recipesService.updateFile(Number(id), tokenPayload.id, file),
+    );
   }
 }
