@@ -52,6 +52,9 @@ export class User {
   @OneToMany(() => Recipe, (recipe) => recipe.user)
   recipes: Relation<Recipe[]>;
 
+  @OneToMany(() => Recipe, (recipe) => recipe.user)
+  filesData: Relation<Recipe[]>;
+
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
   }

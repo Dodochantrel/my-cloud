@@ -1,5 +1,13 @@
 import { Recipe } from 'src/recipes/recipe.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/user.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 
 @Entity()
 export class FileData {
@@ -19,9 +27,16 @@ export class FileData {
   size: number;
 
   @OneToOne(() => Recipe, (recipe) => recipe.fileData)
-  recipe: Recipe;
+  recipe: Relation<Recipe>;
+
+  @ManyToOne(() => User, (user) => user.filesData)
+  user: Relation<User>;
 
   constructor(partial: Partial<FileData>) {
     Object.assign(this, partial);
+  }
+
+  prepareFileName() {
+    this.name = `${new Date().getTime()}`;
   }
 }

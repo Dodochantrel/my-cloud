@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RecipeRequestDto } from './dtos/recipe-request.dto';
@@ -15,6 +23,8 @@ import { ApiPaginatedResponse } from 'src/pagination/response-paginated.decorato
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { RecipeFileResponseDto } from './dtos/recipe-file-request.dto';
 
 @Controller('recipes')
 export class RecipesController {
@@ -66,5 +76,19 @@ export class RecipesController {
       new PageQuery(params.page, params.limit),
       paginatedResponse.meta.itemCount,
     );
+  }
+
+  @Post('files')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiBody({
+    description: 'Upload a file',
+    type: RecipeFileResponseDto,
+  })
+  uploadFile(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() dto: RecipeFileResponseDto,
+  ) {
+    return this.recipesService.uploadFile(file, dto.id, tokenPayload.id);
   }
 }

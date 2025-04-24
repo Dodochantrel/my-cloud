@@ -16,6 +16,7 @@ import { Recipe } from './recipes/recipe.entity';
 import { FileData } from './files/file-data.entity';
 import { GroupsController } from './groups/groups.controller';
 import { GroupsService } from './groups/groups.service';
+import { FilesManager } from './files/files.manager';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { GroupsService } from './groups/groups.service';
     HashsService,
     RecipesService,
     GroupsService,
+    FilesManager,
   ],
 })
 export class AppModule {}
