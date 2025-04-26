@@ -39,16 +39,16 @@ export class VideoResponseDto {
   title: string;
 
   @ApiProperty({
-    description: 'Le type de contenu (film ou série)',
-    example: 'movie',
-  })
-  type: string;
-
-  @ApiProperty({
     description: 'Le genre de contenu (film ou série)',
     example: 'movie',
   })
   genre: VideoGenre | null;
+
+  @ApiProperty({
+    description: 'Le type de contenu (film ou série)',
+    example: 'movie',
+  })
+  type: 'movie' | 'series';
 
   @ApiProperty({
     description: 'La date de sortie du film ou de la série',
@@ -86,12 +86,12 @@ export const mapFormVideoToVideoResponseDto = (
     isToWatch: video.isToWatch,
     rating: video.rating,
     title: video.title,
-    type: video.type,
     releaseDate: video.releaseDate,
     description: video.description,
     fileUrl: video.fileUrl,
     dateSeen: video.dateSeen,
     genre: video.genre,
+    type: video.type,
   };
 };
 

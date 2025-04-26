@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { FileData } from './file-data.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -107,6 +107,9 @@ export class FilesManager {
   }
 
   getFile(fileData: FileData): string {
+    if (!fileData) {
+      throw new NotFoundException('File not found');
+    }
     const storageBasePath = path.resolve(process.env.STORAGE_BASE_PATH);
     const fileName = `${fileData.name}${this.getExtension(fileData.mimetype)}`;
     return path.join(storageBasePath, 'recipes', fileName);

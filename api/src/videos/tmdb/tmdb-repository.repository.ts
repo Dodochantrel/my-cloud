@@ -1,7 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import { Video, VideoGenre } from '../video.entity';
+import { Video, VideoGenre, VideoType } from '../video.entity';
+import { Casting } from '../interfaces/casting.interface';
 
 @Injectable()
 export class TmdbRepositoryRepository {
@@ -9,15 +10,55 @@ export class TmdbRepositoryRepository {
 
   private readonly apiKey = process.env.TMDB_API_KEY;
 
+  async getCasting(id: number): Promise<any> {
+    const url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${this.apiKey}&language=fr-FR`;
+    const response = await firstValueFrom(this.httpService.get(url));
+    return this.mapFromTmdbCastingsResponseToCastings(response.data.cast);
+  }
+
+  async getProviders(id: number): Promise<any> {
+    const url = `https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${this.apiKey}&language=fr-FR`;
+    const response = await firstValueFrom(this.httpService.get(url));
+    return response.data.results.FR || null;
+  }
+
+  async getSimilar(id: number): Promise<Video[]> {
+    const url = `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${this.apiKey}&language=fr-FR&page=1`;
+    const [response, genres] = await Promise.all([
+      firstValueFrom(this.httpService.get(url)),
+      this.getGenres(true),
+    ]);
+
+    return this.mapFromTmdbResponseToVideo(
+      response.data.results,
+      genres,
+      'movie',
+    );
+  }
+
   async getMovies(search: string): Promise<Video[]> {
     const genres = await this.getGenres(true);
     let movies: TmdbDataResultResponse[];
     if (search === '') {
-      movies = await this.getMoviesWithSearch(search);
-    } else {
       movies = await this.getMoviesNowPlaying();
+    } else {
+      movies = await this.getMoviesWithSearch(search);
     }
-    return this.mapFromTmdbResponseToVideo(movies, genres);
+    return this.mapFromTmdbResponseToVideo(movies, genres, 'movie');
+  }
+
+  async getMovie(id: number): Promise<Video> {
+    const genres = await this.getGenres(true);
+    const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=fr-FR`;
+
+    const response = await firstValueFrom(
+      this.httpService.get<TmdbDataResultResponse>(url),
+    );
+    return this.mapFromTmdbDataResultResponseToVideo(
+      response.data,
+      genres,
+      'movie',
+    );
   }
 
   private async getMoviesNowPlaying() {
@@ -42,11 +83,25 @@ export class TmdbRepositoryRepository {
     const genres = await this.getGenres(false);
     let series: TmdbDataResultResponse[];
     if (search === '') {
-      series = await this.getSeriesWithSearch(search);
-    } else {
       series = await this.getSeriesNowPlaying();
+    } else {
+      series = await this.getSeriesWithSearch(search);
     }
-    return this.mapFromTmdbResponseToVideo(series, genres);
+    return this.mapFromTmdbResponseToVideo(series, genres, 'series');
+  }
+
+  async getSerie(id: number): Promise<Video> {
+    const genres = await this.getGenres(false);
+    const url = `https://api.themoviedb.org/3/tv/${id}?api_key=${this.apiKey}&language=fr-FR`;
+
+    const response = await firstValueFrom(
+      this.httpService.get<TmdbDataResultResponse>(url),
+    );
+    return this.mapFromTmdbDataResultResponseToVideo(
+      response.data,
+      genres,
+      'series',
+    );
   }
 
   private async getSeriesNowPlaying() {
@@ -68,19 +123,20 @@ export class TmdbRepositoryRepository {
   private mapFromTmdbDataResultResponseToVideo(
     tmdbDataResponse: TmdbDataResultResponse,
     genres: TmdbGenre[],
+    type: VideoType,
   ): Video {
     return new Video({
       id: tmdbDataResponse.id,
       title: tmdbDataResponse.title,
-      type: 'movie',
       releaseDate: tmdbDataResponse.release_date,
       description: tmdbDataResponse.overview,
-      fileUrl: `https://image.tmdb.org/t/p/w500${tmdbDataResponse.poster_path}`,
+      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbDataResponse.poster_path}`,
       dateSeen: null,
       isSeen: false,
       isToWatch: false,
       isFavorite: false,
       rating: null,
+      type: type,
       genre: this.getGenreName(tmdbDataResponse.genre_ids, genres),
     });
   }
@@ -88,10 +144,30 @@ export class TmdbRepositoryRepository {
   private mapFromTmdbResponseToVideo(
     tmdbResponse: TmdbDataResultResponse[],
     tmdbGenre: TmdbGenre[],
+    type: VideoType,
   ): Video[] {
     return tmdbResponse.map((tmdbDataResponse) =>
-      this.mapFromTmdbDataResultResponseToVideo(tmdbDataResponse, tmdbGenre),
+      this.mapFromTmdbDataResultResponseToVideo(
+        tmdbDataResponse,
+        tmdbGenre,
+        type,
+      ),
     );
+  }
+
+  private mapFromTmdbCastingsResponseToCastings(
+    castings: TmdbCastingResponse[],
+  ): Casting[] {
+    return castings.map((casting) => {
+      return {
+        id: casting.id,
+        name: casting.name,
+        popularity: casting.popularity,
+        character: casting.character,
+        order: casting.order,
+        fileUrl: `https://image.tmdb.org/t/p/w1280${casting.profile_path}`,
+      };
+    });
   }
 
   private async getGenres(isMovie: boolean): Promise<TmdbGenre[]> {
@@ -144,4 +220,19 @@ export interface TmdbGenreResponse {
 export interface TmdbGenre {
   id: number;
   name: string;
+}
+
+export interface TmdbCastingResponse {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
 }

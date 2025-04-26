@@ -37,17 +37,7 @@ export class LeftNavigationComponent {
       path: null,
       isOpen: false,
       subNavigationItems: [
-        { name: 'Devis', icon: 'pi pi-address-book', path: '/quote' },
-        {
-          name: 'Lignes de devis',
-          icon: 'pi pi-address-book',
-          path: '/quote-line',
-        },
-        {
-          name: 'Générer un devis',
-          icon: 'pi pi-address-book',
-          path: '/create-quote',
-        },
+        { name: 'Films', icon: 'pi pi-address-book', path: '/videos/movies' },
       ],
     },
     {

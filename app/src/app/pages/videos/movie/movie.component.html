@@ -1,0 +1,28 @@
+<div class="container">
+
+    <div class="bloc-default">
+
+        <h2>Les films du moment</h2>
+
+        <div class="input-container">
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-user" />
+                <p-autocomplete [suggestions]="moviesToSearch" [autoZIndex]="false" placeholder="Rechercher un film"
+                    [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="search" (completeMethod)="searchMovies()">
+                    <ng-template let-movie #item>
+                        <div class="line-movie-search">
+                            <img [src]="movie.fileUrl" style="width: 26px" />
+                            <div>{{ movie.title }}</div>
+                        </div>
+                    </ng-template>
+                </p-autocomplete>
+            </p-iconfield>
+        </div>
+
+        <app-current-videos></app-current-videos>
+
+        <app-watch-videos></app-watch-videos>
+
+    </div>
+
+</div>

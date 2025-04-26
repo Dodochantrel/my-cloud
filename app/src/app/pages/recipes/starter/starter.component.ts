@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { RecipeService } from '../../../services/recipe.service';
 import { BrowserService } from '../../../services/browser.service';
 import { NotificationService } from '../../../services/notification.service';
+import { Recipe } from '../../../class/recipe';
+import { Paginated } from '../../../class/paginated';
+import { PaginatedMeta } from '../../../class/paginated-meta';
 
 @Component({
   selector: 'app-starter',
@@ -18,6 +21,8 @@ export class StarterComponent implements OnInit {
 
   public isLoadingData: boolean = false;
 
+  public paginatedRecipes: Paginated<Recipe> = new Paginated<Recipe>([], new PaginatedMeta(false, false, 0, 0, 0, 0));
+
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
       this.getRecipes();
@@ -27,15 +32,37 @@ export class StarterComponent implements OnInit {
   getRecipes() {
     this.isLoadingData = true;
     this.recipeService.getRecipes('starter', '', 1, 30).subscribe({
-      next: (response: any) => {
-        console.log(response);
+      next: (response: Paginated<Recipe>) => {
+        this.addFileToRecipe(response.data);
+        this.paginatedRecipes = response;
       },
       error: (error: any) => {
         this.notificationService.showError('Failed to load recipes', error.message);
-        console.error(error);
       },
       complete: () => {
         this.isLoadingData = false;
+      }
+    });
+  }
+
+  addFileToRecipe(recipes: Recipe[]) {
+    recipes.forEach((recipe) => {
+      this.getFile(recipe);
+    });
+  }
+
+  // Récupérer les fichiers petit a petit
+  getFile(recipe: Recipe) {
+    this.recipeService.getFile(recipe.id).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const index = this.paginatedRecipes.data.findIndex((r) => r.id === recipe.id);
+        if (index !== -1) {
+          this.paginatedRecipes.data[index].fileBlobUrl = url;
+        }
+      },
+      error: (error: any) => {
+        this.notificationService.showError('Failed to load file', error.message);
       }
     });
   }

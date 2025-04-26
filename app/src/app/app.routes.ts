@@ -3,6 +3,8 @@ import { WithLeftNavigationComponent } from './templates/with-left-navigation/wi
 import { StarterComponent } from './pages/recipes/starter/starter.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { NoNavigationComponent } from './templates/no-navigation/no-navigation.component';
+import { MovieComponent } from './pages/videos/movie/movie.component';
+import { VideoDetailsComponent } from './pages/videos/video-details/video-details.component';
 
 export const routes: Routes = [
   {
@@ -18,6 +20,24 @@ export const routes: Routes = [
           breadcrumb: [{ label: 'Recettes' }, { label: 'Entrées' }],
         },
       },
+      {
+        path: 'videos/movies',
+        title: 'Videos - Movies',
+        component: MovieComponent,
+        data: {
+          title: 'Films',
+          breadcrumb: [{ label: 'Vidéos' }, { label: 'Films' }],
+        },
+      },
+      {
+        path: 'videos/details/:id',
+        title: 'Videos - Details',
+        component: VideoDetailsComponent,
+        data: {
+          title: 'Détails',
+          breadcrumb: [{ label: 'Vidéos' }, { label: 'Détails' }],
+        },
+      }
     ],
   },
   {

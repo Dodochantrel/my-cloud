@@ -1,1 +1,30 @@
-<p>starter works!</p>
+<div class="container">
+
+    <div class="bloc-default">
+
+        <div class="card-container">
+
+            @for (recipe of paginatedRecipes.data; track $index) {
+                <div class="card">
+                    <div class="first-line">
+                        <p class="recipe-name">{{ recipe.name }}</p>
+                        <p class="recipe-type">{{ recipe.type }}</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="left-card">
+                            <p class="recipe-id">n°{{ recipe.id }}</p>
+                            <p class="recipe-description">{{ recipe.description }}</p>
+                            <p class="recipe-link">Voir la recette</p>
+                        </div>
+                        <div class="right-card">
+                            <img src="{{ recipe.fileBlobUrl }}" alt="{{ recipe.name }}" class="card-image"/>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>        
+
+    </div>
+
+</div>

@@ -30,11 +30,13 @@ export class Video {
   @Column({ nullable: true })
   dateSeen: Date | null;
 
+  @Column()
+  type: VideoType;
+
   @ManyToOne(() => User, (user) => user.videos)
   user: Relation<User>;
 
   fileUrl: string;
-  type: string;
   releaseDate: string;
   description: string;
   genre: VideoGenre;
@@ -52,3 +54,5 @@ export class VideoGenre {
     Object.assign(this, partial);
   }
 }
+
+export type VideoType = 'movie' | 'series';

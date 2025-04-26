@@ -1,0 +1,13 @@
+<h2>Mes films a voir</h2>
+
+<div class="card-container">
+    @for (movie of watchMoviesWithPagination.data; track $index) {
+    <div class="card">
+        <img url>
+        {{ movie.title }}
+    </div>
+    }
+</div>
+
+<app-footer-table [meta]="watchMoviesWithPagination.paginatedMeta"
+    (pageChange)="getWatchMovies($event.page, $event.limit)"></app-footer-table>

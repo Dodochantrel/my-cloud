@@ -1,0 +1,17 @@
+<p-carousel [value]="nowPlayingMovies" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="40000000"
+    autoplay="true">
+    <ng-template let-product pTemplate="item">
+        <div class="banner-card">
+            <img [src]="product.fileUrl" alt="Product Image" class="banner-image" />
+            <div class="banner-overlay">
+                <div class="banner-content">
+                    <h2>{{ product.title }}</h2>
+                    <p>{{ product.description }}</p>
+                    <div class="buttons-container">
+                        <p-button label="Plus de détails" (onClick)="goToDetails(product.id)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-carousel>
