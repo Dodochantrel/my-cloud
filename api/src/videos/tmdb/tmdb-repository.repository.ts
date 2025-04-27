@@ -1,8 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import { Video, VideoGenre, VideoType } from '../video.entity';
+import { Video, VideoType } from '../video.entity';
 import { Casting } from '../interfaces/casting.interface';
+import { Director } from '../interfaces/director.interface';
+import { VideoProvider } from '../interfaces/provider.interface';
+import { MovieDetails } from '../interfaces/movie-details.interface';
 
 @Injectable()
 export class TmdbRepositoryRepository {
@@ -10,16 +13,28 @@ export class TmdbRepositoryRepository {
 
   private readonly apiKey = process.env.TMDB_API_KEY;
 
-  async getCasting(id: number): Promise<any> {
+  async getCasting(id: number): Promise<Casting[]> {
     const url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${this.apiKey}&language=fr-FR`;
     const response = await firstValueFrom(this.httpService.get(url));
     return this.mapFromTmdbCastingsResponseToCastings(response.data.cast);
   }
 
-  async getProviders(id: number): Promise<any> {
+  async getDirector(id: number): Promise<Director> {
+    const url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${this.apiKey}&language=fr-FR`;
+    const response = await firstValueFrom(this.httpService.get(url));
+    const crew = response.data.crew;
+    const director = crew.find((member) => member.job === 'Director');
+    return this.mapFromTmdbDirectorResponseToDirector(director);
+  }
+
+  async getProviders(id: number): Promise<VideoProvider[]> {
     const url = `https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${this.apiKey}&language=fr-FR`;
     const response = await firstValueFrom(this.httpService.get(url));
-    return response.data.results.FR || null;
+    return response.data.results.FR?.flatrate
+      ? this.mapFromTmdbProviderResponseToVideoProviders(
+          response.data.results.FR?.flatrate,
+        )
+      : [];
   }
 
   async getSimilar(id: number): Promise<Video[]> {
@@ -39,7 +54,7 @@ export class TmdbRepositoryRepository {
   async getMovies(search: string): Promise<Video[]> {
     const genres = await this.getGenres(true);
     let movies: TmdbDataResultResponse[];
-    if (search === '') {
+    if (search === '' || search === undefined) {
       movies = await this.getMoviesNowPlaying();
     } else {
       movies = await this.getMoviesWithSearch(search);
@@ -48,17 +63,10 @@ export class TmdbRepositoryRepository {
   }
 
   async getMovie(id: number): Promise<Video> {
-    const genres = await this.getGenres(true);
     const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=fr-FR`;
 
-    const response = await firstValueFrom(
-      this.httpService.get<TmdbDataResultResponse>(url),
-    );
-    return this.mapFromTmdbDataResultResponseToVideo(
-      response.data,
-      genres,
-      'movie',
-    );
+    const response = await firstValueFrom(this.httpService.get(url));
+    return this.mapFromTmdbMovieDetailsResponseToVideo(response.data, 'movie');
   }
 
   private async getMoviesNowPlaying() {
@@ -82,7 +90,7 @@ export class TmdbRepositoryRepository {
   async getSeries(search: string): Promise<Video[]> {
     const genres = await this.getGenres(false);
     let series: TmdbDataResultResponse[];
-    if (search === '') {
+    if (search === '' || search === undefined) {
       series = await this.getSeriesNowPlaying();
     } else {
       series = await this.getSeriesWithSearch(search);
@@ -179,12 +187,68 @@ export class TmdbRepositoryRepository {
     return response.data.genres;
   }
 
-  private getGenreName(
-    ids: number[],
-    tmdbGenre: TmdbGenre[],
-  ): VideoGenre | null {
+  private getGenreName(ids: number[], tmdbGenre: TmdbGenre[]): string[] | null {
     const genre = tmdbGenre.find((g) => ids.includes(g.id));
-    return genre ? genre : null;
+    return genre ? [genre.name] : [];
+  }
+
+  private mapFromTmdbMovieDetailsResponseToVideo(
+    tmdbMovieDetailsResponse: TmdbMovieDetailsResponse,
+    type: VideoType,
+  ): Video {
+    return new Video({
+      id: tmdbMovieDetailsResponse.id,
+      title: tmdbMovieDetailsResponse.title,
+      releaseDate: tmdbMovieDetailsResponse.release_date,
+      description: tmdbMovieDetailsResponse.overview,
+      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbMovieDetailsResponse.poster_path}`,
+      type: type,
+      genre: tmdbMovieDetailsResponse.genres.map((g) => g.name),
+      movieDetails:
+        type === 'movie'
+          ? this.mapFromTmdbMovieDetailsResponseToMovieDetails(
+              tmdbMovieDetailsResponse,
+            )
+          : null,
+    });
+  }
+
+  private mapFromTmdbMovieDetailsResponseToMovieDetails(
+    tmdbMovieDetailsResponse: TmdbMovieDetailsResponse,
+  ): MovieDetails {
+    return {
+      duration: tmdbMovieDetailsResponse.runtime,
+      originalTitle: tmdbMovieDetailsResponse.original_title,
+      tagline: tmdbMovieDetailsResponse.tagline,
+    };
+  }
+
+  private mapFromTmdbDirectorResponseToDirector(
+    tmdbDirectorResponse: TmdbDirectorResponse,
+  ): Director {
+    return {
+      id: tmdbDirectorResponse.id,
+      name: tmdbDirectorResponse.name,
+      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbDirectorResponse.profile_path}`,
+    };
+  }
+
+  private mapFromTmdbProviderResponseToVideoProvider(
+    tmdbProviderResponse: TmdbProviderResponse,
+  ): VideoProvider {
+    return {
+      id: tmdbProviderResponse.provider_id,
+      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbProviderResponse.logo_path}`,
+      name: tmdbProviderResponse.provider_name,
+    };
+  }
+
+  private mapFromTmdbProviderResponseToVideoProviders(
+    tmdbProviderResponse: TmdbProviderResponse[],
+  ): VideoProvider[] {
+    return tmdbProviderResponse.map((provider) =>
+      this.mapFromTmdbProviderResponseToVideoProvider(provider),
+    );
   }
 }
 
@@ -235,4 +299,59 @@ export interface TmdbCastingResponse {
   character: string;
   credit_id: string;
   order: number;
+}
+
+export interface TmdbDirectorResponse {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+  credit_id: string;
+  department: string;
+  job: string;
+}
+
+export interface TmdbProviderResponse {
+  logo_path: string;
+  provider_id: 8;
+  provider_name: string;
+  display_priority: number;
+}
+
+export interface TmdbMovieDetailsResponse {
+  adult: boolean;
+  backdrop_path: string;
+  belongs_to_collection: null;
+  budget: number;
+  genres: { id: number; name: string }[];
+  homepage: string;
+  id: number;
+  imdb_id: string;
+  origin_country: string[];
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  production_companies: {
+    id: number;
+    logo_path: string;
+    name: string;
+    origin_country: string;
+  }[];
+  production_countries: { iso_3166_1: string; name: string }[];
+  release_date: string;
+  revenue: number;
+  runtime: number;
+  spoken_languages: { english_name: string; iso_639_1: string; name: string }[];
+  status: string;
+  tagline: string;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
 }

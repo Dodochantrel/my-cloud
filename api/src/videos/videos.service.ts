@@ -6,6 +6,9 @@ import { Repository } from 'typeorm';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { PageQuery } from 'src/pagination/page-query';
 import { User } from 'src/users/user.entity';
+import { VideoProvider } from './interfaces/provider.interface';
+import { Casting } from './interfaces/casting.interface';
+import { Director } from './interfaces/director.interface';
 
 @Injectable()
 export class VideosService {
@@ -45,69 +48,8 @@ export class VideosService {
     return new PaginatedResponse<Video>(data, pageQuery, count);
   }
 
-  async addToWatched(userId: number, videoId: number): Promise<Video> {
-    const video = await this.getMovieFromDbOrTmdb(userId, videoId);
-    if (!video) {
-      throw new NotFoundException('Video not found');
-    }
-    video.isSeen = true;
-    return this.videoRepository.save(video);
-  }
-
-  async removeFromWatched(userId: number, videoId: number): Promise<Video> {
-    const video = await this.videoRepository.findOneBy({
-      id: videoId,
-      user: { id: userId },
-    });
-    if (!video) {
-      throw new NotFoundException('Video not found');
-    }
-    video.isSeen = false;
-    return this.videoRepository.save(video);
-  }
-
-  async addToFavorites(userId: number, videoId: number): Promise<Video> {
-    const video = await this.getMovieFromDbOrTmdb(userId, videoId);
-    if (!video) {
-      throw new NotFoundException('Video not found');
-    }
-    video.isFavorite = true;
-    video.isSeen = true;
-    return this.videoRepository.save(video);
-  }
-
-  async removeFromFavorites(userId: number, videoId: number): Promise<Video> {
-    const video = await this.videoRepository.findOneBy({
-      id: videoId,
-      user: { id: userId },
-    });
-    video.isFavorite = false;
-    return this.videoRepository.save(video);
-  }
-
-  async addToSeen(userId: number, videoId: number): Promise<Video> {
-    const video = await this.getMovieFromDbOrTmdb(userId, videoId);
-    if (!video) {
-      throw new NotFoundException('Video not found');
-    }
-    video.isSeen = true;
-    return this.videoRepository.save(video);
-  }
-
-  async removeFromSeen(userId: number, videoId: number) {
-    const video = await this.videoRepository.findOneBy({
-      id: videoId,
-      user: { id: userId },
-    });
-    if (!video) {
-      throw new NotFoundException('Video not found');
-    }
-    video.isSeen = false;
-    return this.videoRepository.save(video);
-  }
-
   async getMovieFromDbOrTmdb(userId: number, videoId: number): Promise<Video> {
-    const video = this.videoRepository.findOneBy({
+    const video = await this.videoRepository.findOneBy({
       id: videoId,
       user: { id: userId },
     });
@@ -120,15 +62,48 @@ export class VideosService {
     }
   }
 
-  async getCasting(id: number): Promise<any> {
+  async save(video: Video): Promise<Video> {
+    const videoInDb = await this.getMovieFromDbOrTmdb(video.user.id, video.id);
+    if (!video) {
+      throw new NotFoundException('Video not found');
+    }
+    videoInDb.isSeen = video.isSeen;
+    videoInDb.isFavorite = video.isFavorite;
+    videoInDb.isToWatch = video.isToWatch;
+    videoInDb.rating = video.rating;
+    videoInDb.dateSeen = video.dateSeen;
+    return this.videoRepository.save(videoInDb);
+  }
+
+  async getCasting(id: number): Promise<Casting[]> {
     return this.tmdbRepositoryRepository.getCasting(id);
   }
 
-  async getSimilar(id: number): Promise<any> {
+  async getSimilar(id: number): Promise<Video[]> {
     return this.tmdbRepositoryRepository.getSimilar(id);
   }
 
-  async getProviders(id: number): Promise<any> {
+  async getProviders(id: number): Promise<VideoProvider[]> {
     return this.tmdbRepositoryRepository.getProviders(id);
+  }
+
+  async getMovie(id: number): Promise<Video> {
+    const video = await this.tmdbRepositoryRepository.getMovie(id);
+    if (!video) {
+      throw new NotFoundException('Video not found');
+    }
+    return video;
+  }
+
+  async getSerie(id: number): Promise<Video> {
+    const video = await this.tmdbRepositoryRepository.getSerie(id);
+    if (!video) {
+      throw new NotFoundException('Video not found');
+    }
+    return video;
+  }
+
+  async getDirector(id: number): Promise<Director> {
+    return this.tmdbRepositoryRepository.getDirector(id);
   }
 }

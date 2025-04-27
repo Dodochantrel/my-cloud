@@ -1,0 +1,70 @@
+.bloc-default {
+    gap: 3rem;
+}
+
+.details-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.movie-poster {
+    width: 30%;
+}
+
+.tags-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.title {
+    margin: 0;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.line {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.line-element {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.text-color {
+    color: var(--text-color);
+}
+
+.director-image {
+    width: 40px;
+}
+
+.director-container {
+    margin-top: auto;
+}
+
+.director-informations {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.casting-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.casting-informations {
+    width: 180px;
+}
+
+.casting-image {
+    width: 100%;
+}

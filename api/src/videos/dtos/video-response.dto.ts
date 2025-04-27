@@ -1,5 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Video, VideoGenre } from '../video.entity';
+import { Video } from '../video.entity';
+import { MovieDetails } from '../interfaces/movie-details.interface';
+
+export class MovieDetailsDto {
+  @ApiProperty({
+    description: 'La durée du film ou de la série',
+    example: 120,
+  })
+  duration: number;
+
+  @ApiProperty({
+    description: 'Le titre original du film ou de la série',
+    example: 'Inception',
+  })
+  originalTitle: string;
+
+  @ApiProperty({
+    description: 'L accroche du film ou de la série',
+    example:
+      'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.',
+  })
+  tagline: string;
+}
 
 export class VideoResponseDto {
   @ApiProperty({
@@ -42,7 +64,7 @@ export class VideoResponseDto {
     description: 'Le genre de contenu (film ou série)',
     example: 'movie',
   })
-  genre: VideoGenre | null;
+  genre: string[];
 
   @ApiProperty({
     description: 'Le type de contenu (film ou série)',
@@ -74,9 +96,16 @@ export class VideoResponseDto {
     example: '2023-10-01',
   })
   dateSeen: Date | null;
+
+  @ApiProperty({
+    description: 'Les détails du film ou de la série',
+    type: MovieDetailsDto,
+    nullable: true,
+  })
+  movieDetails: MovieDetailsDto | null;
 }
 
-export const mapFormVideoToVideoResponseDto = (
+export const mapFromVideoToVideoResponseDto = (
   video: Video,
 ): VideoResponseDto => {
   return {
@@ -92,11 +121,24 @@ export const mapFormVideoToVideoResponseDto = (
     dateSeen: video.dateSeen,
     genre: video.genre,
     type: video.type,
+    movieDetails: video.movieDetails
+      ? mapFromMovieDetailsToMovieDetailsDto(video.movieDetails)
+      : null,
   };
 };
 
 export const mapFormVideoToVideoResponseDtos = (
   videos: Video[],
 ): VideoResponseDto[] => {
-  return videos.map((video) => mapFormVideoToVideoResponseDto(video));
+  return videos.map((video) => mapFromVideoToVideoResponseDto(video));
+};
+
+export const mapFromMovieDetailsToMovieDetailsDto = (
+  movieDetails: MovieDetails,
+): MovieDetailsDto => {
+  return {
+    duration: movieDetails.duration,
+    originalTitle: movieDetails.originalTitle,
+    tagline: movieDetails.tagline,
+  };
 };

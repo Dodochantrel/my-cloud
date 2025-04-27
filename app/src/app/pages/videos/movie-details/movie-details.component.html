@@ -1,0 +1,60 @@
+<div class="container">
+
+    <div class="bloc-default">
+
+        <div class="details-container">
+
+            <img class="movie-poster" [src]="movie.fileUrl" alt="Movie Poster">
+
+            <div class="details">
+                <h2 class="title">{{ movie.title }}</h2>
+                <p class="tagline text-color">{{ movie.movieDetails?.tagline }}</p>
+                <div class="tags-container">
+                    @for (tag of movie.genre; track $index) {
+                        <p-tag [value]="tag" />
+                    }
+                </div>
+                <div class="line">
+                    <div class="line-element">
+                        <i class="pi pi-calendar text-color"></i>
+                        <p>{{ movie.releaseDate | date: 'dd/MM/yyyy' }}</p>
+                    </div>
+                    <div class="line-element">
+                        <i class="pi pi-clock text-color"></i>
+                        <p>{{ movie.formatDuration() }}</p>
+                    </div>
+                </div>
+                <div class="description-container">
+                    <h3 class="title">Synopsis</h3>
+                    <p class="description text-color">{{ movie.description }}</p>
+                </div>
+                <div class="director-container">
+                    <h3 class="title">Réalisateur</h3>
+                    <div class="director-informations">
+                        <img class="director-image" [src]="movie.director?.fileUrl" alt="Movie Poster">
+                        <p class="director-name">{{ movie.director?.name }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="casting-bloc">
+
+            <h2 class="title">Casting</h2>
+
+            <div class="casting-container">
+                @for (item of movie.casting; track $index) {
+                    <div class="casting-informations">
+                        <img class="casting-image" [src]="item?.fileUrl" alt="Movie Poster">
+                        <p class="casting-role">{{ item?.character }}</p>
+                        <p class="casting-name text-color">{{ item?.name }}</p>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

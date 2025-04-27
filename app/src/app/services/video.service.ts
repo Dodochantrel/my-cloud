@@ -4,12 +4,31 @@ import { environment } from '../../environments/environment.development';
 import {
   mapFromDtosToVideos,
   mapFromDtoToVideo,
+  mapFromVideoToPatchVideoDto,
   VideoDto,
 } from '../dto/video.dto';
 import { map, Observable } from 'rxjs';
-import { Video, VideoType } from '../class/video';
+import {
+  Casting,
+  Director,
+  Video,
+  VideoProvider,
+  VideoType,
+} from '../class/video';
 import { Paginated } from '../class/paginated';
 import { PaginatedDto } from '../dto/paginated-response.dto';
+import {
+  mapFromVideoDirectorDtoToVideoDirector,
+  VideoDirectorDto,
+} from '../dto/video-director.dto';
+import {
+  mapFromVideoProviderDtosToVideoProviders,
+  VideoProviderDto,
+} from '../dto/video-provider.dto';
+import {
+  mapFromVideoCastingDtosToVideoCastings,
+  VideoCastingDto,
+} from '../dto/video-casting.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -49,69 +68,54 @@ export class VideoService {
       );
   }
 
-  addSeen(id: number): Observable<Video> {
-    return this.httpClient
-      .patch<VideoDto>(`${environment.apiUrl}videos/add-to-seen/${id}`, {})
-      .pipe(
-        map((response: VideoDto) => {
-          return mapFromDtoToVideo(response);
-        })
-      );
-  }
-
-  removeSeen(id: number): Observable<Video> {
-    return this.httpClient
-      .patch<VideoDto>(`${environment.apiUrl}videos/remove-from-seen/${id}`, {})
-      .pipe(
-        map((response: VideoDto) => {
-          return mapFromDtoToVideo(response);
-        })
-      );
-  }
-
-  addWatch(id: number): Observable<Video> {
-    return this.httpClient
-      .patch<VideoDto>(`${environment.apiUrl}videos/add-to-watch/${id}`, {})
-      .pipe(
-        map((response: VideoDto) => {
-          return mapFromDtoToVideo(response);
-        })
-      );
-  }
-
-  removeWatch(id: number): Observable<Video> {
+  edit(video: Video): Observable<Video> {
     return this.httpClient
       .patch<VideoDto>(
-        `${environment.apiUrl}videos/remove-from-watch/${id}`,
-        {}
+        `${environment.apiUrl}videos/${video.id}`,
+        mapFromVideoToPatchVideoDto(video)
       )
+      .pipe(map((response: VideoDto) => mapFromDtoToVideo(response)));
+  }
+
+  getOneMovie(id: number): Observable<Video> {
+    return this.httpClient
+      .get<VideoDto>(`${environment.apiUrl}videos/movie/${id}`)
+      .pipe(map((response: VideoDto) => mapFromDtoToVideo(response)));
+  }
+
+  getDirector(id: number): Observable<Director> {
+    return this.httpClient
+      .get<VideoDirectorDto>(`${environment.apiUrl}videos/director/${id}`)
       .pipe(
-        map((response: VideoDto) => {
-          return mapFromDtoToVideo(response);
-        })
+        map((response: VideoDirectorDto) =>
+          mapFromVideoDirectorDtoToVideoDirector(response)
+        )
       );
   }
 
-  addFavorite(id: number): Observable<Video> {
+  getProviders(id: number): Observable<VideoProvider[]> {
     return this.httpClient
-      .patch<VideoDto>(`${environment.apiUrl}videos/add-to-favorite/${id}`, {})
+      .get<VideoProviderDto[]>(`${environment.apiUrl}videos/providers/${id}`)
       .pipe(
-        map((response: VideoDto) => {
-          return mapFromDtoToVideo(response);
-        })
+        map((response: VideoProviderDto[]) =>
+          mapFromVideoProviderDtosToVideoProviders(response)
+        )
       );
   }
 
-  removeFavorite(id: number): Observable<Video> {
+  getSimilars(id: number): Observable<Video[]> {
     return this.httpClient
-      .patch<VideoDto>(
-        `${environment.apiUrl}videos/remove-from-favorite/${id}`,
-        {}
-      )
+      .get<VideoDto[]>(`${environment.apiUrl}videos/similars/${id}`)
+      .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
+  }
+
+  getCasting(id: number): Observable<Casting[]> {
+    return this.httpClient
+      .get<VideoCastingDto[]>(`${environment.apiUrl}videos/casting/${id}`)
       .pipe(
-        map((response: VideoDto) => {
-          return mapFromDtoToVideo(response);
-        })
+        map((response: VideoCastingDto[]) =>
+          mapFromVideoCastingDtosToVideoCastings(response)
+        )
       );
   }
 }

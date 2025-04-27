@@ -4,7 +4,7 @@ import { StarterComponent } from './pages/recipes/starter/starter.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { NoNavigationComponent } from './templates/no-navigation/no-navigation.component';
 import { MovieComponent } from './pages/videos/movie/movie.component';
-import { VideoDetailsComponent } from './pages/videos/video-details/video-details.component';
+import { MovieDetailsComponent } from './pages/videos/movie-details/movie-details.component';
 
 export const routes: Routes = [
   {
@@ -32,7 +32,7 @@ export const routes: Routes = [
       {
         path: 'videos/details/:id',
         title: 'Videos - Details',
-        component: VideoDetailsComponent,
+        component: MovieDetailsComponent,
         data: {
           title: 'Détails',
           breadcrumb: [{ label: 'Vidéos' }, { label: 'Détails' }],

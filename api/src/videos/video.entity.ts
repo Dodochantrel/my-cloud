@@ -1,5 +1,6 @@
 import { User } from 'src/users/user.entity';
 import { Column, Entity, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
+import { MovieDetails } from './interfaces/movie-details.interface';
 
 @Entity()
 export class Video {
@@ -39,18 +40,11 @@ export class Video {
   fileUrl: string;
   releaseDate: string;
   description: string;
-  genre: VideoGenre;
+  genre: string[];
+
+  movieDetails: MovieDetails | null;
 
   constructor(partial: Partial<Video>) {
-    Object.assign(this, partial);
-  }
-}
-
-export class VideoGenre {
-  id: number;
-  name: string;
-
-  constructor(partial: Partial<VideoGenre>) {
     Object.assign(this, partial);
   }
 }

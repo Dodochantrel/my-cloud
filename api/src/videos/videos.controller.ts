@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import {
-  mapFormVideoToVideoResponseDto,
+  mapFromVideoToVideoResponseDto,
   mapFormVideoToVideoResponseDtos,
   VideoResponseDto,
 } from './dtos/video-response.dto';
@@ -11,7 +11,20 @@ import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { ApiPaginatedResponse } from 'src/pagination/response-paginated.decorator';
-import { VideoType } from './video.entity';
+import { Video, VideoType } from './video.entity';
+import { VideoRequestDto } from './dtos/video-request.dto';
+import {
+  mapFromDirectorToVideoDirectorResponseDto,
+  VideoDirectorResponseDto,
+} from './dtos/video-director-response.dto';
+import {
+  mapFromVideoProvidersToVideoProviderResponseDtos,
+  VideoProviderResponseDto,
+} from './dtos/video-provider-response.dto';
+import {
+  mapFromCastingToVideoCastingResponseDtos,
+  VideoCastingResponseDto,
+} from './dtos/video-casting-response.dto';
 
 @Controller('videos')
 export class VideosController {
@@ -62,113 +75,109 @@ export class VideosController {
     );
   }
 
-  @Patch('add-to-watch/:id')
+  @Patch(':id')
   @ApiResponse({
     status: 200,
-    description: 'Video added to watch list',
+    description: 'Add video to watched list',
     type: VideoResponseDto,
+  })
+  @ApiBody({
+    type: VideoRequestDto,
+    description: 'Video request body',
   })
   async addToWatched(
     @Param('id') params: { id: string },
     @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Body() dto: VideoRequestDto,
   ): Promise<VideoResponseDto> {
-    return mapFormVideoToVideoResponseDto(
-      await this.videosService.addToWatched(tokenPayload.id, Number(params.id)),
-    );
-  }
-
-  @Patch('remove-from-watch/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Video removed from watched list',
-    type: VideoResponseDto,
-  })
-  async removeFromWatched(
-    @Param('id') params: { id: string },
-    @TokenPayload() tokenPayload: AccessTokenPayload,
-  ) {
-    return mapFormVideoToVideoResponseDto(
-      await this.videosService.removeFromWatched(
-        tokenPayload.id,
-        Number(params.id),
+    return mapFromVideoToVideoResponseDto(
+      await this.videosService.save(
+        new Video({
+          id: Number(params.id),
+          isToWatch: dto.isToWatch,
+          isSeen: dto.isSeen,
+          isFavorite: dto.isFavorite,
+          rating: dto.rating,
+          dateSeen: dto.dateSeen,
+        }),
       ),
     );
-  }
-
-  @Patch('add-to-favorites/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Video added to favorites list',
-    type: VideoResponseDto,
-  })
-  async addToFavorites(
-    @Param('id') params: { id: string },
-    @TokenPayload() tokenPayload: AccessTokenPayload,
-  ) {
-    return mapFormVideoToVideoResponseDto(
-      await this.videosService.addToFavorites(
-        tokenPayload.id,
-        Number(params.id),
-      ),
-    );
-  }
-
-  @Patch('remove-from-favorites/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Video removed from favorites list',
-  })
-  async removeFromFavorites(
-    @Param('id') params: { id: string },
-    @TokenPayload() tokenPayload: AccessTokenPayload,
-  ) {
-    return mapFormVideoToVideoResponseDto(
-      await this.videosService.removeFromFavorites(
-        tokenPayload.id,
-        Number(params.id),
-      ),
-    );
-  }
-
-  @Get('add-to-seen/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Video added to seen list',
-    type: VideoResponseDto,
-  })
-  async addToSeen(
-    @Param('id') params: { id: string },
-    @TokenPayload() tokenPayload: AccessTokenPayload,
-  ): Promise<VideoResponseDto> {
-    return mapFormVideoToVideoResponseDto(
-      await this.videosService.addToSeen(tokenPayload.id, Number(params.id)),
-    );
-  }
-
-  @Patch('remove-from-seen/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Video removed from seen list',
-  })
-  async removeFromSeen(
-    @Param('id') params: { id: string },
-    @TokenPayload() tokenPayload: AccessTokenPayload,
-  ) {
-    await this.videosService.removeFromSeen(tokenPayload.id, Number(params.id));
   }
 
   @Get('casting/:id')
-  async getCasting(@Param('id') id: string) {
-    return this.videosService.getCasting(Number(id));
+  @ApiResponse({
+    status: 200,
+    description: 'List of video casting',
+    type: VideoCastingResponseDto,
+  })
+  async getCasting(
+    @Param('id') id: string,
+  ): Promise<VideoCastingResponseDto[]> {
+    return mapFromCastingToVideoCastingResponseDtos(
+      await this.videosService.getCasting(Number(id)),
+    );
   }
 
   @Get('similars/:id')
-  async getSimilar(@Param('id') id: string) {
-    return this.videosService.getSimilar(Number(id));
+  @ApiResponse({
+    status: 200,
+    description: 'List of similar videos',
+    type: VideoResponseDto,
+  })
+  async getSimilar(@Param('id') id: string): Promise<VideoResponseDto[]> {
+    return mapFormVideoToVideoResponseDtos(
+      await this.videosService.getSimilar(Number(id)),
+    );
   }
 
   @Get('providers/:id')
-  async getProviders(@Param('id') id: string) {
-    return this.videosService.getProviders(Number(id));
+  @ApiResponse({
+    status: 200,
+    description: 'List of video providers',
+    type: VideoProviderResponseDto,
+  })
+  async getProviders(
+    @Param('id') id: string,
+  ): Promise<VideoProviderResponseDto[]> {
+    return mapFromVideoProvidersToVideoProviderResponseDtos(
+      await this.videosService.getProviders(Number(id)),
+    );
+  }
+
+  @Get('director/:id')
+  @ApiResponse({
+    status: 200,
+    description: 'Get movie by id',
+    type: VideoDirectorResponseDto,
+  })
+  async getDirector(
+    @Param('id') id: string,
+  ): Promise<VideoDirectorResponseDto> {
+    return mapFromDirectorToVideoDirectorResponseDto(
+      await this.videosService.getDirector(Number(id)),
+    );
+  }
+
+  @Get('movie/:id')
+  @ApiResponse({
+    status: 200,
+    description: 'Get movie by id',
+    type: VideoResponseDto,
+  })
+  async getMovieFromDbOrTmdb(
+    @Param('id') id: string,
+  ): Promise<VideoResponseDto> {
+    return mapFromVideoToVideoResponseDto(
+      await this.videosService.getMovie(Number(id)),
+    );
+  }
+
+  @Get('serie/:id')
+  async getSeriesFromDbOrTmdb(
+    @Param('id') id: string,
+  ): Promise<VideoResponseDto> {
+    return mapFromVideoToVideoResponseDto(
+      await this.videosService.getSerie(Number(id)),
+    );
   }
 }
