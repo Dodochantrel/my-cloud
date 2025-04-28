@@ -94,7 +94,7 @@ export class VideosController {
     return mapFromVideoToVideoResponseDto(
       await this.videosService.save(
         new Video({
-          id: Number(id),
+          tmdbId: Number(id),
           isToWatch: dto.isToWatch,
           isSeen: dto.isSeen,
           isFavorite: dto.isFavorite,

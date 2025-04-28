@@ -13,7 +13,7 @@
                     <div class="card-content">
                         <div class="left-card">
                             <p class="recipe-id">n°{{ recipe.id }}</p>
-                            <p class="recipe-description">{{ recipe.description }}</p>
+                            <p class="recipe-description" [innerHTML]="recipe.description"></p>
                             <p class="recipe-link">Voir la recette</p>
                         </div>
                         <div class="right-card">

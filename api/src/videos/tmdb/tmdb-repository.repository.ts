@@ -136,7 +136,7 @@ export class TmdbRepositoryRepository {
     type: VideoType,
   ): Video {
     return new Video({
-      id: tmdbDataResponse.id,
+      tmdbId: tmdbDataResponse.id,
       title: tmdbDataResponse.title,
       releaseDate: tmdbDataResponse.release_date,
       description: tmdbDataResponse.overview,
@@ -199,7 +199,7 @@ export class TmdbRepositoryRepository {
     type: VideoType,
   ): Video {
     return new Video({
-      id: tmdbMovieDetailsResponse.id,
+      tmdbId: tmdbMovieDetailsResponse.id,
       title: tmdbMovieDetailsResponse.title,
       releaseDate: tmdbMovieDetailsResponse.release_date,
       description: tmdbMovieDetailsResponse.overview,

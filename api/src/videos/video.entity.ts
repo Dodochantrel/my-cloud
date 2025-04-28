@@ -1,12 +1,21 @@
 import { User } from 'src/users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryColumn, Relation } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 import { MovieDetails } from './interfaces/movie-details.interface';
 
 @Entity()
 export class Video {
   // Id de the movie db
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  tmdbId: number;
 
   @Column()
   title: string;

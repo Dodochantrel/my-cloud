@@ -38,6 +38,7 @@ export class FooterTableComponent {
   public first: number = 0;
 
   @Input() meta: PaginatedMeta = defaultPaginatedMeta;
+  @Input() hasSize: boolean = false;
   @Output() pageChange = new EventEmitter<PaginatedMeta>();
 
   public options = [

@@ -13,6 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { CurrentVideosComponent } from '../../../components/videos/current-videos/current-videos.component';
 import { WatchVideosComponent } from '../../../components/videos/watch-videos/watch-videos.component';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie',
@@ -35,7 +36,8 @@ export class MovieComponent implements OnInit {
   constructor(
     private readonly videoService: VideoService,
     private readonly browserService: BrowserService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly router: Router,
   ) {}
 
   public isLoadingSeenMovies: boolean = false;
@@ -48,6 +50,10 @@ export class MovieComponent implements OnInit {
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
     }
+  }
+
+  onMovieSelect(event: any) {
+    this.router.navigate([`videos/details/${event.value.id}`]);
   }
 
   searchMovies() {

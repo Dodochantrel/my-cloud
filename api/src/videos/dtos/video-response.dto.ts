@@ -109,7 +109,7 @@ export const mapFromVideoToVideoResponseDto = (
   video: Video,
 ): VideoResponseDto => {
   return {
-    id: video.id,
+    id: video.tmdbId,
     isFavorite: video.isFavorite,
     isSeen: video.isSeen,
     isToWatch: video.isToWatch,

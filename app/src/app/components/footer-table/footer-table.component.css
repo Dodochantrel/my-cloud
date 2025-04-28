@@ -7,3 +7,7 @@
 ::ng-deep .p-selectbutton{
     height: 35px;
 }
+
+.flex-end {
+    justify-content: flex-end;
+}

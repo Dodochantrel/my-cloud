@@ -49,12 +49,13 @@ export class VideosService {
 
   async getMovieFromDbOrTmdb(userId: number, videoId: number): Promise<Video> {
     const video = await this.videoRepository.findOneBy({
-      id: videoId,
+      tmdbId: videoId,
       user: { id: userId },
     });
     if (video) {
       const videoFromTmdb =
         await this.tmdbRepositoryRepository.getMovie(videoId);
+      videoFromTmdb.id = video.id;
       videoFromTmdb.isFavorite = video.isFavorite;
       videoFromTmdb.isSeen = video.isSeen;
       videoFromTmdb.isToWatch = video.isToWatch;
@@ -68,9 +69,15 @@ export class VideosService {
   }
 
   async save(video: Video): Promise<Video> {
-    const videoInDb = await this.getMovieFromDbOrTmdb(video.user.id, video.id);
+    const videoInDb = await this.getMovieFromDbOrTmdb(
+      video.user.id,
+      video.tmdbId,
+    );
     if (!video) {
       throw new NotFoundException('Video not found');
+    }
+    if (!videoInDb.user) {
+      videoInDb.user = video.user;
     }
     videoInDb.isSeen = video.isSeen;
     videoInDb.isFavorite = video.isFavorite;
