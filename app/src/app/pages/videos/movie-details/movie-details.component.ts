@@ -8,6 +8,7 @@ import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { AddVideoSeenComponent } from '../../../components/videos/add-video-seen/add-video-seen.component';
+import { setImageUrl } from '../../../tools/set-image-url';
 
 @Component({
   selector: 'app-movie-details',
@@ -28,6 +29,10 @@ export class MovieDetailsComponent implements OnInit {
     if (this.browserService.isBrowser) {
       this.getData(this.getUrlCustomerId());
     }
+  }
+
+  setImageUrl(url: string | null | undefined): string {
+    return setImageUrl(url);
   }
 
   goToDetails(id: number) {

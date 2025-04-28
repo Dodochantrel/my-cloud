@@ -175,7 +175,9 @@ export class TmdbRepositoryRepository {
         popularity: casting.popularity,
         character: casting.character,
         order: casting.order,
-        fileUrl: `https://image.tmdb.org/t/p/w300${casting.profile_path}`,
+        fileUrl: casting.profile_path
+          ? `https://image.tmdb.org/t/p/w300${casting.profile_path}`
+          : null,
       };
     });
   }
@@ -231,7 +233,9 @@ export class TmdbRepositoryRepository {
     return {
       id: tmdbDirectorResponse.id,
       name: tmdbDirectorResponse.name,
-      fileUrl: `https://image.tmdb.org/t/p/w300${tmdbDirectorResponse.profile_path}`,
+      fileUrl: tmdbDirectorResponse.profile_path
+        ? `https://image.tmdb.org/t/p/w300${tmdbDirectorResponse.profile_path}`
+        : null,
     };
   }
 
@@ -240,7 +244,9 @@ export class TmdbRepositoryRepository {
   ): VideoProvider {
     return {
       id: tmdbProviderResponse.provider_id,
-      fileUrl: `https://image.tmdb.org/t/p/w300${tmdbProviderResponse.logo_path}`,
+      fileUrl: tmdbProviderResponse.logo_path
+        ? `https://image.tmdb.org/t/p/w300${tmdbProviderResponse.logo_path}`
+        : null,
       name: tmdbProviderResponse.provider_name,
     };
   }
