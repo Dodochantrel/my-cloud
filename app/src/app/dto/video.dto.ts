@@ -22,8 +22,8 @@ export interface PatchVideoDto {
   isFavorite: boolean;
   isSeen: boolean;
   isToWatch: boolean;
-  rating: number;
-  dateSeen: string;
+  rating: number | null;
+  dateSeen: string | null;
 }
 
 export const mapFromDtoToVideo = (dto: VideoDto): Video => {
@@ -37,7 +37,7 @@ export const mapFromDtoToVideo = (dto: VideoDto): Video => {
     new Date(dto.releaseDate),
     dto.description,
     dto.fileUrl,
-    dto.dateSeen,
+    dto.dateSeen ? new Date(dto.dateSeen) : null,
     dto.genre,
     dto.type
   );
@@ -56,6 +56,6 @@ export const mapFromVideoToPatchVideoDto = (video: Video): PatchVideoDto => {
     isSeen: video.isSeen,
     isToWatch: video.isToWatch,
     rating: video.rating,
-    dateSeen: video.dateSeen,
+    dateSeen: video.dateSeen ? video.dateSeen.toISOString() : null,
   };
 };

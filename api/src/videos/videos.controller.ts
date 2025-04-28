@@ -25,6 +25,7 @@ import {
   mapFromCastingToVideoCastingResponseDtos,
   VideoCastingResponseDto,
 } from './dtos/video-casting-response.dto';
+import { User } from 'src/users/user.entity';
 
 @Controller('videos')
 export class VideosController {
@@ -86,19 +87,22 @@ export class VideosController {
     description: 'Video request body',
   })
   async addToWatched(
-    @Param('id') params: { id: string },
+    @Param('id') id: string,
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Body() dto: VideoRequestDto,
   ): Promise<VideoResponseDto> {
     return mapFromVideoToVideoResponseDto(
       await this.videosService.save(
         new Video({
-          id: Number(params.id),
+          id: Number(id),
           isToWatch: dto.isToWatch,
           isSeen: dto.isSeen,
           isFavorite: dto.isFavorite,
           rating: dto.rating,
           dateSeen: dto.dateSeen,
+          user: new User({
+            id: tokenPayload.id,
+          }),
         }),
       ),
     );
@@ -166,9 +170,13 @@ export class VideosController {
   })
   async getMovieFromDbOrTmdb(
     @Param('id') id: string,
+    @TokenPayload() tokenPayload: AccessTokenPayload,
   ): Promise<VideoResponseDto> {
     return mapFromVideoToVideoResponseDto(
-      await this.videosService.getMovie(Number(id)),
+      await this.videosService.getMovieFromDbOrTmdb(
+        Number(tokenPayload.id),
+        Number(id),
+      ),
     );
   }
 

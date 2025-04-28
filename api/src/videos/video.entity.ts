@@ -13,19 +13,19 @@ export class Video {
 
   // Un boolean pour dire si favoris
   @Column({ default: false })
-  isFavorite: boolean;
+  isFavorite: boolean = false;
 
   // Un boolean pour dire si déjà vu.
   @Column({ default: false })
-  isSeen: boolean;
+  isSeen: boolean = false;
 
   // Un boolean pour dire si a voir plus tard
   @Column({ default: false })
-  isToWatch: boolean;
+  isToWatch: boolean = false;
 
   // Un number pour la note de 1 à 5
   @Column({ nullable: true })
-  rating: number | null;
+  rating: number | null = null;
 
   // Date de visionnage
   @Column({ nullable: true })

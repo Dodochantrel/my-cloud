@@ -2,16 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { BrowserService } from '../../../services/browser.service';
 import { NotificationService } from '../../../services/notification.service';
 import { VideoService } from '../../../services/video.service';
-import { Video } from '../../../class/video';
-import { ActivatedRoute } from '@angular/router';
+import { defaultVideo, Video } from '../../../class/video';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { AddVideoSeenComponent } from '../../../components/videos/add-video-seen/add-video-seen.component';
 
 @Component({
   selector: 'app-movie-details',
-  imports: [TagModule, CommonModule],
+  imports: [TagModule, CommonModule, ButtonModule, AddVideoSeenComponent],
   templateUrl: './movie-details.component.html',
-  styleUrl: './movie-details.component.css'
+  styleUrl: './movie-details.component.css',
 })
 export class MovieDetailsComponent implements OnInit {
   constructor(
@@ -19,6 +21,7 @@ export class MovieDetailsComponent implements OnInit {
     private readonly browserService: BrowserService,
     private readonly notificationService: NotificationService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -27,12 +30,13 @@ export class MovieDetailsComponent implements OnInit {
     }
   }
 
+  goToDetails(id: number) {
+    this.router.navigate([`videos/details/${id}`]);
+    this.getData(id);
+  }
+
   getData(id: number) {
     this.getVideoDetails(id);
-    this.getCasting(id);
-    this.getProviders(id);
-    this.getSimilars(id);
-    this.getDirector(id);
   }
 
   getUrlCustomerId(): number {
@@ -43,13 +47,22 @@ export class MovieDetailsComponent implements OnInit {
   public isLoadingCasting: boolean = false;
   public isLoadingProviders: boolean = false;
   public isLoadingSimilars: boolean = false;
-  public movie: Video = new Video(0, false, false, false, 0, '', new Date(), '', '', '', [], 'movie');
+
+  public isLoadingHandleToWatchlist: boolean = false;
+  public isLoadingHandleToFavorite: boolean = false;
+
+  public isModalSeenVisible: boolean = false;
+
+  public movie: Video = defaultVideo;
 
   getVideoDetails(videoId: number) {
     this.isLoadingDetails = true;
     this.videoService.getOneMovie(videoId).subscribe({
       next: (response) => {
         this.movie = response;
+        this.getDirector(videoId);
+        this.getCasting(videoId);
+        this.getProviders(videoId);
       },
       error: (error) => {
         this.notificationService.showError(
@@ -59,7 +72,7 @@ export class MovieDetailsComponent implements OnInit {
       },
       complete: () => {
         this.isLoadingDetails = false;
-      }
+      },
     });
   }
 
@@ -77,7 +90,7 @@ export class MovieDetailsComponent implements OnInit {
       },
       complete: () => {
         this.isLoadingCasting = false;
-      }
+      },
     });
   }
 
@@ -86,6 +99,7 @@ export class MovieDetailsComponent implements OnInit {
     this.videoService.getProviders(videoId).subscribe({
       next: (response) => {
         this.movie.providers = response;
+        this.getSimilars(videoId);
       },
       error: (error) => {
         this.notificationService.showError(
@@ -95,7 +109,7 @@ export class MovieDetailsComponent implements OnInit {
       },
       complete: () => {
         this.isLoadingProviders = false;
-      }
+      },
     });
   }
 
@@ -113,7 +127,7 @@ export class MovieDetailsComponent implements OnInit {
       },
       complete: () => {
         this.isLoadingSimilars = false;
-      }
+      },
     });
   }
 
@@ -131,7 +145,59 @@ export class MovieDetailsComponent implements OnInit {
       },
       complete: () => {
         this.isLoadingDetails = false;
-      }
+      },
     });
+  }
+
+  handleToWatchlist(video: Video) {
+    this.isLoadingHandleToWatchlist = true;
+    video.isToWatch = !video.isToWatch;
+    this.videoService.edit(video).subscribe({
+      next: () => {
+        this.movie.isToWatch = video.isToWatch;
+        this.notificationService.showSuccess(
+          'Ajouté',
+          `${video.title} a été ajouté à votre liste de films à voir`
+        );
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          "Erreur lors de l'ajout à la liste de films à voir",
+          error.message
+        );
+      },
+      complete: () => {
+        this.isLoadingHandleToWatchlist = false;
+      },
+    });
+  }
+
+  handleToFavorite(video: Video) {
+    this.isLoadingHandleToFavorite = true;
+    video.isFavorite = !video.isFavorite;
+    this.videoService.edit(video).subscribe({
+      next: () => {
+        this.movie.isFavorite = video.isFavorite;
+        this.notificationService.showSuccess(
+          'Ajouté',
+          `${video.title} a été ajouté à votre liste de films favoris`
+        );
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          "Erreur lors de l'ajout à la liste de films favoris",
+          error.message
+        );
+      },
+      complete: () => {
+        this.isLoadingHandleToFavorite = false;
+      },
+    });
+  }
+
+  setSeen(video: Video) {
+    this.movie.isSeen = video.isSeen;
+    this.movie.dateSeen = video.dateSeen;
+    this.movie.rating = video.rating;
   }
 }

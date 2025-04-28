@@ -10,7 +10,7 @@ export class Video {
   releaseDate: Date;
   description: string;
   fileUrl: string;
-  dateSeen: string;
+  dateSeen: Date | null;
   genre: string[];
   type: VideoType;
   casting: Casting[] | null;
@@ -29,7 +29,7 @@ export class Video {
     releaseDate: Date,
     description: string,
     fileUrl: string,
-    dateSeen: string,
+    dateSeen: Date | null,
     genre: string[],
     type: VideoType
   ) {
@@ -61,6 +61,19 @@ export class Video {
     return '';
   }
 
+  getCastingToDisplay(): Casting[] {
+    if (this.casting) {
+      return this.casting.slice(0, 7); // Limite à 7 acteurs
+    }
+    return [];
+  }
+
+  getSimilarToDisplay(): Video[] {
+    if (this.similars) {
+      return this.similars.slice(0, 6); // Limite à 7 vidéos similaires
+    }
+    return [];
+  }
 }
 
 export interface Casting {
@@ -89,3 +102,5 @@ export interface VideoProvider {
   fileUrl: string;
   name: string;
 }
+
+export const defaultVideo = new Video(0, false, false, false, 0, '', new Date(), '', '', null, [], 'movie')

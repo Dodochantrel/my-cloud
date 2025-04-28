@@ -77,6 +77,18 @@ export class VideoService {
       .pipe(map((response: VideoDto) => mapFromDtoToVideo(response)));
   }
 
+  setSeen(video: Video, isSeen: boolean, dateSeen: Date, rating: number): Observable<Video> {
+    video.isSeen = isSeen;
+    video.dateSeen = dateSeen;
+    video.rating = rating;
+    return this.httpClient
+      .patch<VideoDto>(
+        `${environment.apiUrl}videos/${video.id}`,
+        mapFromVideoToPatchVideoDto(video)
+      )
+      .pipe(map((response: VideoDto) => mapFromDtoToVideo(response)));
+  }
+
   getOneMovie(id: number): Observable<Video> {
     return this.httpClient
       .get<VideoDto>(`${environment.apiUrl}videos/movie/${id}`)

@@ -32,7 +32,9 @@ export class TmdbRepositoryRepository {
     const response = await firstValueFrom(this.httpService.get(url));
     return response.data.results.FR?.flatrate
       ? this.mapFromTmdbProviderResponseToVideoProviders(
-          response.data.results.FR?.flatrate,
+          response.data.results.FR?.flatrate.filter(
+            (provider) => provider.display_priority <= 20,
+          ),
         )
       : [];
   }
@@ -138,7 +140,7 @@ export class TmdbRepositoryRepository {
       title: tmdbDataResponse.title,
       releaseDate: tmdbDataResponse.release_date,
       description: tmdbDataResponse.overview,
-      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbDataResponse.poster_path}`,
+      fileUrl: `https://image.tmdb.org/t/p/w400${tmdbDataResponse.poster_path}`,
       dateSeen: null,
       isSeen: false,
       isToWatch: false,
@@ -173,7 +175,7 @@ export class TmdbRepositoryRepository {
         popularity: casting.popularity,
         character: casting.character,
         order: casting.order,
-        fileUrl: `https://image.tmdb.org/t/p/w1280${casting.profile_path}`,
+        fileUrl: `https://image.tmdb.org/t/p/w300${casting.profile_path}`,
       };
     });
   }
@@ -201,7 +203,7 @@ export class TmdbRepositoryRepository {
       title: tmdbMovieDetailsResponse.title,
       releaseDate: tmdbMovieDetailsResponse.release_date,
       description: tmdbMovieDetailsResponse.overview,
-      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbMovieDetailsResponse.poster_path}`,
+      fileUrl: `https://image.tmdb.org/t/p/w400${tmdbMovieDetailsResponse.poster_path}`,
       type: type,
       genre: tmdbMovieDetailsResponse.genres.map((g) => g.name),
       movieDetails:
@@ -229,7 +231,7 @@ export class TmdbRepositoryRepository {
     return {
       id: tmdbDirectorResponse.id,
       name: tmdbDirectorResponse.name,
-      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbDirectorResponse.profile_path}`,
+      fileUrl: `https://image.tmdb.org/t/p/w300${tmdbDirectorResponse.profile_path}`,
     };
   }
 
@@ -238,7 +240,7 @@ export class TmdbRepositoryRepository {
   ): VideoProvider {
     return {
       id: tmdbProviderResponse.provider_id,
-      fileUrl: `https://image.tmdb.org/t/p/w1280${tmdbProviderResponse.logo_path}`,
+      fileUrl: `https://image.tmdb.org/t/p/w300${tmdbProviderResponse.logo_path}`,
       name: tmdbProviderResponse.provider_name,
     };
   }

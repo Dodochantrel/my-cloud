@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { PageQuery } from 'src/pagination/page-query';
-import { User } from 'src/users/user.entity';
 import { VideoProvider } from './interfaces/provider.interface';
 import { Casting } from './interfaces/casting.interface';
 import { Director } from './interfaces/director.interface';
@@ -54,11 +53,17 @@ export class VideosService {
       user: { id: userId },
     });
     if (video) {
-      return video;
+      const videoFromTmdb =
+        await this.tmdbRepositoryRepository.getMovie(videoId);
+      videoFromTmdb.isFavorite = video.isFavorite;
+      videoFromTmdb.isSeen = video.isSeen;
+      videoFromTmdb.isToWatch = video.isToWatch;
+      videoFromTmdb.rating = video.rating;
+      videoFromTmdb.dateSeen = video.dateSeen;
+      videoFromTmdb.user = video.user;
+      return videoFromTmdb;
     } else {
-      const video = await this.tmdbRepositoryRepository.getMovie(videoId);
-      video.user = new User({ id: userId });
-      return this.videoRepository.save(video);
+      return await this.tmdbRepositoryRepository.getMovie(videoId);
     }
   }
 

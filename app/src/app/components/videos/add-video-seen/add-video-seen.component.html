@@ -1,0 +1,33 @@
+<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" (onHide)="onClose()">
+
+    <form [formGroup]="form" class="form">
+
+        <div class="line">
+            <label for="dateSeen" class="label">Vissionnez : </label>
+            <p-togglebutton formControlName="isSeen" onIcon="pi pi-check" offIcon="pi pi-times" aria-label="Confirmation" onLabel="Vue" offLabel="Jamais vue" />
+        </div>
+
+        @if(form.value.isSeen) {
+            <div class="line">
+                <label for="dateSeen" class="label">Note : </label>
+                <p-rating formControlName="rating" />
+            </div>
+
+            <div class="input-container">
+                <label for="dateSeen" class="label">Date de visionnage</label>
+                <p-iconfield [ngClass]="{'p-error': form.get('dateSeen')?.invalid && form.get('dateSeen')?.dirty}">
+                    <p-inputicon styleClass="pi pi-calendar" />
+                    <p-datepicker placeholder="JJ/MM/AAAA" formControlName="dateSeen" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" appendTo="body" />
+                </p-iconfield>
+            </div>
+        }
+
+        <div class="buttons-container">
+            <p-button label="Annuler" severity="secondary" (click)="onClose()"
+                [disabled]="isLoading" [loading]="isLoading" />
+            <p-button label="Enregistrer" (click)="save()" [loading]="isLoading" />
+        </div>
+
+    </form>
+
+</p-dialog>
