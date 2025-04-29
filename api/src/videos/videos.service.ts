@@ -8,6 +8,7 @@ import { PageQuery } from 'src/pagination/page-query';
 import { VideoProvider } from './interfaces/provider.interface';
 import { Casting } from './interfaces/casting.interface';
 import { Director } from './interfaces/director.interface';
+import { Episode } from './interfaces/episode.interface';
 
 @Injectable()
 export class VideosService {
@@ -117,5 +118,9 @@ export class VideosService {
 
   async getDirector(id: number, type: VideoType): Promise<Director> {
     return this.tmdbRepositoryRepository.getDirector(id, type);
+  }
+
+  async getEpisodes(id: number, season: number): Promise<Episode[]> {
+    return this.tmdbRepositoryRepository.getEpisodes(id, season);
   }
 }

@@ -1,4 +1,5 @@
 import { EpisodeDetails, SeasonDetails, SerieDetails } from '../class/video';
+import { EpisodeDto, mapFromEpisodeDetailsDtosToEpisodes } from './episode.dto';
 
 export interface SerieDetailsDto {
   numberOfSeasons: number;
@@ -8,18 +9,10 @@ export interface SerieDetailsDto {
 
 export interface SeasonDetailsDto {
   seasonNumber: number;
-  episodes: EpisodeDetailsDto[];
+  episodes: EpisodeDto[];
   airDate: Date;
   overview: string;
   fileUrl: string;
-}
-
-export interface EpisodeDetailsDto {
-  number: number;
-  title: string;
-  overview: string;
-  airDate: Date;
-  runtime: number;
 }
 
 export const mapFromSerieDetailsDtoToSerieDetails = (
@@ -39,23 +32,9 @@ export const mapFromSeasonDetailsDtoToSeasonDetails = (
 ): SeasonDetails => {
   return {
     seasonNumber: dto.seasonNumber,
-    episodes: dto.episodes.map((episode) =>
-      mapFromEpisodeDetailsDtoToEpisodeDetails(episode)
-    ),
+    episodes: mapFromEpisodeDetailsDtosToEpisodes(dto.episodes),
     airDate: new Date(dto.airDate),
-    overview: dto.overview,
+    description: dto.overview,
     fileUrl: dto.fileUrl,
-  };
-};
-
-export const mapFromEpisodeDetailsDtoToEpisodeDetails = (
-  dto: EpisodeDetailsDto
-): EpisodeDetails => {
-  return {
-    number: dto.number,
-    title: dto.title,
-    overview: dto.overview,
-    airDate: new Date(dto.airDate),
-    runtime: dto.runtime,
   };
 };

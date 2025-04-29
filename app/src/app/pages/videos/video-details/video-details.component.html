@@ -58,6 +58,10 @@
 
         </div>
 
+        @if(video.type === 'serie') {
+            <app-video-season [video]="video"></app-video-season>
+        }
+
         <div class="casting-bloc">
 
             <h2 class="title">Casting</h2>

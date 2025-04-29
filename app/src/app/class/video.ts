@@ -133,16 +133,18 @@ export interface SeasonDetails {
   seasonNumber: number;
   episodes: EpisodeDetails[];
   airDate: Date;
-  overview: string;
+  description: string;
   fileUrl: string;
 }
 
 export interface EpisodeDetails {
+  id: number;
   number: number;
-  title: string;
-  overview: string;
+  name: string;
+  description: string;
   airDate: Date;
-  runtime: number;
+  duration: number;
+  fileUrl: string;
 }
 
 

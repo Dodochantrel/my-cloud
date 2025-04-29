@@ -26,6 +26,10 @@ import {
   VideoCastingResponseDto,
 } from './dtos/video-casting-response.dto';
 import { User } from 'src/users/user.entity';
+import {
+  mapFromEpisodesToVideoEpisodeResponseDtos,
+  VideoEpisodeResponseDto,
+} from './dtos/video-episode-reponse.dto';
 
 @Controller('videos')
 export class VideosController {
@@ -192,6 +196,21 @@ export class VideosController {
   ): Promise<VideoResponseDto> {
     return mapFromVideoToVideoResponseDto(
       await this.videosService.getSerie(Number(id)),
+    );
+  }
+
+  @Get('serie/:id/episodes')
+  @ApiResponse({
+    status: 200,
+    description: 'Get episodes of a serie',
+    type: VideoEpisodeResponseDto,
+  })
+  async getEpisodes(
+    @Param('id') id: string,
+    @Query('season') season: number,
+  ): Promise<VideoEpisodeResponseDto[]> {
+    return mapFromEpisodesToVideoEpisodeResponseDtos(
+      await this.videosService.getEpisodes(Number(id), season),
     );
   }
 }

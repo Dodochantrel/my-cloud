@@ -10,10 +10,17 @@ import { ButtonModule } from 'primeng/button';
 import { AddVideoSeenComponent } from '../../../components/videos/add-video-seen/add-video-seen.component';
 import { setImageUrl } from '../../../tools/set-image-url';
 import { Observable } from 'rxjs';
+import { VideoSeasonComponent } from '../../../components/video/video-season/video-season.component';
 
 @Component({
   selector: 'app-video-details',
-  imports: [TagModule, CommonModule, ButtonModule, AddVideoSeenComponent],
+  imports: [
+    TagModule,
+    CommonModule,
+    ButtonModule,
+    AddVideoSeenComponent,
+    VideoSeasonComponent,
+  ],
   templateUrl: './video-details.component.html',
   styleUrl: './video-details.component.css',
 })
@@ -67,9 +74,9 @@ export class VideoDetailsComponent implements OnInit {
 
   getVideoDetails(type: VideoType, id: number): Observable<Video> {
     console.log('getVideoDetails', type, id);
-    if(type === 'movie') {
+    if (type === 'movie') {
       return this.videoService.getOneMovie(id);
-    } else if(type === 'serie') {
+    } else if (type === 'serie') {
       return this.videoService.getOneSerie(id);
     } else {
       throw new Error('Invalid video type');
@@ -81,7 +88,7 @@ export class VideoDetailsComponent implements OnInit {
     this.getVideoDetails(this.getUrlType(), videoId).subscribe({
       next: (response) => {
         this.video = response;
-        if(this.video.type === 'movie') {
+        if (this.video.type === 'movie') {
           this.getDirector(videoId);
         }
         this.getCasting(videoId);

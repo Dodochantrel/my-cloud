@@ -11,6 +11,7 @@ import { map, Observable } from 'rxjs';
 import {
   Casting,
   Director,
+  EpisodeDetails,
   Video,
   VideoProvider,
   VideoType,
@@ -29,6 +30,7 @@ import {
   mapFromVideoCastingDtosToVideoCastings,
   VideoCastingDto,
 } from '../dto/video-casting.dto';
+import { EpisodeDto, mapFromEpisodeDetailsDtosToEpisodes } from '../dto/episode.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -134,6 +136,14 @@ export class VideoService {
         map((response: VideoCastingDto[]) =>
           mapFromVideoCastingDtosToVideoCastings(response)
         )
+      );
+  }
+
+  getEpisodes(id: number): Observable<EpisodeDetails[]> {
+    return this.httpClient
+      .get<EpisodeDto[]>(`${environment.apiUrl}videos/serie/${id}/episodes`)
+      .pipe(
+        map((response: EpisodeDetails[]) => mapFromEpisodeDetailsDtosToEpisodes(response))
       );
   }
 }

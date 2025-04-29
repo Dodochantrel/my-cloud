@@ -7,6 +7,7 @@ import { Director } from '../interfaces/director.interface';
 import { VideoProvider } from '../interfaces/provider.interface';
 import { MovieDetails } from '../interfaces/movie-details.interface';
 import { SerieDetails } from '../interfaces/serie-details.interface';
+import { Episode } from '../interfaces/episode.interface';
 
 @Injectable()
 export class TmdbRepositoryRepository {
@@ -49,6 +50,12 @@ export class TmdbRepositoryRepository {
           ),
         )
       : [];
+  }
+
+  async getEpisodes(id: number, seasonNumber: number): Promise<Episode[]> {
+    const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${this.apiKey}&language=fr-FR`;
+    const response = await firstValueFrom(this.httpService.get(url));
+    return this.mapFromTmdbEpisodeResponseToEpisodes(response.data);
   }
 
   async getSimilar(id: number, type: VideoType): Promise<Video[]> {
@@ -307,6 +314,30 @@ export class TmdbRepositoryRepository {
       this.mapFromTmdbProviderResponseToVideoProvider(provider),
     );
   }
+
+  private mapFromTmdbEpisodeResponseToEpisode(
+    tmdbEpisodeResponse: TmdbEpisodeResponse,
+  ): Episode {
+    return {
+      id: tmdbEpisodeResponse.id,
+      number: tmdbEpisodeResponse.episode_number,
+      name: tmdbEpisodeResponse.name,
+      description: tmdbEpisodeResponse.overview,
+      airDate: new Date(tmdbEpisodeResponse.air_date),
+      duration: tmdbEpisodeResponse.runtime,
+      fileUrl: tmdbEpisodeResponse.still_path
+        ? `https://image.tmdb.org/t/p/w300${tmdbEpisodeResponse.still_path}`
+        : null,
+    };
+  }
+
+  private mapFromTmdbEpisodeResponseToEpisodes(
+    tmdbEpisodeResponse: TmdbEpisodeResponse[],
+  ): Episode[] {
+    return tmdbEpisodeResponse.map((episode) =>
+      this.mapFromTmdbEpisodeResponseToEpisode(episode),
+    );
+  }
 }
 
 export interface TmdbDataResponse {
@@ -379,6 +410,22 @@ export interface TmdbProviderResponse {
   provider_id: 8;
   provider_name: string;
   display_priority: number;
+}
+
+export interface TmdbEpisodeResponse {
+  air_date: string;
+  episode_number: number;
+  episode_type: string;
+  id: number;
+  name: string;
+  overview: string;
+  production_code: string;
+  runtime: number;
+  season_number: number;
+  show_id: number;
+  still_path: string;
+  vote_average: number;
+  vote_count: number;
 }
 
 export interface TmdbMovieDetailsResponse {

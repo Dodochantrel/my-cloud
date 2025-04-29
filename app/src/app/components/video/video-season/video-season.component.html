@@ -1,0 +1,12 @@
+<p-accordion>
+    @for (season of video.serieDetails?.seasons; track $index) {
+    <p-accordion-panel [value]="$index" (onOpen)="getEpisodes(season.seasonNumber)">
+        <p-accordion-header>Saison {{ season.seasonNumber }}</p-accordion-header>
+        <p-accordion-content>
+            @for (episode of season.episodes; track $index) {
+            <p>{{ episode.name }}</p>
+            }
+        </p-accordion-content>
+    </p-accordion-panel>
+    }
+</p-accordion>
