@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Video } from '../../../class/video';
+import { Component, Input, OnInit } from '@angular/core';
+import { getTypeToDisplay, Video, VideoType } from '../../../class/video';
 import { Paginated } from '../../../class/paginated';
 import { defaultPaginatedMeta } from '../../../class/paginated-meta';
 import { NotificationService } from '../../../services/notification.service';
@@ -20,6 +20,8 @@ export class WatchVideosComponent implements OnInit {
     private readonly notificationService: NotificationService
   ) {}
 
+  @Input() public type: VideoType = 'movie';
+
   public watchMoviesWithPagination: Paginated<Video> = new Paginated<Video>(
     [],
     defaultPaginatedMeta
@@ -34,6 +36,10 @@ export class WatchVideosComponent implements OnInit {
         this.watchMoviesWithPagination.paginatedMeta.limit
       );
     }
+  }
+
+  getTypeToDisplay(type: VideoType, isFirstUpper: boolean, isPlural: boolean): string {
+    return getTypeToDisplay(type, isFirstUpper, isPlural);
   }
 
   getWatchMovies(page: number, limit: number) {

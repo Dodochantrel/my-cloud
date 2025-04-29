@@ -42,7 +42,7 @@ export class VideoService {
       .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
   }
 
-  getSeries(search: string): Observable<Video[]> {
+  getSeries(search: string = ''): Observable<Video[]> {
     return this.httpClient
       .get<VideoDto[]>(`${environment.apiUrl}videos/series?search=${search}`)
       .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
@@ -95,9 +95,15 @@ export class VideoService {
       .pipe(map((response: VideoDto) => mapFromDtoToVideo(response)));
   }
 
-  getDirector(id: number): Observable<Director> {
+  getOneSerie(id: number): Observable<Video> {
     return this.httpClient
-      .get<VideoDirectorDto>(`${environment.apiUrl}videos/director/${id}`)
+      .get<VideoDto>(`${environment.apiUrl}videos/serie/${id}`)
+      .pipe(map((response: VideoDto) => mapFromDtoToVideo(response)));
+  }
+
+  getDirector(id: number, videoType: VideoType): Observable<Director> {
+    return this.httpClient
+      .get<VideoDirectorDto>(`${environment.apiUrl}videos/director/${id}?type=${videoType}`)
       .pipe(
         map((response: VideoDirectorDto) =>
           mapFromVideoDirectorDtoToVideoDirector(response)
@@ -105,9 +111,9 @@ export class VideoService {
       );
   }
 
-  getProviders(id: number): Observable<VideoProvider[]> {
+  getProviders(id: number, videoType: VideoType): Observable<VideoProvider[]> {
     return this.httpClient
-      .get<VideoProviderDto[]>(`${environment.apiUrl}videos/providers/${id}`)
+      .get<VideoProviderDto[]>(`${environment.apiUrl}videos/providers/${id}?type=${videoType}`)
       .pipe(
         map((response: VideoProviderDto[]) =>
           mapFromVideoProviderDtosToVideoProviders(response)
@@ -115,15 +121,15 @@ export class VideoService {
       );
   }
 
-  getSimilars(id: number): Observable<Video[]> {
+  getSimilars(id: number, videoType: VideoType): Observable<Video[]> {
     return this.httpClient
-      .get<VideoDto[]>(`${environment.apiUrl}videos/similars/${id}`)
+      .get<VideoDto[]>(`${environment.apiUrl}videos/similars/${id}?type=${videoType}`)
       .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
   }
 
-  getCasting(id: number): Observable<Casting[]> {
+  getCasting(id: number, videoType: VideoType): Observable<Casting[]> {
     return this.httpClient
-      .get<VideoCastingDto[]>(`${environment.apiUrl}videos/casting/${id}`)
+      .get<VideoCastingDto[]>(`${environment.apiUrl}videos/casting/${id}?type=${videoType}`)
       .pipe(
         map((response: VideoCastingDto[]) =>
           mapFromVideoCastingDtosToVideoCastings(response)

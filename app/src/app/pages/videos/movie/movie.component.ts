@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BrowserService } from '../../../services/browser.service';
 import { NotificationService } from '../../../services/notification.service';
 import { VideoService } from '../../../services/video.service';
-import { CarouselModule } from 'primeng/carousel';
 import { Video } from '../../../class/video';
 import { CommonModule } from '@angular/common';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -18,7 +17,6 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-movie',
   imports: [
-    CarouselModule,
     CommonModule,
     InputTextModule,
     IconFieldModule,
@@ -40,11 +38,9 @@ export class MovieComponent implements OnInit {
     private readonly router: Router,
   ) {}
 
-  public isLoadingSeenMovies: boolean = false;
   public isLoadingSearch: boolean = false;
   public search: string = '';
 
-  public nowPlayingMovies: Video[] = [];
   public moviesToSearch: Video[] = [];
 
   ngOnInit(): void {

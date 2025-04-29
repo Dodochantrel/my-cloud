@@ -1,5 +1,9 @@
 import { Video } from '../class/video';
-import { mapFromMovieDetailsDtoToMovieDetails, MovieDetailsDto } from './movie-details.dto';
+import {
+  mapFromMovieDetailsDtoToMovieDetails,
+  MovieDetailsDto,
+} from './movie-details.dto';
+import { mapFromSerieDetailsDtoToSerieDetails, SerieDetailsDto } from './serie-details.dto';
 
 export interface VideoDto {
   id: number;
@@ -13,9 +17,10 @@ export interface VideoDto {
   fileUrl: string;
   dateSeen: string;
   genre: string[];
-  type: 'movie' | 'series';
+  type: 'movie' | 'serie';
   movieDetails: MovieDetailsDto | null;
   similars: VideoDto[] | null;
+  serieDetails: SerieDetailsDto | null;
 }
 
 export interface PatchVideoDto {
@@ -41,7 +46,12 @@ export const mapFromDtoToVideo = (dto: VideoDto): Video => {
     dto.genre,
     dto.type
   );
-  video.movieDetails = dto.movieDetails ? mapFromMovieDetailsDtoToMovieDetails(dto.movieDetails) : null;
+  video.movieDetails = dto.movieDetails
+    ? mapFromMovieDetailsDtoToMovieDetails(dto.movieDetails)
+    : null;
+  video.serieDetails = dto.serieDetails
+    ? mapFromSerieDetailsDtoToSerieDetails(dto.serieDetails)
+    : null;
   video.similars = dto.similars ? mapFromDtosToVideos(dto.similars) : null;
   return video;
 };

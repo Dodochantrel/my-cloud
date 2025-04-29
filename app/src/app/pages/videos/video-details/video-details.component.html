@@ -4,53 +4,53 @@
 
         <div class="details-container">
 
-            <img class="movie-poster" [src]="setImageUrl(movie.fileUrl)" alt="Movie Poster">
+            <img class="video-poster" [src]="setImageUrl(video.fileUrl)" alt="Movie Poster">
 
             <div class="details">
                 <div class="line line-title">
-                    <h2 class="title">{{ movie.title }}</h2>
-                    @if(movie.isToWatch) {
-                        <p-button icon="pi pi-bookmark" class="button" severity="secondary" [rounded]="true" [loading]="isLoadingHandleToWatchlist" (onClick)="handleToWatchlist(movie)" />
+                    <h2 class="title">{{ video.title }}</h2>
+                    @if(video.isToWatch) {
+                        <p-button icon="pi pi-bookmark" class="button" severity="secondary" [rounded]="true" [loading]="isLoadingHandleToWatchlist" (onClick)="handleToWatchlist(video)" />
                     } @else {
-                        <p-button icon="pi pi-bookmark" class="button" [rounded]="true" severity="secondary" [outlined]="true" [loading]="isLoadingHandleToWatchlist" (onClick)="handleToWatchlist(movie)" />
+                        <p-button icon="pi pi-bookmark" class="button" [rounded]="true" severity="secondary" [outlined]="true" [loading]="isLoadingHandleToWatchlist" (onClick)="handleToWatchlist(video)" />
                     }
-                    @if(movie.isFavorite) {
-                        <p-button icon="pi pi-heart" severity="danger" [rounded]="true" [loading]="isLoadingHandleToFavorite" (onClick)="handleToFavorite(movie)" />
+                    @if(video.isFavorite) {
+                        <p-button icon="pi pi-heart" severity="danger" [rounded]="true" [loading]="isLoadingHandleToFavorite" (onClick)="handleToFavorite(video)" />
                     } @else {
-                        <p-button icon="pi pi-heart" [rounded]="true" severity="danger" [outlined]="true" [loading]="isLoadingHandleToFavorite" (onClick)="handleToFavorite(movie)" />
+                        <p-button icon="pi pi-heart" [rounded]="true" severity="danger" [outlined]="true" [loading]="isLoadingHandleToFavorite" (onClick)="handleToFavorite(video)" />
                     }
-                    @if(movie.isSeen) {
+                    @if(video.isSeen) {
                         <p-button icon="pi pi-eye" [rounded]="true" (onClick)="isModalSeenVisible = true" />
                     } @else {
                         <p-button icon="pi pi-eye" [rounded]="true" [outlined]="true" (onClick)="isModalSeenVisible = true" />
                     }
                 </div>
-                <p class="tagline text-color">{{ movie.movieDetails?.tagline }}</p>
+                <p class="tagline text-color">{{ video.movieDetails?.tagline }}</p>
                 <div class="tags-container">
-                    @for (tag of movie.genre; track $index) {
+                    @for (tag of video.genre; track $index) {
                         <p-tag [value]="tag" />
                     }
                 </div>
                 <div class="line">
                     <div class="line-element">
                         <i class="pi pi-calendar text-color"></i>
-                        <p>{{ movie.releaseDate | date: 'dd/MM/yyyy' }}</p>
+                        <p>{{ video.releaseDate | date: 'dd/MM/yyyy' }}</p>
                     </div>
                     <div class="line-element">
                         <i class="pi pi-clock text-color"></i>
-                        <p>{{ movie.formatDuration() }}</p>
+                        <p>{{ video.formatDuration() }}</p>
                     </div>
                 </div>
                 <div class="description-container">
                     <h3 class="title">Synopsis</h3>
-                    <p class="description text-color">{{ movie.description }}</p>
+                    <p class="description text-color">{{ video.description }}</p>
                 </div>
-                @if(movie.director) {
+                @if(video.director) {
                     <div class="director-container">
                         <h3 class="title">Réalisateur</h3>
                         <div class="director-informations">
-                            <img class="director-image" [src]="setImageUrl(movie.director.fileUrl)" alt="Movie Poster">
-                            <p class="director-name">{{ movie.director.name }}</p>
+                            <img class="director-image" [src]="setImageUrl(video.director.fileUrl)" alt="Movie Poster">
+                            <p class="director-name">{{ video.director.name }}</p>
                         </div>
                     </div>
                 }
@@ -63,7 +63,7 @@
             <h2 class="title">Casting</h2>
 
             <div class="casting-container">
-                @for (item of movie.getCastingToDisplay(); track $index) {
+                @for (item of video.getCastingToDisplay(); track $index) {
                     <div class="casting-informations">
                         <img class="casting-image" [src]="setImageUrl(item?.fileUrl)" alt="Movie Poster">
                         <p class="casting-role">{{ item?.character }}</p>
@@ -78,10 +78,10 @@
             <h2 class="title">Disponible sur</h2>
 
             <div class="providers-container">
-                @if(!movie.providers || movie.providers.length === 0) {
+                @if(!video.providers || video.providers.length === 0) {
                     <p class="text-color">Aucun service de streaming disponible</p>
                 } @else {
-                    @for (item of movie.providers; track $index) {
+                    @for (item of video.providers; track $index) {
                         <div class="provider-informations">
                             <img class="provider-image" [src]="setImageUrl(item?.fileUrl)" alt="Movie Poster">
                             <p class="provider-name text-color">{{ item?.name }}</p>
@@ -96,7 +96,7 @@
             <h2 class="title">Films similaires</h2>
 
             <div class="similar-container">
-                @for (item of movie.getSimilarToDisplay(); track $index) {
+                @for (item of video.getSimilarToDisplay(); track $index) {
                     <div class="similar-informations" (click)="goToDetails(item.id)">
                         <img class="similar-image" [src]="setImageUrl(item.fileUrl)" alt="Movie Poster">
                         <p class="similar-name">{{ item.title }}</p>
@@ -110,4 +110,4 @@
     </div>
 
 </div>
-<app-add-video-seen [video]="movie" [visible]="isModalSeenVisible" (close)="isModalSeenVisible = false" (saveVideo)="setSeen($event)"></app-add-video-seen>
+<app-add-video-seen [video]="video" [visible]="isModalSeenVisible" (close)="isModalSeenVisible = false" (saveVideo)="setSeen($event)"></app-add-video-seen>

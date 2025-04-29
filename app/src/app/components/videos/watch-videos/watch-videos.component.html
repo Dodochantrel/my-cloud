@@ -1,4 +1,4 @@
-<h2>Mes films a voir</h2>
+<h2>Mes {{ getTypeToDisplay(type, false, true) }} a voir</h2>
 
 <div class="card-container">
     @for (movie of watchMoviesWithPagination.data; track $index) {

@@ -1,4 +1,4 @@
-export type VideoType = 'movie' | 'series';
+export type VideoType = 'movie' | 'serie';
 
 export class Video {
   id: number;
@@ -18,6 +18,7 @@ export class Video {
   movieDetails: MovieDetails | null;
   providers: VideoProvider[] | null;
   similars: Video[] | null;
+  serieDetails: SerieDetails | null;
 
   constructor(
     id: number,
@@ -50,6 +51,7 @@ export class Video {
     this.movieDetails = null;
     this.providers = null;
     this.similars = null;
+    this.serieDetails = null;
   }
 
   formatDuration(): string {
@@ -74,7 +76,25 @@ export class Video {
     }
     return [];
   }
+
+  getTypeToDisplay(isFirstUpper: boolean): string {
+    if (this.type === 'movie') {
+      return isFirstUpper ? 'Film' : 'film';
+    } else if (this.type === 'serie') {
+      return isFirstUpper ? 'Série' : 'série';
+    }
+    return '';
+  }
 }
+
+export const getTypeToDisplay = (type: VideoType, isFirstUpper: boolean, isPlural: boolean): string => {
+  if (type === 'movie') {
+    return isFirstUpper ? (isPlural ? 'Films' : 'Film') : (isPlural ? 'films' : 'film');
+  } else if (type === 'serie') {
+    return isFirstUpper ? (isPlural ? 'Séries' : 'Série') : (isPlural ? 'séries' : 'série');
+  }
+  return '';
+};
 
 export interface Casting {
   id: number;
@@ -102,5 +122,28 @@ export interface VideoProvider {
   fileUrl: string;
   name: string;
 }
+
+export interface SerieDetails {
+  numberOfSeasons: number;
+  numberOfEpisodes: number;
+  seasons: SeasonDetails[];
+}
+
+export interface SeasonDetails {
+  seasonNumber: number;
+  episodes: EpisodeDetails[];
+  airDate: Date;
+  overview: string;
+  fileUrl: string;
+}
+
+export interface EpisodeDetails {
+  number: number;
+  title: string;
+  overview: string;
+  airDate: Date;
+  runtime: number;
+}
+
 
 export const defaultVideo = new Video(0, false, false, false, 0, '', new Date(), '', '', null, [], 'movie')

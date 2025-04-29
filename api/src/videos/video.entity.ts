@@ -7,6 +7,7 @@ import {
   Relation,
 } from 'typeorm';
 import { MovieDetails } from './interfaces/movie-details.interface';
+import { SerieDetails } from './interfaces/serie-details.interface';
 
 @Entity()
 export class Video {
@@ -52,10 +53,11 @@ export class Video {
   genre: string[];
 
   movieDetails: MovieDetails | null;
+  serieDetails: SerieDetails | null;
 
   constructor(partial: Partial<Video>) {
     Object.assign(this, partial);
   }
 }
 
-export type VideoType = 'movie' | 'series';
+export type VideoType = 'movie' | 'serie';

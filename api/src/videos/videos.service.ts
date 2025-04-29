@@ -87,16 +87,16 @@ export class VideosService {
     return this.videoRepository.save(videoInDb);
   }
 
-  async getCasting(id: number): Promise<Casting[]> {
-    return this.tmdbRepositoryRepository.getCasting(id);
+  async getCasting(id: number, type: VideoType): Promise<Casting[]> {
+    return this.tmdbRepositoryRepository.getCasting(id, type);
   }
 
-  async getSimilar(id: number): Promise<Video[]> {
-    return this.tmdbRepositoryRepository.getSimilar(id);
+  async getSimilar(id: number, type: VideoType): Promise<Video[]> {
+    return this.tmdbRepositoryRepository.getSimilar(id, type);
   }
 
-  async getProviders(id: number): Promise<VideoProvider[]> {
-    return this.tmdbRepositoryRepository.getProviders(id);
+  async getProviders(id: number, type: VideoType): Promise<VideoProvider[]> {
+    return this.tmdbRepositoryRepository.getProviders(id, type);
   }
 
   async getMovie(id: number): Promise<Video> {
@@ -115,7 +115,7 @@ export class VideosService {
     return video;
   }
 
-  async getDirector(id: number): Promise<Director> {
-    return this.tmdbRepositoryRepository.getDirector(id);
+  async getDirector(id: number, type: VideoType): Promise<Director> {
+    return this.tmdbRepositoryRepository.getDirector(id, type);
   }
 }

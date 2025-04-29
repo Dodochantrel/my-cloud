@@ -2,21 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { BrowserService } from '../../../services/browser.service';
 import { NotificationService } from '../../../services/notification.service';
 import { VideoService } from '../../../services/video.service';
-import { defaultVideo, Video } from '../../../class/video';
+import { defaultVideo, Video, VideoType } from '../../../class/video';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { AddVideoSeenComponent } from '../../../components/videos/add-video-seen/add-video-seen.component';
 import { setImageUrl } from '../../../tools/set-image-url';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-movie-details',
+  selector: 'app-video-details',
   imports: [TagModule, CommonModule, ButtonModule, AddVideoSeenComponent],
-  templateUrl: './movie-details.component.html',
-  styleUrl: './movie-details.component.css',
+  templateUrl: './video-details.component.html',
+  styleUrl: './video-details.component.css',
 })
-export class MovieDetailsComponent implements OnInit {
+export class VideoDetailsComponent implements OnInit {
   constructor(
     private readonly videoService: VideoService,
     private readonly browserService: BrowserService,
@@ -41,11 +42,15 @@ export class MovieDetailsComponent implements OnInit {
   }
 
   getData(id: number) {
-    this.getVideoDetails(id);
+    this.getVideo(id);
   }
 
   getUrlCustomerId(): number {
     return Number(this.route.snapshot.paramMap.get('id')); // Convertit l'ID en nombre
+  }
+
+  getUrlType(): VideoType {
+    return this.route.snapshot.paramMap.get('type') as VideoType; // Récupère le type de vidéo depuis l'URL
   }
 
   public isLoadingDetails: boolean = false;
@@ -58,14 +63,27 @@ export class MovieDetailsComponent implements OnInit {
 
   public isModalSeenVisible: boolean = false;
 
-  public movie: Video = defaultVideo;
+  public video: Video = defaultVideo;
 
-  getVideoDetails(videoId: number) {
+  getVideoDetails(type: VideoType, id: number): Observable<Video> {
+    console.log('getVideoDetails', type, id);
+    if(type === 'movie') {
+      return this.videoService.getOneMovie(id);
+    } else if(type === 'serie') {
+      return this.videoService.getOneSerie(id);
+    } else {
+      throw new Error('Invalid video type');
+    }
+  }
+
+  getVideo(videoId: number) {
     this.isLoadingDetails = true;
-    this.videoService.getOneMovie(videoId).subscribe({
+    this.getVideoDetails(this.getUrlType(), videoId).subscribe({
       next: (response) => {
-        this.movie = response;
-        this.getDirector(videoId);
+        this.video = response;
+        if(this.video.type === 'movie') {
+          this.getDirector(videoId);
+        }
         this.getCasting(videoId);
         this.getProviders(videoId);
       },
@@ -83,9 +101,9 @@ export class MovieDetailsComponent implements OnInit {
 
   getCasting(videoId: number) {
     this.isLoadingCasting = true;
-    this.videoService.getCasting(videoId).subscribe({
+    this.videoService.getCasting(videoId, this.video.type).subscribe({
       next: (response) => {
-        this.movie.casting = response;
+        this.video.casting = response;
       },
       error: (error) => {
         this.notificationService.showError(
@@ -101,9 +119,9 @@ export class MovieDetailsComponent implements OnInit {
 
   getProviders(videoId: number) {
     this.isLoadingProviders = true;
-    this.videoService.getProviders(videoId).subscribe({
+    this.videoService.getProviders(videoId, this.video.type).subscribe({
       next: (response) => {
-        this.movie.providers = response;
+        this.video.providers = response;
         this.getSimilars(videoId);
       },
       error: (error) => {
@@ -120,9 +138,9 @@ export class MovieDetailsComponent implements OnInit {
 
   getSimilars(videoId: number) {
     this.isLoadingSimilars = true;
-    this.videoService.getSimilars(videoId).subscribe({
+    this.videoService.getSimilars(videoId, this.video.type).subscribe({
       next: (response) => {
-        this.movie.similars = response;
+        this.video.similars = response;
       },
       error: (error) => {
         this.notificationService.showError(
@@ -138,9 +156,9 @@ export class MovieDetailsComponent implements OnInit {
 
   getDirector(videoId: number) {
     this.isLoadingDetails = true;
-    this.videoService.getDirector(videoId).subscribe({
+    this.videoService.getDirector(videoId, this.video.type).subscribe({
       next: (response) => {
-        this.movie.director = response;
+        this.video.director = response;
       },
       error: (error) => {
         this.notificationService.showError(
@@ -159,15 +177,15 @@ export class MovieDetailsComponent implements OnInit {
     video.isToWatch = !video.isToWatch;
     this.videoService.edit(video).subscribe({
       next: () => {
-        this.movie.isToWatch = video.isToWatch;
+        this.video.isToWatch = video.isToWatch;
         this.notificationService.showSuccess(
           'Ajouté',
-          `${video.title} a été ajouté à votre liste de films à voir`
+          `${video.title} a été ajouté à votre liste à voir`
         );
       },
       error: (error) => {
         this.notificationService.showError(
-          "Erreur lors de l'ajout à la liste de films à voir",
+          "Erreur lors de l'ajout à la liste à voir",
           error.message
         );
       },
@@ -182,15 +200,15 @@ export class MovieDetailsComponent implements OnInit {
     video.isFavorite = !video.isFavorite;
     this.videoService.edit(video).subscribe({
       next: () => {
-        this.movie.isFavorite = video.isFavorite;
+        this.video.isFavorite = video.isFavorite;
         this.notificationService.showSuccess(
           'Ajouté',
-          `${video.title} a été ajouté à votre liste de films favoris`
+          `${video.title} a été ajouté à votre liste de favoris`
         );
       },
       error: (error) => {
         this.notificationService.showError(
-          "Erreur lors de l'ajout à la liste de films favoris",
+          "Erreur lors de l'ajout à la liste de favoris",
           error.message
         );
       },
@@ -201,8 +219,8 @@ export class MovieDetailsComponent implements OnInit {
   }
 
   setSeen(video: Video) {
-    this.movie.isSeen = video.isSeen;
-    this.movie.dateSeen = video.dateSeen;
-    this.movie.rating = video.rating;
+    this.video.isSeen = video.isSeen;
+    this.video.dateSeen = video.dateSeen;
+    this.video.rating = video.rating;
   }
 }

@@ -38,6 +38,7 @@ export class LeftNavigationComponent {
       isOpen: false,
       subNavigationItems: [
         { name: 'Films', icon: 'pi pi-address-book', path: '/videos/movies' },
+        { name: 'Séries', icon: 'pi pi-address-book', path: '/videos/series' },
       ],
     },
     {

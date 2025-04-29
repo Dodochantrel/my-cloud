@@ -116,9 +116,10 @@ export class VideosController {
   })
   async getCasting(
     @Param('id') id: string,
+    @Query('type') type: VideoType,
   ): Promise<VideoCastingResponseDto[]> {
     return mapFromCastingToVideoCastingResponseDtos(
-      await this.videosService.getCasting(Number(id)),
+      await this.videosService.getCasting(Number(id), type),
     );
   }
 
@@ -128,9 +129,12 @@ export class VideosController {
     description: 'List of similar videos',
     type: VideoResponseDto,
   })
-  async getSimilar(@Param('id') id: string): Promise<VideoResponseDto[]> {
+  async getSimilar(
+    @Param('id') id: string,
+    @Query('type') type: VideoType,
+  ): Promise<VideoResponseDto[]> {
     return mapFormVideoToVideoResponseDtos(
-      await this.videosService.getSimilar(Number(id)),
+      await this.videosService.getSimilar(Number(id), type),
     );
   }
 
@@ -142,9 +146,10 @@ export class VideosController {
   })
   async getProviders(
     @Param('id') id: string,
+    @Query('type') type: VideoType,
   ): Promise<VideoProviderResponseDto[]> {
     return mapFromVideoProvidersToVideoProviderResponseDtos(
-      await this.videosService.getProviders(Number(id)),
+      await this.videosService.getProviders(Number(id), type),
     );
   }
 
@@ -156,9 +161,10 @@ export class VideosController {
   })
   async getDirector(
     @Param('id') id: string,
+    @Query('type') type: VideoType,
   ): Promise<VideoDirectorResponseDto> {
     return mapFromDirectorToVideoDirectorResponseDto(
-      await this.videosService.getDirector(Number(id)),
+      await this.videosService.getDirector(Number(id), type),
     );
   }
 
