@@ -1,0 +1,30 @@
+.title {
+    font-weight: bold;
+}
+
+.episode-image {
+    width: 80px;
+}
+
+.line {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    border: var(--border);
+    margin-bottom: .5rem;
+}
+
+.informations {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.description {
+    font-size: 0.8rem;
+    color: var(--text-color);
+}
+
+.season-description {
+    margin-bottom: .5rem;
+}

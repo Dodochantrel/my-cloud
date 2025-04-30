@@ -1,10 +1,27 @@
-<p-accordion>
+<p-accordion [multiple]="true" (onOpen)="getEpisodes($event)">
     @for (season of video.serieDetails?.seasons; track $index) {
-    <p-accordion-panel [value]="$index" (onOpen)="getEpisodes(season.seasonNumber)">
+    <p-accordion-panel [value]="season.seasonNumber">
         <p-accordion-header>Saison {{ season.seasonNumber }}</p-accordion-header>
         <p-accordion-content>
-            @for (episode of season.episodes; track $index) {
-            <p>{{ episode.name }}</p>
+            <p class="description season-description">{{ season.description }}</p>
+            @if(isLoading) {
+                <div class="line" *ngFor="let i of [1,2,3,4,5]">
+                    <p-skeleton height="80px" width="80px" styleClass="episode-image" borderRadius="8px"></p-skeleton>
+                    <div class="informations">
+                        <p-skeleton height="20px" width="200px" styleClass="title" borderRadius="4px"></p-skeleton>
+                        <p-skeleton height="14px" width="300px" styleClass="description" borderRadius="4px"></p-skeleton>
+                    </div>
+                </div>
+            } @else {
+                @for (episode of season.episodes; track $index) {
+                    <div class="line">
+                        <img class="episode-image" [src]="setImageUrl(episode.fileUrl)" alt="Episode Poster">
+                        <div class="informations">
+                            <p class="title">{{ episode.name }}</p>
+                            <p class="description">{{ episode.description }}</p>
+                        </div>
+                    </div>
+                    }
             }
         </p-accordion-content>
     </p-accordion-panel>

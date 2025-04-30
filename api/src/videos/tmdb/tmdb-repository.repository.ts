@@ -55,7 +55,7 @@ export class TmdbRepositoryRepository {
   async getEpisodes(id: number, seasonNumber: number): Promise<Episode[]> {
     const url = `https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?api_key=${this.apiKey}&language=fr-FR`;
     const response = await firstValueFrom(this.httpService.get(url));
-    return this.mapFromTmdbEpisodeResponseToEpisodes(response.data);
+    return this.mapFromTmdbEpisodeResponseToEpisodes(response.data.episodes);
   }
 
   async getSimilar(id: number, type: VideoType): Promise<Video[]> {

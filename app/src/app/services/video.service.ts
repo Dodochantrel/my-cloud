@@ -139,9 +139,9 @@ export class VideoService {
       );
   }
 
-  getEpisodes(id: number): Observable<EpisodeDetails[]> {
+  getEpisodes(serieId: number, id: number): Observable<EpisodeDetails[]> {
     return this.httpClient
-      .get<EpisodeDto[]>(`${environment.apiUrl}videos/serie/${id}/episodes`)
+      .get<EpisodeDto[]>(`${environment.apiUrl}videos/serie/${serieId}/episodes?season=${id}`)
       .pipe(
         map((response: EpisodeDetails[]) => mapFromEpisodeDetailsDtosToEpisodes(response))
       );

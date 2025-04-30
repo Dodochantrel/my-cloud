@@ -22,13 +22,25 @@ import { HttpModule } from '@nestjs/axios';
 import { TmdbRepositoryRepository } from './videos/tmdb/tmdb-repository.repository';
 import { VideosController } from './videos/videos.controller';
 import { Video } from './videos/video.entity';
+import { EventsController } from './events/events.controller';
+import { EventsService } from './events/events.service';
+import { EventData } from './events/event-data.entity';
+import { EventDataType } from './events/event-data-type.entity';
 
 @Module({
   imports: [
     HttpModule,
     ConfigModule.forRoot(),
     DatabaseModule,
-    TypeOrmModule.forFeature([User, Group, Recipe, FileData, Video]),
+    TypeOrmModule.forFeature([
+      User,
+      Group,
+      Recipe,
+      FileData,
+      Video,
+      EventData,
+      EventDataType,
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -45,6 +57,7 @@ import { Video } from './videos/video.entity';
     RecipesController,
     GroupsController,
     VideosController,
+    EventsController,
   ],
   providers: [
     TokensService,
@@ -56,6 +69,7 @@ import { Video } from './videos/video.entity';
     FilesManager,
     VideosService,
     TmdbRepositoryRepository,
+    EventsService,
   ],
 })
 export class AppModule {}
