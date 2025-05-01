@@ -50,7 +50,7 @@ export class LeftNavigationComponent {
         { name: 'Entrées', icon: 'pi pi-address-book', path: '/recipes/starters' },
       ],
     },
-    { name: 'Clients', icon: 'pi pi-address-book', path: '/customer' },
+    { name: 'Groupes', icon: 'pi pi-users', path: '/groups' },
   ];
 
   public toggleSubNavigation(navigationItem: NavigationItem): void {

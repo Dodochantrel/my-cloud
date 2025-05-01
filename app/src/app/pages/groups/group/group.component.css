@@ -1,0 +1,87 @@
+.input-container {
+    width: 100%;
+}
+
+.groups-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.group {
+    border: var(--border);
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    width: 100%;
+    max-width: 500px;
+    min-width: 350px;
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.group-name {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pi {
+    cursor: pointer;
+}
+
+.red {
+    color: var(--red-dark);
+}
+
+.group-member {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .5rem;
+}
+
+.user-count {
+    color: var(--text-color);
+    padding: 0.2rem .4rem;
+    border: var(--border);
+    border-radius: 10px;
+    font-size: .8rem;
+}
+
+.member-display {
+    cursor: pointer;
+    padding: .3rem .6rem;
+}
+
+.member-display:hover {
+    background-color: var(--background-color);
+}
+
+.email {
+    font-size: .8rem;
+    color: var(--text-color);
+}
+
+.user {
+    display: flex;
+    gap: .6rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.initials {
+    background-color: var(--first-color);
+    color: white;
+    padding: .6rem;
+    border-radius: 100%;
+}

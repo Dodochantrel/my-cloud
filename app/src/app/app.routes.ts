@@ -6,6 +6,7 @@ import { NoNavigationComponent } from './templates/no-navigation/no-navigation.c
 import { MovieComponent } from './pages/videos/movie/movie.component';
 import { SerieComponent } from './pages/videos/serie/serie.component';
 import { VideoDetailsComponent } from './pages/videos/video-details/video-details.component';
+import { GroupComponent } from './pages/groups/group/group.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,15 @@ export const routes: Routes = [
         data: {
           title: 'Détails',
           breadcrumb: [{ label: 'Vidéos' }, { label: 'Détails' }],
+        },
+      },
+      {
+        path: 'groups',
+        title: 'Groups',
+        component: GroupComponent,
+        data: {
+          title: 'Groupes',
+          breadcrumb: [{ label: 'Groupes' }],
         },
       }
     ],

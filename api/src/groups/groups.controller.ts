@@ -108,7 +108,7 @@ export class GroupsController {
       await this.groupsService.addUsers(
         tokenPayload.id,
         Number(id),
-        dto.usersId,
+        dto.userId,
       ),
     );
   }

@@ -2,11 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { EventDataType } from './event-data-type.entity';
+import { Group } from 'src/groups/group.entity';
 
 @Entity()
 export class EventData {
@@ -29,7 +32,10 @@ export class EventData {
   everyYear: boolean;
 
   @ManyToOne(() => EventDataType, (eventDataType) => eventDataType.eventData)
-  eventDataType: EventDataType;
+  eventDataType: Relation<EventDataType>;
+
+  @ManyToMany(() => Group, (group) => group.eventsData)
+  groups: Relation<Group[]>;
 
   @UpdateDateColumn({
     type: 'timestamp',

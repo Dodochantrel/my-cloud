@@ -59,14 +59,16 @@ export class GroupsService {
   async addUsers(
     userId: number,
     groupId: number,
-    usersId: number[],
+    newUserId: number,
   ): Promise<Group> {
     const groupInDb = await this.userRepository.findOne({
       where: { id: groupId, users: { id: userId } },
       relations: ['users'],
     });
     this.checkIfCanEdit(groupInDb, userId);
-    groupInDb.users.push(...usersId.map((userId) => new User({ id: userId })));
+    if (groupInDb.users.some((user) => user.id === newUserId)) {
+      throw new UnauthorizedException('User already in group');
+    }
     return this.userRepository.save(groupInDb);
   }
 
