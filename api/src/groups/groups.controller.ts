@@ -45,6 +45,19 @@ export class GroupsController {
     );
   }
 
+  @Get('minimal')
+  @ApiResponse({
+    status: 200,
+    description: 'Minimal data of groups',
+    type: GroupResponseDto,
+    isArray: true,
+  })
+  async getMinimalData(@TokenPayload() tokenPayload: AccessTokenPayload) {
+    return mapFromGroupsToGroupsResponseDto(
+      await this.groupsService.getMyMinimalData(tokenPayload.id),
+    );
+  }
+
   @Post()
   @ApiResponse({
     status: 201,

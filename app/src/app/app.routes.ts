@@ -7,6 +7,7 @@ import { MovieComponent } from './pages/videos/movie/movie.component';
 import { SerieComponent } from './pages/videos/serie/serie.component';
 import { VideoDetailsComponent } from './pages/videos/video-details/video-details.component';
 import { GroupComponent } from './pages/groups/group/group.component';
+import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create-or-update-recipe.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,24 @@ export const routes: Routes = [
         data: {
           title: 'Entrées',
           breadcrumb: [{ label: 'Recettes' }, { label: 'Entrées' }],
+        },
+      },
+      {
+        path: 'recipes/add',
+        title: 'Recipes - Add',
+        component: CreateOrUpdateRecipeComponent,
+        data: {
+          title: 'Ajouter une recette',
+          breadcrumb: [{ label: 'Recettes' }, { label: 'Ajouter' }],
+        },
+      },
+      {
+        path: 'recipes/update/:id',
+        title: 'Recipes - Add',
+        component: CreateOrUpdateRecipeComponent,
+        data: {
+          title: 'Modifier une recette',
+          breadcrumb: [{ label: 'Recettes' }, { label: 'Modifier' }],
         },
       },
       {

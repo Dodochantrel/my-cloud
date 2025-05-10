@@ -48,6 +48,7 @@ export class LeftNavigationComponent {
       isOpen: false,
       subNavigationItems: [
         { name: 'Entrées', icon: 'pi pi-address-book', path: '/recipes/starters' },
+        { name: 'Ajouter', icon: 'pi pi-address-book', path: '/recipes/add' },
       ],
     },
     { name: 'Groupes', icon: 'pi pi-users', path: '/groups' },

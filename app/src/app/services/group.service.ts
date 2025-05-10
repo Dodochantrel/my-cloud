@@ -31,6 +31,12 @@ export class GroupService {
         })
       );
   }
+  
+  getAllMinimal(): Observable<Group[]> {
+    return this.httpClient
+      .get<GroupDto[]>(`${environment.apiUrl}groups/minimal`)
+      .pipe(map((response: GroupDto[]) => mapFromDtosToGroups(response)));
+  }
 
   delete(id: string): Observable<void> {
     return this.httpClient.delete<void>(`${environment.apiUrl}groups/${id}`);

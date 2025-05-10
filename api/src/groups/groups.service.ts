@@ -41,6 +41,14 @@ export class GroupsService {
     return new PaginatedResponse<Group>(data, pageQuery, count);
   }
 
+  async getMyMinimalData(userId: number): Promise<Group[]> {
+    return this.userRepository.find({
+      where: { users: { id: userId } },
+      select: ['id', 'name'],
+      relations: ['users'],
+    });
+  }
+
   async update(
     userId: number,
     group: Group,

@@ -2,9 +2,15 @@
 
 <div class="card-container">
     @for (movie of watchMoviesWithPagination.data; track $index) {
-    <div class="card">
-        <img url>
-        {{ movie.title }}
+    <div class="card" (click)="goToDetails(movie.id)">
+        <img [src]="setImageUrl(movie.fileUrl)" alt="Product Image" class="image" />
+        <div class="text">
+            <p class="title">{{ movie.title }}</p>
+            <div class="line">
+                <p>{{ movie.dateSeen | date: 'dd/MM/yyyy' }}</p>
+                <p-rating [(ngModel)]="movie.rating" />
+            </div>
+        </div>
     </div>
     }
 </div>

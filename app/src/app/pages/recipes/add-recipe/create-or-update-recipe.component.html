@@ -1,0 +1,81 @@
+<div class="container">
+
+    <div class="bloc-default">
+
+        <h2>Ajouter une recette</h2>
+
+        <form class="form" [formGroup]="form">
+
+            <div class="part">
+
+                <div class="input-container">
+                    <label for="type" class="label">Type</label>
+                    <p-iconfield [ngClass]="{'p-error': form.get('type')?.invalid && form.get('type')?.dirty}">
+                        <p-inputicon styleClass="pi pi-user" />
+                        <p-select [options]="typeList" optionLabel="label" optionValue="value"
+                            placeholder="Choisissez un type" formControlName="type" appendTo="body" />
+                    </p-iconfield>
+                    @if(form.get('type')?.invalid && form.get('type')?.dirty) {
+                    @if(form.get('type')?.errors?.['required']) {
+                    <small class="p-error block error-message">Le type est requis</small>
+                    }
+                    }
+                </div>
+
+                <div class="input-container">
+                    <label for="name" class="label">Nom</label>
+                    <p-iconfield>
+                        <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                            styleClass="pi pi-user" />
+                        <input type="text" pInputText placeholder="Le nom" formControlName="name"
+                            [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+                    </p-iconfield>
+                    @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+                    <small class="p-error block error-message">Le nom est requis</small>
+                    }
+                </div>
+
+                <div class="input-container">
+                    <label for="comment" class="label">Description</label>
+                    <p-editor formControlName="description">
+                        <ng-template #header>
+                            <span class="ql-formats">
+                                <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            </span>
+                        </ng-template>
+                    </p-editor>
+                </div>
+
+            </div>
+
+            <div class="part">
+
+                <div class="input-container">
+                    <label for="groups" class="label">Associer a des groupes</label>
+                    <p-iconfield [ngClass]="{'p-error': form.get('groups')?.invalid && form.get('groups')?.dirty}">
+                        <p-inputicon styleClass="pi pi-user" />
+                        <p-multiselect [options]="myGroups" optionLabel="name" optionValue="id"
+                            placeholder="Associer a des groupes" formControlName="groups" appendTo="body" />
+                    </p-iconfield>
+                </div>
+
+                <img [src]="setImageUrl(previewUrl)" alt="Preview" class="image" />
+
+                <p-fileUpload #fu mode="basic" [chooseLabel]="previewUrl ? 'Changer image' : 'Choisir une image'"
+                    chooseIcon="pi pi-upload" accept="image/*" maxFileSize="1000000" (onSelect)="onFileSelect($event)"> 
+                </p-fileUpload>
+
+                <div class="buttons-container">
+                    <p-button label="Annuler" severity="secondary" (click)="cancelAdd()" [loading]="isLoading" />
+                    <p-button label="Enregistrer" (click)="save()" [loading]="isLoading" />
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

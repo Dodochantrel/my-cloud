@@ -44,8 +44,8 @@ export const mapFromGroupToGroupResponseDto = (
   return {
     id: group.id,
     name: group.name,
-    createdAt: group.createdAt.toISOString(),
-    updatedAt: group.updatedAt.toISOString(),
+    createdAt: group.createdAt ? group.createdAt.toISOString() : null,
+    updatedAt: group.createdAt ? group.updatedAt.toISOString() : null,
     users: group.users ? mapFromUsersToUsersResponseDto(group.users) : [],
   };
 };

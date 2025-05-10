@@ -25,7 +25,7 @@ export class FilesManager {
     });
     if (!fileData) {
       this.logger.error(`FileData with id ${id} not found`);
-      throw new Error(`FileData with id ${id} not found`);
+      throw new NotFoundException(`FileData with id ${id} not found`);
     }
     return fileData;
   }

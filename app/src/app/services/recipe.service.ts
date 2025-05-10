@@ -42,4 +42,20 @@ export class RecipeService {
       responseType: 'blob',
     });
   }
+
+  create(type: string, name: string, description: string, groupsId: number[]): Observable<Recipe> {
+    const body = {
+      type: type,
+      name: name,
+      description: description,
+      groupsId: groupsId,
+    };
+    return this.httpClient
+      .post<RecipeDto>(`${environment.apiUrl}recipes`, body)
+      .pipe(
+        map((response: RecipeDto) => {
+          return mapFromDtoToRecipe(response);
+        })
+      );
+  }
 }

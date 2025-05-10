@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { AddVideoSeenComponent } from '../../../components/videos/add-video-seen/add-video-seen.component';
 import { setImageUrl } from '../../../tools/set-image-url';
 import { Observable } from 'rxjs';
-import { VideoSeasonComponent } from '../../../components/video/video-season/video-season.component';
+import { VideoSeasonComponent } from '../../../components/videos/video-season/video-season.component';
 
 @Component({
   selector: 'app-video-details',

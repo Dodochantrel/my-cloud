@@ -51,7 +51,6 @@ export class RecipesService {
   }
 
   save(recipe: Recipe): Promise<Recipe> {
-    console.log(recipe);
     return this.userRepository.save(recipe);
   }
 

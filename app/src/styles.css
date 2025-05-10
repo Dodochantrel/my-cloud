@@ -50,7 +50,7 @@ body {
     gap: 1rem;
 }
 
-.p-inputtext, .buttons, .p-button, .input-container, .p-password, .p-password-input, .p-select, .p-datepicker-input {
+.p-inputtext, .buttons, .p-button, .input-container, .p-password, .p-password-input, .p-select, .p-datepicker-input, .p-multiselect {
     width: 100%;
 }
 
@@ -66,7 +66,7 @@ p {
     z-index: 999999 !important;
 }
 
-.p-autocomplete-input, .p-select-label, .p-datepicker-input, .p-password-input {
+.p-autocomplete-input, .p-select-label, .p-datepicker-input, .p-password-input, .p-multiselect-label {
     padding-left: 35px !important;
 }
 
@@ -104,7 +104,7 @@ p-dialog p-iconfield .p-inputicon {
     align-items: center;
 }
 
-.form {
+.form-auth {
     width: 95%;
     max-width: 350px;
     padding: 1rem;

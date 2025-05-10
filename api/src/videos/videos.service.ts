@@ -36,7 +36,7 @@ export class VideosService {
       where: {
         user: { id: userId },
         type: type,
-        isToWatch: true,
+        isSeen: true,
         ...(search && {
           title: search,
         }),

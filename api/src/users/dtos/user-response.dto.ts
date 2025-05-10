@@ -42,11 +42,11 @@ export class UserResponseDto {
 export const mapFromUserToUserResponseDto = (user: User): UserResponseDto => {
   return {
     id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString(),
+    firstName: user.firstName ? user.firstName : null,
+    lastName: user.lastName ? user.lastName : null,
+    email: user.email ? user.email : null,
+    createdAt: user.createdAt ? user.createdAt.toISOString() : null,
+    updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
   };
 };
 
