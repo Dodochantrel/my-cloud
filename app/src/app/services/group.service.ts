@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Paginated } from '../class/paginated';
 import { map, Observable } from 'rxjs';
 import { Group } from '../class/group';
-import { GroupDto, mapFromDtosToGroups } from '../dto/group.dto';
+import { GroupDto, mapFromDtosToGroups, mapFromGroupDtoToGroup } from '../dto/group.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { environment } from '../../environments/environment.development';
 
@@ -46,5 +46,23 @@ export class GroupService {
     return this.httpClient
       .patch<GroupDto>(`${environment.apiUrl}groups/${id}`, { name })
       .pipe(map((response: GroupDto) => mapFromDtosToGroups([response])[0]));
+  }
+
+  addUser(
+    id: number,
+    userId: number
+  ): Observable<Group> {
+    return this.httpClient
+      .post<GroupDto>(`${environment.apiUrl}groups/${id}/add-user`, { userId })
+      .pipe(map((response: GroupDto) => mapFromGroupDtoToGroup(response)));
+  }
+
+  removeUser(
+    id: number,
+    userId: number
+  ): Observable<Group> {
+    return this.httpClient
+      .post<GroupDto>(`${environment.apiUrl}groups/${id}/remove-user`, { userId })
+      .pipe(map((response: GroupDto) => mapFromGroupDtoToGroup(response)));
   }
 }

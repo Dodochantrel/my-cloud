@@ -15,6 +15,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { FooterTableComponent } from '../../../components/footer-table/footer-table.component';
+import { ButtonModule } from 'primeng/button';
+import { ManageGroupUsersComponent } from '../../../components/groups/manage-group-users/manage-group-users.component';
 
 @Component({
   selector: 'app-group',
@@ -26,6 +28,8 @@ import { FooterTableComponent } from '../../../components/footer-table/footer-ta
     AutoCompleteModule,
     FormsModule,
     FooterTableComponent,
+    ButtonModule,
+    ManageGroupUsersComponent,
   ],
   templateUrl: './group.component.html',
   styleUrl: './group.component.css',
@@ -40,7 +44,9 @@ export class GroupComponent implements OnInit {
   public isLoadingData: boolean = false;
   public groupsToSearch: Group[] = [];
   public search: string = '';
-  public isDisplayedUsers: boolean = false;
+  public displayedGroupIds: Set<number> = new Set<number>();
+  public isManagingGroupUsers: boolean = false;
+  public groupBeingManaged: Group | null = null;
 
   public paginatedGroups: Paginated<Group> = new Paginated<Group>(
     [],
@@ -53,8 +59,26 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  handleIsDisplayedUsers(): void {
-    this.isDisplayedUsers = !this.isDisplayedUsers;
+  manageGroupUsers(group: Group): void {
+    this.groupBeingManaged = group;
+    this.isManagingGroupUsers = true;
+  }
+
+  closeManageGroupUsers(): void {
+    this.isManagingGroupUsers = false;
+    this.groupBeingManaged = null;
+  }
+
+  toggleGroupUsers(groupId: number): void {
+    if (this.displayedGroupIds.has(groupId)) {
+      this.displayedGroupIds.delete(groupId);
+    } else {
+      this.displayedGroupIds.add(groupId);
+    }
+  }
+  
+  isGroupDisplayed(groupId: number): boolean {
+    return this.displayedGroupIds.has(groupId);
   }
 
   pageChanged(page: number, limit: number): void {
@@ -85,5 +109,16 @@ export class GroupComponent implements OnInit {
           this.isLoadingData = false;
         },
       });
+  }
+
+  updatedGroupUsers(group: Group): void {
+    // trouver le groupe dans la liste paginée
+    const index = this.paginatedGroups.data.findIndex(
+      (g) => g.id === group.id
+    );
+    if (index !== -1) {
+      this.paginatedGroups.data[index] = group;
+    }
+    this.isManagingGroupUsers = false;
   }
 }

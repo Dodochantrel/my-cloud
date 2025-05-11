@@ -113,16 +113,48 @@ export class RecipesController {
     );
   }
 
-  @Patch('files/:id')
-  @UseInterceptors(FileInterceptor('file'))
-  async updateFile(
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'The recipe has been successfully retrieved.',
+    type: RecipeResponseDto,
+  })
+  async getRecipe(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
-  ) {
-    return res.sendFile(
-      await this.recipesService.updateFile(Number(id), tokenPayload.id, file),
+  ): Promise<RecipeResponseDto> {
+    return mapFromRecipeToRecipeResponseDto(
+      await this.recipesService.getById(Number(id), tokenPayload.id),
+    );
+  }
+
+  @Patch(':id')
+  @ApiBody({
+    description: 'Update a recipe',
+    type: RecipeRequestDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The recipe has been successfully updated.',
+    type: RecipeResponseDto,
+  })
+  async updateRecipe(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+    @Body() dto: RecipeRequestDto,
+  ): Promise<RecipeResponseDto> {
+    return mapFromRecipeToRecipeResponseDto(
+      await this.recipesService.update(
+        new Recipe({
+          id: Number(id),
+          user: new User({ id: tokenPayload.id }),
+          name: dto.name,
+          description: dto.description,
+          type: dto.type,
+          groups: dto.groupsId.map((groupId) => new Group({ id: groupId })),
+        }),
+        tokenPayload.id,
+      ),
     );
   }
 }

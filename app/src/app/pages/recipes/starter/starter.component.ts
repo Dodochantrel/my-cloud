@@ -5,6 +5,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { Recipe } from '../../../class/recipe';
 import { Paginated } from '../../../class/paginated';
 import { PaginatedMeta } from '../../../class/paginated-meta';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-starter',
@@ -16,7 +17,8 @@ export class StarterComponent implements OnInit {
   constructor(
     private readonly recipeService: RecipeService,
     private readonly browserService: BrowserService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly router: Router
   ) {}
 
   public isLoadingData: boolean = false;
@@ -65,5 +67,9 @@ export class StarterComponent implements OnInit {
         this.notificationService.showError('Failed to load file', error.message);
       }
     });
+  }
+
+  goToRecipe(id: number): void {
+    this.router.navigate(['/recipes/update', id]);
   }
 }

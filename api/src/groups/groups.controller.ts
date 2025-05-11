@@ -21,7 +21,7 @@ import {
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { ApiPaginatedResponse } from 'src/pagination/response-paginated.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { AddUserGroupRequestDto } from './dtos/add-user-group-request.dto';
+import { AddOrRemoveUserGroupRequestDto } from './dtos/add-or-remove-user-group-request.dto';
 
 @Controller('groups')
 export class GroupsController {
@@ -102,7 +102,7 @@ export class GroupsController {
     );
   }
 
-  @Post(':id/add-users')
+  @Post(':id/add-user')
   @ApiResponse({
     status: 200,
     description: 'Users added to group successfully',
@@ -110,15 +110,35 @@ export class GroupsController {
   })
   @ApiBody({
     description: 'Users id to add to group',
-    type: AddUserGroupRequestDto,
+    type: AddOrRemoveUserGroupRequestDto,
   })
   async addUsers(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,
-    @Body() dto: AddUserGroupRequestDto,
+    @Body() dto: AddOrRemoveUserGroupRequestDto,
   ): Promise<GroupResponseDto> {
     return mapFromGroupToGroupResponseDto(
-      await this.groupsService.addUsers(
+      await this.groupsService.addUser(tokenPayload.id, Number(id), dto.userId),
+    );
+  }
+
+  @Post(':id/remove-user')
+  @ApiResponse({
+    status: 200,
+    description: 'Users removed from group successfully',
+    type: GroupResponseDto,
+  })
+  @ApiBody({
+    description: 'Users id to remove from group',
+    type: AddOrRemoveUserGroupRequestDto,
+  })
+  async removeUsers(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+    @Body() dto: AddOrRemoveUserGroupRequestDto,
+  ): Promise<GroupResponseDto> {
+    return mapFromGroupToGroupResponseDto(
+      await this.groupsService.removeUser(
         tokenPayload.id,
         Number(id),
         dto.userId,

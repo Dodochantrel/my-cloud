@@ -1,4 +1,5 @@
 import { Options } from "../tools/option.interface";
+import { Group } from "./group";
 
 export class Recipe {
   id: number;
@@ -8,6 +9,7 @@ export class Recipe {
   createdAt: Date;
   updatedAt: Date;
   fileBlobUrl: string | null = null;
+  groups: Group[] = [];
 
   constructor(
     id: number,

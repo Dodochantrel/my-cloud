@@ -14,7 +14,7 @@
                         <div class="left-card">
                             <p class="recipe-id">n°{{ recipe.id }}</p>
                             <p class="recipe-description" [innerHTML]="recipe.description"></p>
-                            <p class="recipe-link">Voir la recette</p>
+                            <p class="recipe-link" (click)="goToRecipe(recipe.id)">Voir la recette</p>
                         </div>
                         <div class="right-card">
                             <img src="{{ recipe.fileBlobUrl }}" alt="{{ recipe.name }}" class="card-image"/>

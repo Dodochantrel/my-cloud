@@ -1,4 +1,5 @@
 import { Recipe } from "../class/recipe";
+import { GroupDto, mapFromDtosToGroups } from "./group.dto";
 
 export interface RecipeDto {
   id: number;
@@ -7,10 +8,11 @@ export interface RecipeDto {
   type: string;
   createdAt: string;
   updatedAt: string;
+  groups: GroupDto[];
 }
 
 export const mapFromDtoToRecipe = (dto: RecipeDto): Recipe => {
-  return new Recipe(
+  const recipe = new Recipe(
     dto.id,
     dto.name,
     dto.description,
@@ -18,6 +20,8 @@ export const mapFromDtoToRecipe = (dto: RecipeDto): Recipe => {
     new Date(dto.createdAt),
     new Date(dto.updatedAt)
   );
+  recipe.groups = mapFromDtosToGroups(dto.groups);
+  return recipe;
 }
 
 export const mapFromDtosToRecipes = (dtos: RecipeDto[]): Recipe[] => {

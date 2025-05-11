@@ -43,7 +43,12 @@ export class RecipeService {
     });
   }
 
-  create(type: string, name: string, description: string, groupsId: number[]): Observable<Recipe> {
+  create(
+    type: string,
+    name: string,
+    description: string,
+    groupsId: number[]
+  ): Observable<Recipe> {
     const body = {
       type: type,
       name: name,
@@ -52,6 +57,51 @@ export class RecipeService {
     };
     return this.httpClient
       .post<RecipeDto>(`${environment.apiUrl}recipes`, body)
+      .pipe(
+        map((response: RecipeDto) => {
+          return mapFromDtoToRecipe(response);
+        })
+      );
+  }
+
+  uploadFile(id: number, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('id', id.toString());
+    return this.httpClient.post(
+      `${environment.apiUrl}recipes/files`,
+      formData,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
+  getById(id: number): Observable<Recipe> {
+    return this.httpClient
+      .get<RecipeDto>(`${environment.apiUrl}recipes/${id}`)
+      .pipe(
+        map((response: RecipeDto) => {
+          return mapFromDtoToRecipe(response);
+        })
+      );
+  }
+
+  patch(
+    id: number,
+    type: string,
+    name: string,
+    description: string,
+    groupsId: number[]
+  ): Observable<Recipe> {
+    const body = {
+      type: type,
+      name: name,
+      description: description,
+      groupsId: groupsId,
+    };
+    return this.httpClient
+      .patch<RecipeDto>(`${environment.apiUrl}recipes/${id}`, body)
       .pipe(
         map((response: RecipeDto) => {
           return mapFromDtoToRecipe(response);

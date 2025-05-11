@@ -72,21 +72,6 @@ export class RecipesService {
     return this.filesManager.getFile(fileData.fileData);
   }
 
-  async updateFile(
-    id: number,
-    userId: number,
-    file: Express.Multer.File,
-  ): Promise<string> {
-    const recipe = await this.getById(id, userId);
-    const newFileData = await this.createOrEditFileData(
-      file,
-      id,
-      userId,
-      recipe.fileData.id,
-    );
-    return this.filesManager.updateFile(file, recipe.fileData, newFileData);
-  }
-
   async update(recipe: Recipe, userId: number): Promise<Recipe> {
     const recipeInDb = await this.userRepository.findOne({
       where: { id: recipe.id },
@@ -102,6 +87,9 @@ export class RecipesService {
       relations: ['fileData', 'user', 'groups'],
     });
     this.canAccess(recipe, userId);
+    if (recipe.fileData) {
+      await this.filesManager.deleteFile(recipe.fileData);
+    }
     const fileData = await this.createOrEditFileData(file, id, userId);
     return this.filesManager.uploadFile(file, fileData);
   }

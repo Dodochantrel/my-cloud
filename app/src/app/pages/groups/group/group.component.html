@@ -30,12 +30,12 @@
                 </div>
                 <div class="group-member">
                     <label class="user-count">{{ group.users.length }} membres</label>
-                    <p class="member-display" (click)="handleIsDisplayedUsers()">
-                        <i class="pi" [ngClass]="isDisplayedUsers ? 'pi-angle-up' : 'pi-angle-down'"></i>
+                    <p class="member-display" (click)="toggleGroupUsers(group.id)">
+                        <i class="pi" [ngClass]="isGroupDisplayed(group.id) ? 'pi-angle-up' : 'pi-angle-down'"></i>
                         Afficher les membres
-                    </p>
+                      </p>
                 </div>
-                @if(isDisplayedUsers) {
+                @if(isGroupDisplayed(group.id)) {
                 <div class="group-users">
                     @for (user of group.users; track $index) {
                     <div class="user">
@@ -48,6 +48,7 @@
                     }
                 </div>
                 }
+                <p-button icon="pi pi-users" label="Gérer les membres" variant="outlined" severity="secondary" (onClick)="manageGroupUsers(group)" />
             </div>
             }
 
@@ -59,3 +60,5 @@
     </div>
 
 </div>
+
+<app-manage-group-users [group]="groupBeingManaged" [isManaging]="isManagingGroupUsers" (groupUpdated)="updatedGroupUsers($event)" (close)="closeManageGroupUsers()"></app-manage-group-users>

@@ -26,6 +26,7 @@ import { EventsController } from './events/events.controller';
 import { EventsService } from './events/events.service';
 import { EventData } from './events/event-data.entity';
 import { EventDataType } from './events/event-data-type.entity';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { EventDataType } from './events/event-data-type.entity';
     GroupsController,
     VideosController,
     EventsController,
+    UsersController,
   ],
   providers: [
     TokensService,

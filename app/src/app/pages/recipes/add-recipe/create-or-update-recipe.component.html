@@ -2,7 +2,17 @@
 
     <div class="bloc-default">
 
-        <h2>Ajouter une recette</h2>
+        <h2>
+            @if(isCreate) {
+                Créer une recette
+            } @else {
+                Mettre à jour une recette
+            }
+            <br>
+            @if (!isCreate && id) {
+                <span class="id">N°{{ id }}</span>
+            }
+        </h2>
 
         <form class="form" [formGroup]="form">
 
@@ -69,7 +79,7 @@
 
                 <div class="buttons-container">
                     <p-button label="Annuler" severity="secondary" (click)="cancelAdd()" [loading]="isLoading" />
-                    <p-button label="Enregistrer" (click)="save()" [loading]="isLoading" />
+                    <p-button label="Enregistrer" (click)="isCreate ? save() : update()" [loading]="isLoading" />
                 </div>
 
             </div>

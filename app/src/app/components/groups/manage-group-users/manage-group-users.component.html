@@ -1,0 +1,43 @@
+<p-dialog header="Manager les utilisateurs" [modal]="true" [(visible)]="isManaging" (onHide)="close.emit()">
+    @if(group) {
+    <p class="sub-title">Ajouter ou supprimer des utilisateurs du groupe {{ group.name }}</p>
+
+    <div class="users">
+        <p class="bold">Membres acutel</p>
+        <div class="users-container">
+            @for (user of group.users; track $index) {
+            <div class="line-user">
+                <p class="initials">{{ user.findInitials() }}</p>
+                <div class="user-data">
+                    <p class="name">{{ user.firstName }} {{ user.lastName }}</p>
+                    <p class="email">{{ user.email }}</p>
+                </div>
+                <i class="pi pi-times delete-icon" (click)="removeUserFromGroup(user)"></i>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    <form class="add-user" [formGroup]="form">
+        <p class="bold">Ajouter un membre</p>
+        <div class="input-container">
+            <label for="email" class="label">Adresse email</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
+                    styleClass="pi pi-user" />
+                <p-autocomplete name="customerSearch" [suggestions]="usersToDisplay" formControlName="user"
+                    [autoZIndex]="false" placeholder="Rechercher un client"
+                    (completeMethod)="searchAutocompleteUser($event)" optionLabel="email" [completeOnFocus]="true" appendTo="body"/>
+            </p-iconfield>
+            @if(form.get('email')?.invalid && form.get('email')?.dirty) {
+            <small class="p-error block error-message">L'email est requis</small>
+            }
+        </div>
+    </form>
+    <div class="buttons-container">
+        <p-button label="Annuler" severity="secondary" (onClick)="cancelAddUserToGroup()"/>
+        <p-button label="Enregistrer" (onClick)="addUserToGroup()"/>        
+    </div>
+
+</p-dialog>

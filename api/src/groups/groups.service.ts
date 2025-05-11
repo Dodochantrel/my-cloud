@@ -9,12 +9,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { User } from 'src/users/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectRepository(Group)
     private userRepository: Repository<Group>,
+    private readonly usersService: UsersService,
   ) {}
 
   async save(userId: number, group: Group, usersId: number[]): Promise<Group> {
@@ -64,19 +66,44 @@ export class GroupsService {
     return this.userRepository.save(groupInDb);
   }
 
-  async addUsers(
+  async addUser(
     userId: number,
     groupId: number,
     newUserId: number,
   ): Promise<Group> {
-    const groupInDb = await this.userRepository.findOne({
+    const group = await this.userRepository.findOne({
       where: { id: groupId, users: { id: userId } },
       relations: ['users'],
     });
-    this.checkIfCanEdit(groupInDb, userId);
-    if (groupInDb.users.some((user) => user.id === newUserId)) {
+    this.checkIfCanEdit(group, userId);
+    const alreadyInGroup = group.users.some((user) => user.id === newUserId);
+    if (alreadyInGroup) {
       throw new UnauthorizedException('User already in group');
     }
+    const newUser = await this.usersService.getOneById(newUserId);
+    if (!newUser) {
+      throw new NotFoundException('User not found');
+    }
+    group.users.push(newUser);
+    return this.userRepository.save(group);
+  }
+
+  async removeUser(
+    userId: number,
+    groupId: number,
+    userToRemoveId: number,
+  ): Promise<Group> {
+    const groupInDb = await this.userRepository.findOne({
+      where: { id: groupId },
+      relations: ['users'],
+    });
+    this.checkIfCanEdit(groupInDb, userId);
+    if (!groupInDb.users.some((user) => user.id === userToRemoveId)) {
+      throw new UnauthorizedException('User not in group');
+    }
+    groupInDb.users = groupInDb.users.filter(
+      (user) => user.id !== userToRemoveId,
+    );
     return this.userRepository.save(groupInDb);
   }
 

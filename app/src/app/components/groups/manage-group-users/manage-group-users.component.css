@@ -1,0 +1,52 @@
+.sub-title {
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+::ng-deep .p-dialog {
+    width: 100vw;
+    max-width: 500px;
+}
+
+::ng-deep .p-dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+::ng-deep .p-dialog-header {
+    padding-bottom: 0;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.line-user {
+    padding: .4rem 1rem;
+    background-color: var(--background-color);
+    border-radius: 10px;
+    display: flex;
+    gap: .6rem;
+    align-items: center;
+    margin-top: .2rem;
+}
+
+.users-container {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.delete-icon {
+    cursor: pointer;
+    color: var(--red-dark);
+    margin-left: auto;
+}
+
+.initials {
+    background-color: var(--first-color);
+    color: white;
+    padding: .6rem;
+    border-radius: 100%;
+}

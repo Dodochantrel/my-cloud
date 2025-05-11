@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class AddUserGroupRequestDto {
+export class AddOrRemoveUserGroupRequestDto {
   @ApiProperty({
     description: 'User id of the group',
     example: 1,

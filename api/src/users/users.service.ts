@@ -59,4 +59,10 @@ export class UsersService {
   async delete(id: number): Promise<void> {
     await this.userRepository.delete(id);
   }
+
+  async getMinimalUsers(): Promise<User[]> {
+    return this.userRepository.find({
+      select: ['id', 'email'],
+    });
+  }
 }

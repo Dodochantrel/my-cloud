@@ -77,8 +77,8 @@ export const mapFromRecipeToRecipeResponseDto = (
     name: recipe.name,
     description: recipe.description,
     type: recipe.type,
-    createdAt: recipe.createdAt.toISOString(),
-    updatedAt: recipe.updatedAt.toISOString(),
+    createdAt: recipe.createdAt ? recipe.createdAt.toISOString() : null,
+    updatedAt: recipe.updatedAt ? recipe.updatedAt.toISOString() : null,
     user: mapFromUserToUserResponseDto(recipe.user),
     groups: mapFromGroupsToGroupsResponseDto(recipe.groups),
   });
