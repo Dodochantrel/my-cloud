@@ -8,6 +8,7 @@ import { SerieComponent } from './pages/videos/serie/serie.component';
 import { VideoDetailsComponent } from './pages/videos/video-details/video-details.component';
 import { GroupComponent } from './pages/groups/group/group.component';
 import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create-or-update-recipe.component';
+import { EventComponent } from './pages/events/event/event.component';
 
 export const routes: Routes = [
   {
@@ -75,6 +76,15 @@ export const routes: Routes = [
         data: {
           title: 'Groupes',
           breadcrumb: [{ label: 'Groupes' }],
+        },
+      },
+      {
+        path: 'events',
+        title: 'Events',
+        component: EventComponent,
+        data: {
+          title: 'Événements',
+          breadcrumb: [{ label: 'Événements' }],
         },
       }
     ],

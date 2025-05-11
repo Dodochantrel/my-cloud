@@ -47,7 +47,9 @@ export class Video {
   @ManyToOne(() => User, (user) => user.videos)
   user: Relation<User>;
 
+  @Column({ nullable: true })
   fileUrl: string;
+
   releaseDate: string;
   description: string;
   genre: string[];

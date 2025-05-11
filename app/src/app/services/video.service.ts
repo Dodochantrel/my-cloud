@@ -50,7 +50,7 @@ export class VideoService {
       .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
   }
 
-  getMyMoviesSeen(
+  getMyVideoSeen(
     page: number,
     limit: number,
     type: VideoType,
@@ -58,7 +58,7 @@ export class VideoService {
   ): Observable<Paginated<Video>> {
     return this.httpClient
       .get<PaginatedDto<VideoDto>>(
-        `${environment.apiUrl}videos/my-watch?search=${search}&page=${page}&limit=${limit}&type=${type}`
+        `${environment.apiUrl}videos/my-seen?search=${search}&page=${page}&limit=${limit}&type=${type}`
       )
       .pipe(
         map((response: PaginatedDto<VideoDto>) => {

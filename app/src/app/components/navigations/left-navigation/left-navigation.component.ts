@@ -33,25 +33,29 @@ export class LeftNavigationComponent {
   public navigationItems: NavigationItem[] = [
     {
       name: 'Mon cinéma',
-      icon: 'pi pi-video',
+      icon: 'tv',
       path: null,
       isOpen: false,
       subNavigationItems: [
-        { name: 'Films', icon: 'pi pi-address-book', path: '/videos/movies' },
-        { name: 'Séries', icon: 'pi pi-address-book', path: '/videos/series' },
+        { name: 'Films', icon: 'movie', path: '/videos/movies' },
+        { name: 'Séries', icon: 'cast', path: '/videos/series' },
       ],
     },
     {
       name: 'Ma cuisine',
-      icon: 'pi pi-video',
+      icon: 'kitchen',
       path: null,
       isOpen: false,
       subNavigationItems: [
-        { name: 'Entrées', icon: 'pi pi-address-book', path: '/recipes/starters' },
-        { name: 'Ajouter', icon: 'pi pi-address-book', path: '/recipes/add' },
+        { name: 'Entrées', icon: 'egg_alt', path: '/recipes/starters' },
+        { name: 'Plats', icon: 'room_service', path: '/recipes/dishes' },
+        { name: 'Desserts', icon: 'cookie', path: '/recipes/desserts' },
+        { name: 'Boissons', icon: 'sports_bar', path: '/recipes/drinks' },
+        { name: 'Ajouter', icon: 'add_circle_outline', path: '/recipes/add' },
       ],
     },
-    { name: 'Groupes', icon: 'pi pi-users', path: '/groups' },
+    { name: 'Groupes', icon: 'groups', path: '/groups' },
+    { name: 'Event', icon: 'event', path: '/events' },
   ];
 
   public toggleSubNavigation(navigationItem: NavigationItem): void {

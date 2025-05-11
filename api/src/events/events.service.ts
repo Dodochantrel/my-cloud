@@ -2,15 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventData } from './event-data.entity';
-import { EventDataType } from './event-data-type.entity';
+import { RecurringEventProcessor } from './recurring/recurring-event-processor.service';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(EventData)
-    private userRepository: Repository<EventData>,
-    @InjectRepository(EventDataType)
-    private userRepositoryType: Repository<EventDataType>,
+    private eventDataRepository: Repository<EventData>,
+    private recurringProcessor: RecurringEventProcessor,
   ) {}
 
   async findAll(
@@ -18,16 +17,37 @@ export class EventsService {
     from: Date | null,
     to: Date | null,
   ): Promise<EventData[]> {
-    const query = this.userRepository.createQueryBuilder('eventData');
-    if (search) {
-      query.andWhere('eventData.name LIKE :search', { search: `%${search}%` });
+    const query = this.eventDataRepository.createQueryBuilder('event');
+
+    if (from && to) {
+      query.where(
+        `(event.startDate BETWEEN :from AND :to OR event.endDate BETWEEN :from AND :to)`,
+        { from, to },
+      );
     }
-    if (from) query.andWhere('eventData.createdAt >= :from', { from });
-    if (to) query.andWhere('eventData.createdAt <= :to', { to });
-    return await query.getMany();
+
+    query
+      .orWhere('event.isEveryYear = true')
+      .orWhere('event.isEveryMonth = true')
+      .orWhere('event.isEveryWeek = true');
+
+    if (search) {
+      query.andWhere(
+        '(event.name ILIKE :search OR event.description ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    const events = await query.getMany();
+
+    if (from && to) {
+      return this.recurringProcessor.process(events, from, to);
+    }
+
+    return events;
   }
 
   async save(eventData: EventData): Promise<EventData> {
-    return await this.userRepository.save(eventData);
+    return await this.eventDataRepository.save(eventData);
   }
 }

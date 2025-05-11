@@ -34,7 +34,7 @@ export class WatchVideosComponent implements OnInit {
     defaultPaginatedMeta
   );
 
-  public isLoadingWatchMovies: boolean = false;
+  public isLoadingWatchVideo: boolean = false;
 
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
@@ -58,8 +58,8 @@ export class WatchVideosComponent implements OnInit {
   }
 
   getWatchMovies(page: number, limit: number) {
-    this.isLoadingWatchMovies = true;
-    this.videoService.getMyMoviesSeen(page, limit, 'movie', '').subscribe({
+    this.isLoadingWatchVideo = true;
+    this.videoService.getMyVideoSeen(page, limit, this.type, '').subscribe({
       next: (response) => {
         this.watchMoviesWithPagination = response;
       },
@@ -70,7 +70,7 @@ export class WatchVideosComponent implements OnInit {
         );
       },
       complete: () => {
-        this.isLoadingWatchMovies = false;
+        this.isLoadingWatchVideo = false;
       },
     });
   }

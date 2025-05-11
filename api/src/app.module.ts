@@ -27,6 +27,10 @@ import { EventsService } from './events/events.service';
 import { EventData } from './events/event-data.entity';
 import { EventDataType } from './events/event-data-type.entity';
 import { UsersController } from './users/users.controller';
+import { RecurringEventProcessor } from './events/recurring/recurring-event-processor.service';
+import { WeeklyRecurringEventStrategy } from './events/recurring/weekly-recurring-event.strategy';
+import { MonthlyRecurringEventStrategy } from './events/recurring/monthly-recurring-event.strategy';
+import { YearlyRecurringEventStrategy } from './events/recurring/yearly-recurring-event.strategy';
 
 @Module({
   imports: [
@@ -72,6 +76,10 @@ import { UsersController } from './users/users.controller';
     VideosService,
     TmdbRepositoryRepository,
     EventsService,
+    RecurringEventProcessor,
+    WeeklyRecurringEventStrategy,
+    MonthlyRecurringEventStrategy,
+    YearlyRecurringEventStrategy,
   ],
 })
 export class AppModule {}

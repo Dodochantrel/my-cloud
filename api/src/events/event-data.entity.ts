@@ -28,8 +28,14 @@ export class EventData {
   @Column()
   endDate: Date;
 
-  @Column()
-  everyYear: boolean;
+  @Column({ default: false })
+  isEveryYear: boolean;
+
+  @Column({ default: false })
+  isEveryMonth: boolean;
+
+  @Column({ default: false })
+  isEveryWeek: boolean;
 
   @ManyToOne(() => EventDataType, (eventDataType) => eventDataType.eventData)
   eventDataType: Relation<EventDataType>;

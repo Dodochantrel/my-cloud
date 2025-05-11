@@ -12,21 +12,21 @@
         @for (navigationItem of navigationItems; track $index) {
             @if(navigationItem.subNavigationItems){
                 <a class="link" (click)="toggleSubNavigation(navigationItem)">
-                    <i [class]="navigationItem.icon + ' first-color'"></i>
+                    <span class="material-icons first-color">{{ navigationItem.icon }}</span>
                     {{ navigationItem.name }}
                     <i class="pi pi-chevron-right open-icon" [class.navigation-is-open]="navigationItem.isOpen"></i>
                 </a>
                 <div *ngIf="navigationItem.isOpen" @subMenuAnimation>
                     @for (subNavigationItem of navigationItem.subNavigationItems; track $index) {
                         <a class="link link-open" [routerLink]="subNavigationItem.path" [routerLinkActive]="['active']">
-                            <i [class]="subNavigationItem.icon + ' first-color'"></i>
+                            <span class="material-icons first-color">{{ subNavigationItem.icon }}</span>
                             {{ subNavigationItem.name }}
                         </a>
                     }
                 </div>
             } @else {
                 <a class="link" [routerLink]="navigationItem.path" [routerLinkActive]="['active']">
-                    <i [class]="navigationItem.icon + ' first-color'"></i>
+                    <span class="material-icons first-color">{{ navigationItem.icon }}</span>
                     {{ navigationItem.name }}
                 </a>
             }

@@ -59,15 +59,36 @@ export class VideosController {
     );
   }
 
-  @Get('my-watch')
+  @Get('my-seen')
   @ApiPaginatedResponse(VideoResponseDto, 'List of watched videos')
-  async getMyVideosWatched(
+  async getMyVideosSeen(
     @Query() params: QueryGetWithParamsDto,
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Query('type') type: VideoType,
   ): Promise<PaginatedResponse<VideoResponseDto>> {
     const pageQuery = new PageQuery(Number(params.page), Number(params.limit));
-    const reponse = await this.videosService.getMyVideosWatched(
+    const reponse = await this.videosService.getMyVideosSeen(
+      tokenPayload.id,
+      pageQuery,
+      params.search,
+      type,
+    );
+    return new PaginatedResponse<VideoResponseDto>(
+      mapFormVideoToVideoResponseDtos(reponse.data),
+      pageQuery,
+      reponse.meta.itemCount,
+    );
+  }
+
+  @Get('my-to-watch')
+  @ApiPaginatedResponse(VideoResponseDto, 'List of watched videos')
+  async getMyVideosToWatch(
+    @Query() params: QueryGetWithParamsDto,
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Query('type') type: VideoType,
+  ): Promise<PaginatedResponse<VideoResponseDto>> {
+    const pageQuery = new PageQuery(Number(params.page), Number(params.limit));
+    const reponse = await this.videosService.getMyVideosToSeen(
       tokenPayload.id,
       pageQuery,
       params.search,
@@ -193,9 +214,13 @@ export class VideosController {
   @Get('serie/:id')
   async getSeriesFromDbOrTmdb(
     @Param('id') id: string,
+    @TokenPayload() tokenPayload: AccessTokenPayload,
   ): Promise<VideoResponseDto> {
     return mapFromVideoToVideoResponseDto(
-      await this.videosService.getSerie(Number(id)),
+      await this.videosService.getSerieFromDbOrTmdb(
+        Number(tokenPayload.id),
+        Number(id),
+      ),
     );
   }
 

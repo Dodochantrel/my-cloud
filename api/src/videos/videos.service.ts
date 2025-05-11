@@ -26,7 +26,7 @@ export class VideosService {
     return this.tmdbRepositoryRepository.getSeries(search);
   }
 
-  async getMyVideosWatched(
+  async getMyVideosSeen(
     userId: number,
     pageQuery: PageQuery,
     search: string,
@@ -37,6 +37,28 @@ export class VideosService {
         user: { id: userId },
         type: type,
         isSeen: true,
+        ...(search && {
+          title: search,
+        }),
+      },
+      take: pageQuery.limit,
+      skip: (pageQuery.page - 1) * pageQuery.limit,
+    });
+
+    return new PaginatedResponse<Video>(data, pageQuery, count);
+  }
+
+  async getMyVideosToSeen(
+    userId: number,
+    pageQuery: PageQuery,
+    search: string,
+    type: VideoType,
+  ): Promise<PaginatedResponse<Video>> {
+    const [data, count] = await this.videoRepository.findAndCount({
+      where: {
+        user: { id: userId },
+        type: type,
+        isToWatch: true,
         ...(search && {
           title: search,
         }),
@@ -66,6 +88,27 @@ export class VideosService {
       return videoFromTmdb;
     } else {
       return await this.tmdbRepositoryRepository.getMovie(videoId);
+    }
+  }
+
+  async getSerieFromDbOrTmdb(userId: number, videoId: number): Promise<Video> {
+    const video = await this.videoRepository.findOneBy({
+      tmdbId: videoId,
+      user: { id: userId },
+    });
+    if (video) {
+      const videoFromTmdb =
+        await this.tmdbRepositoryRepository.getSerie(videoId);
+      videoFromTmdb.id = video.id;
+      videoFromTmdb.isFavorite = video.isFavorite;
+      videoFromTmdb.isSeen = video.isSeen;
+      videoFromTmdb.isToWatch = video.isToWatch;
+      videoFromTmdb.rating = video.rating;
+      videoFromTmdb.dateSeen = video.dateSeen;
+      videoFromTmdb.user = video.user;
+      return videoFromTmdb;
+    } else {
+      return await this.tmdbRepositoryRepository.getSerie(videoId);
     }
   }
 

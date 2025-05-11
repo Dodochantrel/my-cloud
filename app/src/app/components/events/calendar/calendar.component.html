@@ -1,0 +1,17 @@
+<div>
+    <mwl-calendar-month-view [viewDate]="viewDate" [events]="agendaEventService.mapFromAgendaEventsToEvents(agendaEvents)" [weekStartsOn]="1" [locale]="locale"
+        (dayClicked)="onDayClick($event)">
+    </mwl-calendar-month-view>
+
+    <div class="footer">
+
+        <div class="buttons-container">
+
+            <p-button label="Précédent" (onClick)="goPreviousMonth()" />
+            <p-button label="Aujourd'hui" (onClick)="goToday()" />
+            <p-button label="Suivant" (onClick)="goNextMonth()" />
+
+        </div>
+
+    </div>
+</div>
