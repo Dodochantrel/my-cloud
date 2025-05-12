@@ -17,6 +17,8 @@
             </p-iconfield>
         </div>
 
+        <p-button icon="pi pi-add" label="Créer un groupe" (onClick)="isCreatingGroup = true" />
+
         <div class="groups-container">
 
             @for (group of paginatedGroups.data; track $index) {
@@ -62,3 +64,5 @@
 </div>
 
 <app-manage-group-users [group]="groupBeingManaged" [isManaging]="isManagingGroupUsers" (groupUpdated)="updatedGroupUsers($event)" (close)="closeManageGroupUsers()"></app-manage-group-users>
+
+<app-create-group [isVisible]="isCreatingGroup" (close)="isCreatingGroup = false"></app-create-group>

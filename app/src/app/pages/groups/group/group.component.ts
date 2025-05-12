@@ -6,7 +6,6 @@ import { Paginated } from '../../../class/paginated';
 import { Group } from '../../../class/group';
 import {
   defaultPaginatedMeta,
-  PaginatedMeta,
 } from '../../../class/paginated-meta';
 import { CommonModule } from '@angular/common';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -17,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { FooterTableComponent } from '../../../components/footer-table/footer-table.component';
 import { ButtonModule } from 'primeng/button';
 import { ManageGroupUsersComponent } from '../../../components/groups/manage-group-users/manage-group-users.component';
+import { CreateGroupComponent } from '../../../components/groups/create-group/create-group.component';
 
 @Component({
   selector: 'app-group',
@@ -29,6 +29,7 @@ import { ManageGroupUsersComponent } from '../../../components/groups/manage-gro
     FormsModule,
     FooterTableComponent,
     ButtonModule,
+    CreateGroupComponent,
     ManageGroupUsersComponent,
   ],
   templateUrl: './group.component.html',
@@ -47,6 +48,8 @@ export class GroupComponent implements OnInit {
   public displayedGroupIds: Set<number> = new Set<number>();
   public isManagingGroupUsers: boolean = false;
   public groupBeingManaged: Group | null = null;
+
+  public isCreatingGroup: boolean = false;
 
   public paginatedGroups: Paginated<Group> = new Paginated<Group>(
     [],
@@ -121,4 +124,5 @@ export class GroupComponent implements OnInit {
     }
     this.isManagingGroupUsers = false;
   }
+
 }

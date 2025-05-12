@@ -1,0 +1,47 @@
+<p-dialog header="Créer un groupe" [modal]="true" [(visible)]="isVisible" (onHide)="close.emit()">
+
+    <form class="form" [formGroup]="form">
+
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="Famille" formControlName="name"
+                    [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+            <small class="p-error block error-message">Le nom est requis</small>
+            }
+        </div>
+
+        <div class="user-container">
+                
+            @for (item of form.value.users; track $index) {
+                <p class="user">
+                    <span class="user-name">{{ item.firstName }}</span>
+                </p>
+            }
+
+        </div>
+
+        <div class="input-container">
+            <label for="email" class="label">Email</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
+                    styleClass="pi pi-user" />
+                <p-autocomplete name="customerSearch" [suggestions]="usersToDisplay" formControlName="searchUser"
+                    [autoZIndex]="false" placeholder="Rechercher un utilisateur" [delay]="500"
+                    (completeMethod)="searchAutocompleteUser($event)" optionLabel="email" [completeOnFocus]="true" (onSelect)="onUserSelect($event)"
+                    appendTo="body" />
+            </p-iconfield>
+        </div>
+
+    </form>
+
+    <div class="buttons-container">
+        <p-button label="Annuler" severity="secondary" />
+        <p-button label="Enregistrer" (onClick)="save()" />
+    </div>
+
+</p-dialog>
