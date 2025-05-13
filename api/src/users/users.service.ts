@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { PageQuery } from 'src/pagination/page-query';
 
@@ -60,9 +60,10 @@ export class UsersService {
     await this.userRepository.delete(id);
   }
 
-  async getMinimalUsers(): Promise<User[]> {
+  async getMinimalUsers(id: number): Promise<User[]> {
     return this.userRepository.find({
       select: ['id', 'email', 'firstName', 'lastName'],
+      where: { id: Not(id) },
     });
   }
 }

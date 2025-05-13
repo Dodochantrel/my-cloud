@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 import { Paginated } from '../class/paginated';
 import { map, Observable } from 'rxjs';
 import { Group } from '../class/group';
-import { GroupDto, mapFromDtosToGroups, mapFromGroupDtoToGroup } from '../dto/group.dto';
+import {
+  GroupDto,
+  mapFromDtosToGroups,
+  mapFromGroupDtoToGroup,
+} from '../dto/group.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { environment } from '../../environments/environment.development';
 
@@ -31,14 +35,14 @@ export class GroupService {
         })
       );
   }
-  
+
   getAllMinimal(): Observable<Group[]> {
     return this.httpClient
       .get<GroupDto[]>(`${environment.apiUrl}groups/minimal`)
       .pipe(map((response: GroupDto[]) => mapFromDtosToGroups(response)));
   }
 
-  delete(id: string): Observable<void> {
+  delete(id: number): Observable<void> {
     return this.httpClient.delete<void>(`${environment.apiUrl}groups/${id}`);
   }
 
@@ -48,21 +52,23 @@ export class GroupService {
       .pipe(map((response: GroupDto) => mapFromDtosToGroups([response])[0]));
   }
 
-  addUser(
-    id: number,
-    userId: number
-  ): Observable<Group> {
+  addUser(id: number, userId: number): Observable<Group> {
     return this.httpClient
       .post<GroupDto>(`${environment.apiUrl}groups/${id}/add-user`, { userId })
       .pipe(map((response: GroupDto) => mapFromGroupDtoToGroup(response)));
   }
 
-  removeUser(
-    id: number,
-    userId: number
-  ): Observable<Group> {
+  removeUser(id: number, userId: number): Observable<Group> {
     return this.httpClient
-      .post<GroupDto>(`${environment.apiUrl}groups/${id}/remove-user`, { userId })
+      .post<GroupDto>(`${environment.apiUrl}groups/${id}/remove-user`, {
+        userId,
+      })
+      .pipe(map((response: GroupDto) => mapFromGroupDtoToGroup(response)));
+  }
+
+  create(name: string, usersId: number[]): Observable<Group> {
+    return this.httpClient
+      .post<GroupDto>(`${environment.apiUrl}groups`, { name, usersId })
       .pipe(map((response: GroupDto) => mapFromGroupDtoToGroup(response)));
   }
 }

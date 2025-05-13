@@ -107,6 +107,20 @@ export class GroupsService {
     return this.userRepository.save(groupInDb);
   }
 
+  async delete(userId: number, groupId: number): Promise<void> {
+    const group = await this.userRepository.findOne({
+      where: { id: groupId, users: { id: userId } },
+      relations: ['users'],
+    });
+    this.checkIfCanEdit(group, userId);
+    // Supprmier les utilisateurs du groupe
+    group.users = [];
+    // Supprimer le groupe
+    await this.userRepository.save(group);
+    // Supprimer le groupe de la base de données
+    await this.userRepository.delete(group.id);
+  }
+
   checkIfCanEdit(group: Group, userId: number): void {
     if (!group) {
       throw new NotFoundException('Group not found');

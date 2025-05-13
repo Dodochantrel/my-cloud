@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -144,5 +145,17 @@ export class GroupsController {
         dto.userId,
       ),
     );
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Group deleted successfully',
+  })
+  async delete(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+  ): Promise<void> {
+    return this.groupsService.delete(tokenPayload.id, Number(id));
   }
 }

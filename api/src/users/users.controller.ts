@@ -5,6 +5,7 @@ import {
   UserResponseDto,
 } from './dtos/user-response.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 
 @Controller('users')
 export class UsersController {
@@ -17,9 +18,11 @@ export class UsersController {
     type: UserResponseDto,
     isArray: true,
   })
-  async getMinimalUsers(): Promise<UserResponseDto[]> {
+  async getMinimalUsers(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+  ): Promise<UserResponseDto[]> {
     return mapFromUsersToUsersResponseDto(
-      await this.usersService.getMinimalUsers(),
+      await this.usersService.getMinimalUsers(tokenPayload.id),
     );
   }
 }

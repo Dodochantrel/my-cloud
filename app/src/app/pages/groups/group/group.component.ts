@@ -125,4 +125,42 @@ export class GroupComponent implements OnInit {
     this.isManagingGroupUsers = false;
   }
 
+  pushNewGroup(group: Group): void {
+    this.paginatedGroups.data.unshift(group);
+    this.isCreatingGroup = false;
+  }
+
+  prepareDelete(event: any, group: Group) {
+    this.notificationService.confirm(
+      event,
+      'Suppression',
+      'Voulez-vous supprimer ce groupe ?',
+      () => {
+        this.deleteGroup(group);
+      },
+      () => {
+        this.notificationService.showInfo('Annulé', 'Suppression annulée');
+      }
+    );
+  }
+
+  deleteGroup(group: Group): void {
+    this.recipeService.delete(group.id).subscribe({
+      next: () => {
+        this.notificationService.showSuccess(
+          'Groupe supprimé',
+          `Le groupe ${group.name} a été supprimé avec succès`
+        );
+        this.paginatedGroups.data = this.paginatedGroups.data.filter(
+          (g) => g.id !== group.id
+        );
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          'Erreur lors de la suppression du groupe',
+          error.message
+        );
+      },
+    });
+  }
 }

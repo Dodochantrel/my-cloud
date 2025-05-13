@@ -27,7 +27,7 @@
                     <p class="group-name">{{ group.name }}</p>
                     <div class="icon-container">
                         <i class="pi pi-pen-to-square"></i>
-                        <i class="pi pi-trash red"></i>
+                        <i class="pi pi-trash red" (click)="prepareDelete($event, group)"></i>
                     </div>
                 </div>
                 <div class="group-member">
@@ -65,4 +65,4 @@
 
 <app-manage-group-users [group]="groupBeingManaged" [isManaging]="isManagingGroupUsers" (groupUpdated)="updatedGroupUsers($event)" (close)="closeManageGroupUsers()"></app-manage-group-users>
 
-<app-create-group [isVisible]="isCreatingGroup" (close)="isCreatingGroup = false"></app-create-group>
+<app-create-group [isVisible]="isCreatingGroup" (close)="isCreatingGroup = false" (newGroup)="pushNewGroup($event)"></app-create-group>

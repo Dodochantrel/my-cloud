@@ -21,7 +21,7 @@
                 <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
                     styleClass="pi pi-user" />
                 <p-autocomplete name="customerSearch" [suggestions]="usersToDisplay" formControlName="searchUser"
-                    [autoZIndex]="false" placeholder="Rechercher un utilisateur" [delay]="500"
+                    [autoZIndex]="false" placeholder="Rechercher un utilisateur"
                     (completeMethod)="searchAutocompleteUser($event)" optionLabel="email" [completeOnFocus]="true" (onSelect)="onUserSelect($event)"
                     appendTo="body" />
             </p-iconfield>
@@ -31,7 +31,7 @@
                 
             @for (item of form.value.users; track $index) {
                 <p class="user">
-                    <span class="user-name">{{ item.firstName }}</span>
+                    <span class="user-name">{{ item.firstName }}</span><i class="pi pi-times remove-user" (click)="removeUser(item)"></i>
                 </p>
             }
 
@@ -40,8 +40,8 @@
     </form>
 
     <div class="buttons-container">
-        <p-button label="Annuler" severity="secondary" />
-        <p-button label="Enregistrer" (onClick)="save()" />
+        <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isCreating" />
+        <p-button label="Enregistrer" (onClick)="save()" [loading]="isCreating" />
     </div>
 
 </p-dialog>
