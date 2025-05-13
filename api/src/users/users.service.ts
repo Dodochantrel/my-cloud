@@ -62,7 +62,7 @@ export class UsersService {
 
   async getMinimalUsers(): Promise<User[]> {
     return this.userRepository.find({
-      select: ['id', 'email'],
+      select: ['id', 'email', 'firstName', 'lastName'],
     });
   }
 }

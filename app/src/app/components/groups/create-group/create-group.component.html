@@ -15,16 +15,6 @@
             }
         </div>
 
-        <div class="user-container">
-                
-            @for (item of form.value.users; track $index) {
-                <p class="user">
-                    <span class="user-name">{{ item.firstName }}</span>
-                </p>
-            }
-
-        </div>
-
         <div class="input-container">
             <label for="email" class="label">Email</label>
             <p-iconfield>
@@ -35,6 +25,16 @@
                     (completeMethod)="searchAutocompleteUser($event)" optionLabel="email" [completeOnFocus]="true" (onSelect)="onUserSelect($event)"
                     appendTo="body" />
             </p-iconfield>
+        </div>
+
+        <div class="user-container">
+                
+            @for (item of form.value.users; track $index) {
+                <p class="user">
+                    <span class="user-name">{{ item.firstName }}</span>
+                </p>
+            }
+
         </div>
 
     </form>
