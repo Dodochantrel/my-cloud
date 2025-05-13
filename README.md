@@ -1,6 +1,6 @@
-# ☁️ my-cloud
+# ☁️ My cloud
 
-**my-cloud** est une application cloud **auto-hébergée** permettant de stocker et organiser vos fichiers, recettes, évènnement, films et autres. Le tout avec une **gestion fine des groupes** pour organiser les utilisateurs et leurs partages.
+**My cloud** est une application cloud **auto-hébergée** permettant de stocker et organiser vos fichiers, recettes, évènnement, films et autres. Le tout avec une **gestion fine des groupes** pour organiser les utilisateurs et leurs partages.
 
 ---
 
