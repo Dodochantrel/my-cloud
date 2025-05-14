@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventData } from './event-data.entity';
 import { RecurringEventProcessor } from './recurring/recurring-event-processor.service';
+import { EventDataType } from './event-data-type.entity';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(EventData)
     private eventDataRepository: Repository<EventData>,
+    @InjectRepository(EventDataType)
+    private eventDataTypeRepository: Repository<EventDataType>,
     private recurringProcessor: RecurringEventProcessor,
   ) {}
 
@@ -38,6 +41,9 @@ export class EventsService {
       );
     }
 
+    // Ajouter la relation avec EventDataType
+    query.leftJoinAndSelect('event.eventDataType', 'eventDataType');
+
     const events = await query.getMany();
 
     if (from && to) {
@@ -49,5 +55,19 @@ export class EventsService {
 
   async save(eventData: EventData): Promise<EventData> {
     return await this.eventDataRepository.save(eventData);
+  }
+
+  async delete(id: number): Promise<void> {
+    const event = await this.eventDataRepository.findOneBy({ id });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    await this.eventDataRepository.remove(event);
+  }
+
+  async findAllTypes(): Promise<EventDataType[]> {
+    return await this.eventDataTypeRepository.find();
   }
 }

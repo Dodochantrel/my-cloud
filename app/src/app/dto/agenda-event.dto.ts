@@ -1,4 +1,5 @@
-import { AgendaEvent, AgendaEventType } from '../class/agenda-event';
+import { AgendaEvent } from '../class/agenda-event';
+import { AgendaEventTypeDto, mapFromAgendaEventTypeToAgendaEventTypeDto } from './agenda-event-type.dto';
 
 export interface AgendaEventDto {
   id: number;
@@ -6,6 +7,7 @@ export interface AgendaEventDto {
   description: string;
   startDate: Date;
   endDate: Date;
+  type: AgendaEventTypeDto;
 }
 
 export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
@@ -15,7 +17,7 @@ export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
     dto.description,
     new Date(dto.startDate),
     new Date(dto.endDate),
-    new AgendaEventType(1, 'Anniversaire', '#FF5733')
+    mapFromAgendaEventTypeToAgendaEventTypeDto(dto.type)
   );
 };
 

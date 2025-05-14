@@ -1,0 +1,33 @@
+::ng-deep .p-drawer {
+    width: 100vw;
+    max-width: 400px;
+}
+
+.events-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.event {
+    display: flex;
+    padding: 1rem 1.5rem;
+    background-color: var(--background-color);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hours {
+    color: var(--text-color);
+}
+
+.name {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.remove-icon {
+    color: var(--text-color);
+    cursor: pointer;
+    color: var(--red-dark);
+}

@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   Relation,
@@ -20,9 +21,11 @@ export class Group {
   name: string;
 
   @ManyToMany(() => User, (user) => user.groups)
+  @JoinTable()
   users: Relation<User[]>;
 
   @ManyToMany(() => Recipe, (recipe) => recipe.groups)
+  @JoinTable()
   recipes: Relation<Recipe[]>;
 
   @ManyToMany(() => EventData, (eventData) => eventData.groups)

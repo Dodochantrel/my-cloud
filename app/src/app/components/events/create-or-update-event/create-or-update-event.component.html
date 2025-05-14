@@ -2,11 +2,114 @@
 
     <form class="form" [formGroup]="form">
 
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="Le nom" formControlName="name"
+                    [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+            <small class="p-error block error-message">Le nom est requis</small>
+            }
+        </div>
 
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    styleClass="pi pi-user" />
+                    <p-select [options]="agendaEventTypes" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
+            </p-iconfield>
+        </div>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Toute les semaine ?</label>
+            <p-toggleswitch formControlName="isEveryWeek" />
+        </div>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Tout les mois ?</label>
+            <p-toggleswitch formControlName="isEveryMonth" />
+        </div>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Tout les ans ?</label>
+            <p-toggleswitch formControlName="isEveryYear" />
+        </div>
+
+        <div class="input-container">
+            <label for="groups" class="label">Associer a des groupes</label>
+            <p-iconfield [ngClass]="{'p-error': form.get('groups')?.invalid && form.get('groups')?.dirty}">
+                <p-inputicon styleClass="pi pi-user" />
+                <p-multiselect [options]="myGroups" optionLabel="name" optionValue="id"
+                    placeholder="Associer a des groupes" formControlName="groups" appendTo="body" />
+            </p-iconfield>
+        </div>
+
+        <div class="input-container">
+            <label for="startDate" class="label">Date de début</label>
+            <p-iconfield [ngClass]="{'p-error': form.get('startDate')?.invalid && form.get('startDate')?.dirty}">
+                <p-inputicon styleClass="pi pi-list" />
+                <p-datepicker formControlName="startDate" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="19/05/2002" />
+            </p-iconfield>
+            @if(form.get('startDate')?.invalid && form.get('startDate')?.dirty) {
+                @if(form.get('startDate')?.errors?.['required']) {
+                    <small class="p-error block error-message">La date de début est requise</small>
+                }
+            }
+        </div>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Toute la journée ?</label>
+            <p-toggleswitch formControlName="fullDay" />
+        </div>
+
+        @if(form.get('fullDay')?.value === false) {
+            <div class="input-container">
+                <label for="startTime" class="label">heure de début</label>
+                <p-iconfield [ngClass]="{'p-error': form.get('endDate')?.invalid && form.get('startTime')?.dirty}">
+                    <p-inputicon styleClass="pi pi-list" />
+                    <p-datepicker [showTime]="true" hourFormat="24" [timeOnly]="true" formControlName="startTime" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="12:00" />
+                </p-iconfield>
+                @if(form.get('startTime')?.invalid && form.get('startTime')?.dirty) {
+                    @if(form.get('startTime')?.errors?.['required']) {
+                        <small class="p-error block error-message">L'heure de début est requise</small>
+                    }
+                }
+            </div>
+
+            <div class="input-container">
+                <label for="endDate" class="label">Date de fin</label>
+                <p-iconfield [ngClass]="{'p-error': form.get('endDate')?.invalid && form.get('endDate')?.dirty}">
+                    <p-inputicon styleClass="pi pi-list" />
+                    <p-datepicker formControlName="endDate" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="19/05/2002" />
+                </p-iconfield>
+                @if(form.get('endDate')?.invalid && form.get('endDate')?.dirty) {
+                    @if(form.get('endDate')?.errors?.['required']) {
+                        <small class="p-error block error-message">La date de fin est requise</small>
+                    }
+                }
+            </div>
+
+            <div class="input-container">
+                <label for="endTime" class="label">Heure de fin</label>
+                <p-iconfield [ngClass]="{'p-error': form.get('endTime')?.invalid && form.get('endTime')?.dirty}">
+                    <p-inputicon styleClass="pi pi-list" />
+                    <p-datepicker [timeOnly]="true" [showTime]="true" hourFormat="24" formControlName="endTime" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="12:00" appendTo="body" />
+                </p-iconfield>
+                @if(form.get('endTime')?.invalid && form.get('endTime')?.dirty) {
+                    @if(form.get('endTime')?.errors?.['required']) {
+                        <small class="p-error block error-message">L'heure de fin est requise</small>
+                    }
+                }
+            </div>
+        }
 
         <div class="buttons-container">
             <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isCreating" />
-            <p-button label="Enregistrer" [loading]="isCreating" />
+            <p-button label="Enregistrer" [loading]="isCreating" (onClick)="save()" />
         </div>
 
     </form>

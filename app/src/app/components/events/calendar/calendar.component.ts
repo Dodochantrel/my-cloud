@@ -1,5 +1,5 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   CalendarDateFormatter,
   CalendarEvent,
@@ -20,7 +20,13 @@ registerLocaleData(localeFr);
 
 @Component({
   selector: 'app-calendar',
-  imports: [CommonModule, CalendarModule, ButtonModule, CreateOrUpdateEventComponent, EventsOfDateComponent],
+  imports: [
+    CommonModule,
+    CalendarModule,
+    ButtonModule,
+    CreateOrUpdateEventComponent,
+    EventsOfDateComponent,
+  ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css',
   providers: [
@@ -34,6 +40,7 @@ export class CalendarComponent implements OnInit {
   public viewDate: Date = new Date();
   public locale: string = 'fr';
   public agendaEvents: AgendaEvent[] = [];
+  public calendarEventsSignal = signal<CalendarEvent[]>([]);
 
   public eventsOfDate: AgendaEvent[] = [];
   public selectedDate: Date | null = null;
@@ -87,6 +94,9 @@ export class CalendarComponent implements OnInit {
     this.agendaEventService.getAll(from, to, '').subscribe({
       next: (events) => {
         this.agendaEvents = events;
+        this.calendarEventsSignal.set(
+          this.agendaEventService.mapFromAgendaEventsToEvents(events)
+        );
       },
       error: (error) => {
         this.notificationService.showError(
@@ -95,6 +105,18 @@ export class CalendarComponent implements OnInit {
         );
       },
     });
+  }
+
+  removeAgendaEvent(agendaEvent: AgendaEvent): void {
+    this.agendaEvents = this.agendaEvents.filter(
+      (event) => event.id !== agendaEvent.id
+    );
+    this.calendarEventsSignal.set(
+      this.agendaEventService.mapFromAgendaEventsToEvents(this.agendaEvents)
+    );
+    this.eventsOfDate = this.eventsOfDate.filter(
+      (event) => event.id !== agendaEvent.id
+    );
   }
 }
 

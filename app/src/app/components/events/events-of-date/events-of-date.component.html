@@ -1,12 +1,16 @@
-<p-sidebar [(visible)]="isSidebarVisible" position="right">
+<p-drawer [(visible)]="isSidebarVisible" position="right">
 
-    <!-- <h3>{{ selectedDate | date: 'dd/MM/yyyy' }}</h3> -->
+    <h3>{{ selectedDate | date: 'dd/MM/yyyy' }}</h3>
 
-    <!-- <div class="events-container">
+    <div class="events-container">
         @for (event of agendaEvents; track $index) {
         <div class="event">
-            <p>{{ event.name }}</p>
+            <div class="left">
+                <p class="name">{{ event.name }}</p>
+                <p class="hours">{{ event.startDate | date: 'HH:MM' }} - {{ event.endDate | date: 'HH:MM' }}</p>
+            </div>
+            <i class="pi pi-trash remove-icon" (click)="prepareDelete($event, event)"></i>
         </div>
         }
-    </div> -->
-</p-sidebar>
+    </div>
+</p-drawer>

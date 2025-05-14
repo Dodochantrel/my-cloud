@@ -1,3 +1,4 @@
+import { EventData } from 'src/events/event-data.entity';
 import { Group } from 'src/groups/group.entity';
 import { Recipe } from 'src/recipes/recipe.entity';
 import { Video } from 'src/videos/video.entity';
@@ -5,7 +6,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -47,7 +47,6 @@ export class User {
   public createdAt: Date;
 
   @ManyToMany(() => Group, (group) => group.users)
-  @JoinTable()
   groups: Relation<Group[]>;
 
   @OneToMany(() => Recipe, (recipe) => recipe.user)
@@ -58,6 +57,9 @@ export class User {
 
   @OneToMany(() => Video, (video) => video.user)
   videos: Relation<Video[]>;
+
+  @OneToMany(() => EventData, (eventData) => eventData.user)
+  eventsData: Relation<EventData[]>;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

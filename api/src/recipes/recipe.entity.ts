@@ -6,7 +6,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToOne,
@@ -37,7 +36,6 @@ export class Recipe {
   user: Relation<User>;
 
   @ManyToMany(() => Group, (group) => group.recipes)
-  @JoinTable()
   groups: Relation<Group[]>;
 
   @UpdateDateColumn({

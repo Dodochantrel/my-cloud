@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EventData } from '../event-data.entity';
+import {
+  EventDataTypeResponseDto,
+  mapFromEventDataTypeToEventDataTypeResponseDto,
+} from './event-data-type-response.dto';
 
 export class EventDataResponseDto {
   @ApiProperty({
@@ -32,6 +36,12 @@ export class EventDataResponseDto {
   })
   endDate: Date;
 
+  @ApiProperty({
+    description: 'Type of the event',
+    example: 'EventDataTypeResponseDto',
+  })
+  type: EventDataTypeResponseDto | null;
+
   constructor(partial: Partial<EventDataResponseDto>) {
     Object.assign(this, partial);
   }
@@ -46,6 +56,9 @@ export const mapFromEventDataToEventDataResponseDto = (
     description: eventData.description,
     startDate: eventData.startDate,
     endDate: eventData.endDate,
+    type: eventData.eventDataType
+      ? mapFromEventDataTypeToEventDataTypeResponseDto(eventData.eventDataType)
+      : null,
   });
 };
 
