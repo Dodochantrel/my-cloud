@@ -13,12 +13,14 @@ import { WeekDay } from 'calendar-utils';
 import localeFr from '@angular/common/locales/fr';
 import { AgendaEvent } from '../../../class/agenda-event';
 import { NotificationService } from '../../../services/notification.service';
+import { CreateOrUpdateEventComponent } from '../create-or-update-event/create-or-update-event.component';
+import { EventsOfDateComponent } from '../events-of-date/events-of-date.component';
 
 registerLocaleData(localeFr);
 
 @Component({
   selector: 'app-calendar',
-  imports: [CommonModule, CalendarModule, ButtonModule],
+  imports: [CommonModule, CalendarModule, ButtonModule, CreateOrUpdateEventComponent, EventsOfDateComponent],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css',
   providers: [
@@ -32,6 +34,11 @@ export class CalendarComponent implements OnInit {
   public viewDate: Date = new Date();
   public locale: string = 'fr';
   public agendaEvents: AgendaEvent[] = [];
+
+  public eventsOfDate: AgendaEvent[] = [];
+  public selectedDate: Date | null = null;
+
+  public isCreatingOrUpdating: boolean = false;
 
   constructor(
     private router: Router,
@@ -65,7 +72,15 @@ export class CalendarComponent implements OnInit {
 
   // Modification ici : Type de paramètre
   onDayClick({ day }: { day: MonthViewDay }) {
-    console.log(day);
+    this.selectedDate = day.date;
+    // Chercher les événements de la date sélectionnée dans agendaEvents
+    this.eventsOfDate = this.agendaEvents.filter((event) => {
+      return (
+        event.startDate.getDate() === day.date.getDate() &&
+        event.startDate.getMonth() === day.date.getMonth() &&
+        event.startDate.getFullYear() === day.date.getFullYear()
+      );
+    });
   }
 
   getAll(from: Date, to: Date): void {

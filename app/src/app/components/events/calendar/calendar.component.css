@@ -4,3 +4,8 @@
     gap: 1rem;
     width: 100%;
 }
+
+.line {
+    display: flex;
+    align-items: center;
+}

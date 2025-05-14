@@ -1,7 +1,14 @@
 <div class="container">
-    <h2>{{ viewDate | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
 
-    <mwl-calendar-month-view [viewDate]="viewDate" [events]="agendaEventService.mapFromAgendaEventsToEvents(agendaEvents)" [weekStartsOn]="1" [locale]="locale"
+    <div class="line">
+
+        <h2>{{ viewDate | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
+        <p-button label="Précédent" (onClick)="isCreatingOrUpdating = true" />
+
+    </div>
+
+    <mwl-calendar-month-view [viewDate]="viewDate"
+        [events]="agendaEventService.mapFromAgendaEventsToEvents(agendaEvents)" [weekStartsOn]="1" [locale]="locale"
         (dayClicked)="onDayClick($event)">
     </mwl-calendar-month-view>
 
@@ -16,4 +23,9 @@
         </div>
 
     </div>
+
 </div>
+
+<app-create-or-update-event [(isDisplayed)]="isCreatingOrUpdating"></app-create-or-update-event>
+
+<app-events-of-date [agendaEvents]="eventsOfDate" [(selectedDate)]="selectedDate" ngSkipHydration="true"></app-events-of-date>

@@ -22,6 +22,12 @@ export class EventDataType {
   @Column({ default: false })
   isAutomaticallyEveryYear: boolean;
 
+  @Column({ default: false })
+  isAutomaticallyEveryMonth: boolean;
+
+  @Column({ default: false })
+  isAutomaticallyEveryWeek: boolean;
+
   @OneToMany(() => EventData, (eventData) => eventData.eventDataType)
   eventData: EventData[];
 

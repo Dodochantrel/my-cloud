@@ -1,0 +1,14 @@
+<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="isDisplayed" (onHide)="isDisplayed = false">
+
+    <form class="form" [formGroup]="form">
+
+
+
+        <div class="buttons-container">
+            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isCreating" />
+            <p-button label="Enregistrer" [loading]="isCreating" />
+        </div>
+
+    </form>
+
+</p-dialog>
