@@ -11,7 +11,7 @@ export class EventDataRequestDto {
     description: 'Description of the event',
     example: 'A fun birthday party with friends and family.',
   })
-  description: string;
+  description: string | null;
 
   @ApiProperty({
     description: 'Start date of the event',
@@ -53,5 +53,5 @@ export class EventDataRequestDto {
     description: 'Array of group IDs associated with the event',
     example: [1, 2, 3],
   })
-  groupIds: number[];
+  groupsId: number[];
 }

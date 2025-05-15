@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AgendaEvent } from '../class/agenda-event';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { CalendarEvent } from 'angular-calendar';
 import { HttpClient } from '@angular/common/http';
 import {
   AgendaEventDto,
   mapFromDtosToAgendaEvents,
+  mapFromDtoToAgendaEvent,
 } from '../dto/agenda-event.dto';
 import { environment } from '../../environments/environment.development';
 import { AgendaEventType } from '../class/agenda-event-type';
@@ -48,5 +49,22 @@ export class AgendaEventService {
         title: agendaEvent.name,
       };
     });
+  }
+
+  create(name: string, type: AgendaEventTypeDto | null, isEveryWeek: boolean, isEveryMonth: boolean, isEveryYear: boolean, startDatetime: Date, endDatetime: Date, groupsId: number): Observable<AgendaEvent> {
+    const body = {
+      name: name,
+      typeId: type ? type.id : null,
+      isEveryWeek: isEveryWeek,
+      isEveryMonth: isEveryMonth,
+      isEveryYear: isEveryYear,
+      startDate: startDatetime,
+      endDate: endDatetime,
+      groupsId: groupsId,
+    }
+
+    return this.httpClient
+      .post<AgendaEventDto>(`${environment.apiUrl}events`, body)
+      .pipe(map((event) => mapFromDtoToAgendaEvent(event)));
   }
 }

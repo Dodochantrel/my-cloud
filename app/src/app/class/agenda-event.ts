@@ -6,7 +6,7 @@ export class AgendaEvent {
   description: string;
   startDate: Date;
   endDate: Date;
-  type: AgendaEventType;
+  type: AgendaEventType | null;
 
   constructor(
     id: number,
@@ -14,7 +14,7 @@ export class AgendaEvent {
     description: string,
     startDate: Date,
     endDate: Date,
-    type: AgendaEventType
+    type: AgendaEventType | null
   ) {
     this.id = id;
     this.name = name;

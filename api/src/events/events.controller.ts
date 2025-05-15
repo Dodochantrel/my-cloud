@@ -78,7 +78,7 @@ export class EventsController {
           user: new User({
             id: tokenPayload.id,
           }),
-          groups: dto.groupIds.map(
+          groups: dto.groupsId.map(
             (groupId) =>
               new Group({
                 id: groupId,

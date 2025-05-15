@@ -50,6 +50,7 @@ export class EventsService {
       return this.recurringProcessor.process(events, from, to);
     }
 
+    console.log('events', events);
     return events;
   }
 

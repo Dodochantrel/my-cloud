@@ -21,8 +21,8 @@ export class EventData {
   @Column()
   name: string;
 
-  @Column()
-  description: string;
+  @Column({ nullable: true })
+  description: string | null;
 
   @Column()
   startDate: Date;

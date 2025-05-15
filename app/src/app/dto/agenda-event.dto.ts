@@ -7,7 +7,7 @@ export interface AgendaEventDto {
   description: string;
   startDate: Date;
   endDate: Date;
-  type: AgendaEventTypeDto;
+  type: AgendaEventTypeDto | null;
 }
 
 export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
@@ -17,7 +17,7 @@ export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
     dto.description,
     new Date(dto.startDate),
     new Date(dto.endDate),
-    mapFromAgendaEventTypeToAgendaEventTypeDto(dto.type)
+    dto.type ? mapFromAgendaEventTypeToAgendaEventTypeDto(dto.type) : null
   );
 };
 
