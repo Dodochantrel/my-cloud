@@ -26,6 +26,6 @@
 
 </div>
 
-<app-create-or-update-event [agendaEventToEdit]="agendaEventEditing" [date]="selectedDate" [(isDisplayed)]="isCreatingOrUpdating" (newAgendaEvents)="addAgendaEvents($event)"></app-create-or-update-event>
+<app-create-or-update-event (agendaEventToEditChange)="removeAgendaEventEdit()" [agendaEventToEdit]="agendaEventEditing" [date]="selectedDate" [(isDisplayed)]="isCreatingOrUpdating" (newAgendaEvents)="addAgendaEvents($event)"></app-create-or-update-event>
 
 <app-events-of-date (openEditEvent)="openEdit($event)" (openAddEvent)="openWithDate($event)" [agendaEvents]="eventsOfDate" [(selectedDate)]="selectedDate" ngSkipHydration="true" (agendaEventDeleted)="removeAgendaEvent($event)"></app-events-of-date>

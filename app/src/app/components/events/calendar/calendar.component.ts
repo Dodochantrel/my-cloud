@@ -138,6 +138,11 @@ export class CalendarComponent implements OnInit {
     this.agendaEventEditing = agendaEvent;
   }
 
+  removeAgendaEventEdit() {
+    console.log('removeAgendaEventEdit');
+    this.agendaEventEditing = null;
+  }
+
 }
 
 export interface MonthViewDay<MetaType = any> extends WeekDay {

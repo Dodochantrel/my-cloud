@@ -52,6 +52,7 @@ export class CreateOrUpdateEventComponent implements OnChanges {
   @Output() newAgendaEvents: EventEmitter<AgendaEvent[]> = new EventEmitter<AgendaEvent[]>();
   @Input() date: Date | null = null;
   @Input() agendaEventToEdit: AgendaEvent | null = null;
+  @Output() agendaEventToEditChange = new EventEmitter<AgendaEvent | null>();
 
   public isCreating: boolean = false;
 
@@ -66,7 +67,7 @@ export class CreateOrUpdateEventComponent implements OnChanges {
     private readonly browserService: BrowserService,
     private readonly groupService: GroupService
   ) {}
-
+  
   form = this.formBuilder.group({
     name: ['', Validators.required],
     type: [null as AgendaEventType | null],
@@ -155,15 +156,28 @@ export class CreateOrUpdateEventComponent implements OnChanges {
       error: (error) => {
         this.notificationService.showError(
           'Erreur',
-          "Errur lors de la récupération des groupes d'événements"
+          "Erreur lors de la récupération des groupes d'événements"
         );
       },
     });
   }
 
   cancel() {
-    this.form.reset();
+    this.form.reset({
+      name: '',
+      type: null,
+      groups: null,
+      isEveryWeek: false,
+      isEveryMonth: false,
+      isEveryYear: false,
+      startDate: null,
+      endDate: null,
+      startTime: null,
+      endTime: null,
+      fullDay: true,
+    });
     this.agendaEventToEdit = null;
+    this.agendaEventToEditChange.emit(null);
     this.date = null;
     this.isDisplayedChange.emit(false);
   }
