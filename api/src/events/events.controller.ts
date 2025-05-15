@@ -11,7 +11,6 @@ import { EventsService } from './events.service';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import {
   EventDataResponseDto,
-  mapFromEventDataToEventDataResponseDto,
   mapFromEventDataToEventDataResponseDtos,
 } from './dto/event-data-response.dto';
 import { EventDataQueryDto } from './dto/event-data-query.dto';
@@ -61,8 +60,8 @@ export class EventsController {
   async create(
     @Body() dto: EventDataRequestDto,
     @TokenPayload() tokenPayload: AccessTokenPayload,
-  ): Promise<EventDataResponseDto> {
-    return mapFromEventDataToEventDataResponseDto(
+  ): Promise<EventDataResponseDto[]> {
+    return mapFromEventDataToEventDataResponseDtos(
       await this.eventsService.save(
         new EventData({
           name: dto.name,

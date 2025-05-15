@@ -4,10 +4,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
 import { NotificationService } from '../../../services/notification.service';
 import { AgendaEventService } from '../../../services/agenda-event.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-events-of-date',
-  imports: [CommonModule, DrawerModule],
+  imports: [CommonModule, DrawerModule, ButtonModule],
   templateUrl: './events-of-date.component.html',
   styleUrl: './events-of-date.component.css',
 })
@@ -16,6 +17,8 @@ export class EventsOfDateComponent {
   @Output() selectedDateChange = new EventEmitter<null>();
   @Input() agendaEvents: AgendaEvent[] = [];
   @Output() agendaEventDeleted = new EventEmitter<AgendaEvent>();
+  @Output() openAddEvent = new EventEmitter<Date>();
+  @Output() openEditEvent = new EventEmitter<AgendaEvent>();
 
   constructor(
     private readonly notificationService: NotificationService,

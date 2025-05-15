@@ -3,7 +3,7 @@
     <div class="line">
 
         <h2>{{ viewDate | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
-        <p-button label="Précédent" (onClick)="isCreatingOrUpdating = true" />
+        <p-button label="Ajouter" (onClick)="isCreatingOrUpdating = true" class="button-add"/>
 
     </div>
 
@@ -26,6 +26,6 @@
 
 </div>
 
-<app-create-or-update-event [(isDisplayed)]="isCreatingOrUpdating"></app-create-or-update-event>
+<app-create-or-update-event [agendaEventToEdit]="agendaEventEditing" [date]="selectedDate" [(isDisplayed)]="isCreatingOrUpdating" (newAgendaEvents)="addAgendaEvents($event)"></app-create-or-update-event>
 
-<app-events-of-date [agendaEvents]="eventsOfDate" [(selectedDate)]="selectedDate" ngSkipHydration="true" (agendaEventDeleted)="removeAgendaEvent($event)"></app-events-of-date>
+<app-events-of-date (openEditEvent)="openEdit($event)" (openAddEvent)="openWithDate($event)" [agendaEvents]="eventsOfDate" [(selectedDate)]="selectedDate" ngSkipHydration="true" (agendaEventDeleted)="removeAgendaEvent($event)"></app-events-of-date>

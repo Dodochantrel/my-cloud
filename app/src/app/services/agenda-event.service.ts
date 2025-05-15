@@ -44,14 +44,14 @@ export class AgendaEventService {
     return agendaEvents.map((agendaEvent) => {
       return {
         id: agendaEvent.id,
-        start: agendaEvent.startDate,
-        end: agendaEvent.endDate,
+        start: agendaEvent.startDatetime,
+        end: agendaEvent.startDatetime,
         title: agendaEvent.name,
       };
     });
   }
 
-  create(name: string, type: AgendaEventTypeDto | null, isEveryWeek: boolean, isEveryMonth: boolean, isEveryYear: boolean, startDatetime: Date, endDatetime: Date, groupsId: number): Observable<AgendaEvent> {
+  create(name: string, type: AgendaEventTypeDto | null, isEveryWeek: boolean, isEveryMonth: boolean, isEveryYear: boolean, startDatetime: Date, endDatetime: Date, groupsId: number): Observable<AgendaEvent[]> {
     const body = {
       name: name,
       typeId: type ? type.id : null,
@@ -64,7 +64,7 @@ export class AgendaEventService {
     }
 
     return this.httpClient
-      .post<AgendaEventDto>(`${environment.apiUrl}events`, body)
-      .pipe(map((event) => mapFromDtoToAgendaEvent(event)));
+      .post<AgendaEventDto[]>(`${environment.apiUrl}events`, body)
+      .pipe(map((event) => mapFromDtosToAgendaEvents(event)));
   }
 }

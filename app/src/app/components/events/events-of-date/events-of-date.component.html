@@ -7,10 +7,13 @@
         <div class="event">
             <div class="left">
                 <p class="name">{{ event.name }}</p>
-                <p class="hours">{{ event.startDate | date: 'HH:MM' }} - {{ event.endDate | date: 'HH:MM' }}</p>
+                <p class="hours">{{ event.startDatetime | date: 'HH:MM' }} - {{ event.endDatetime | date: 'HH:MM' }}</p>
             </div>
             <i class="pi pi-trash remove-icon" (click)="prepareDelete($event, event)"></i>
+            <i class="pi pi-pencil edit-icon" (click)="openEditEvent.emit(event)"></i>
         </div>
         }
     </div>
+    
+    <p-button label="Ajouter" (onClick)="openAddEvent.emit(selectedDate!)" class="button-add"/>
 </p-drawer>

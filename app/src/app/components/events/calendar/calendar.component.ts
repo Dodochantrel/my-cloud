@@ -47,6 +47,8 @@ export class CalendarComponent implements OnInit {
 
   public isCreatingOrUpdating: boolean = false;
 
+  public agendaEventEditing: AgendaEvent | null = null;
+
   constructor(
     private router: Router,
     readonly agendaEventService: AgendaEventService,
@@ -83,9 +85,9 @@ export class CalendarComponent implements OnInit {
     // Chercher les événements de la date sélectionnée dans agendaEvents
     this.eventsOfDate = this.agendaEvents.filter((event) => {
       return (
-        event.startDate.getDate() === day.date.getDate() &&
-        event.startDate.getMonth() === day.date.getMonth() &&
-        event.startDate.getFullYear() === day.date.getFullYear()
+        event.startDatetime.getDate() === day.date.getDate() &&
+        event.startDatetime.getMonth() === day.date.getMonth() &&
+        event.startDatetime.getFullYear() === day.date.getFullYear()
       );
     });
   }
@@ -107,6 +109,13 @@ export class CalendarComponent implements OnInit {
     });
   }
 
+  addAgendaEvents(agendaEvents: AgendaEvent[]): void {
+    this.agendaEvents = [...this.agendaEvents, ...agendaEvents];
+    this.calendarEventsSignal.set(
+      this.agendaEventService.mapFromAgendaEventsToEvents(this.agendaEvents)
+    );
+  }
+
   removeAgendaEvent(agendaEvent: AgendaEvent): void {
     this.agendaEvents = this.agendaEvents.filter(
       (event) => event.id !== agendaEvent.id
@@ -118,6 +127,17 @@ export class CalendarComponent implements OnInit {
       (event) => event.id !== agendaEvent.id
     );
   }
+
+  openWithDate(date: Date): void {
+    this.isCreatingOrUpdating = true;
+    this.selectedDate = date;
+  }
+
+  openEdit(agendaEvent: AgendaEvent): void {
+    this.isCreatingOrUpdating = true;
+    this.agendaEventEditing = agendaEvent;
+  }
+
 }
 
 export interface MonthViewDay<MetaType = any> extends WeekDay {

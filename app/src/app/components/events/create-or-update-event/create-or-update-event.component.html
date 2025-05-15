@@ -1,4 +1,4 @@
-<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="isDisplayed" (onHide)="isDisplayed = false">
+<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 
@@ -66,7 +66,7 @@
             <p-toggleswitch formControlName="fullDay" />
         </div>
 
-        @if(form.get('fullDay')?.value === false) {
+        @if(form.get('fullDay')?.value !== true) {
             <div class="input-container">
                 <label for="startTime" class="label">heure de début</label>
                 <p-iconfield [ngClass]="{'p-error': form.get('endDate')?.invalid && form.get('startTime')?.dirty}">

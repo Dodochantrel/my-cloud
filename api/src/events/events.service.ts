@@ -50,12 +50,16 @@ export class EventsService {
       return this.recurringProcessor.process(events, from, to);
     }
 
-    console.log('events', events);
     return events;
   }
 
-  async save(eventData: EventData): Promise<EventData> {
-    return await this.eventDataRepository.save(eventData);
+  async save(eventData: EventData): Promise<EventData[]> {
+    const event = await this.eventDataRepository.save(eventData);
+    return await this.recurringProcessor.process(
+      [event],
+      event.startDate,
+      event.endDate,
+    );
   }
 
   async delete(id: number): Promise<void> {

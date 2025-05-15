@@ -4,11 +4,10 @@ import {
   inject,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { AgendaEvent } from '../../../class/agenda-event';
+import { AgendaEvent, defaultAgendaEvent } from '../../../class/agenda-event';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -46,11 +45,13 @@ import { updateFailedInputs } from '../../../tools/update-failed-inputs';
   templateUrl: './create-or-update-event.component.html',
   styleUrl: './create-or-update-event.component.css',
 })
-export class CreateOrUpdateEventComponent implements OnChanges, OnInit {
+export class CreateOrUpdateEventComponent implements OnChanges {
   @Input() isDisplayed: boolean = false;
   @Output() isDisplayedChange = new EventEmitter<boolean>();
   @Input() agendaEvent: AgendaEvent | null = null;
-  @Output() newAgendaEvent: EventEmitter<AgendaEvent> = new EventEmitter<AgendaEvent>();
+  @Output() newAgendaEvents: EventEmitter<AgendaEvent[]> = new EventEmitter<AgendaEvent[]>();
+  @Input() date: Date | null = null;
+  @Input() agendaEventToEdit: AgendaEvent | null = null;
 
   public isCreating: boolean = false;
 
@@ -66,14 +67,44 @@ export class CreateOrUpdateEventComponent implements OnChanges, OnInit {
     private readonly groupService: GroupService
   ) {}
 
+  form = this.formBuilder.group({
+    name: ['', Validators.required],
+    type: [null as AgendaEventType | null],
+    groups: [null],
+    isEveryWeek: [false],
+    isEveryMonth: [false],
+    isEveryYear: [false],
+    startDate: [null as Date | null, Validators.required],
+    endDate: [null as Date | null],
+    startTime: [null as Date | null],
+    endTime: [null as Date | null],
+    fullDay: [true],
+  });
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.browserService.isBrowser) {
       this.getTypes();
       this.getGroups();
     }
-  }
 
-  ngOnInit(): void {
+    if(this.date) {
+      this.form.get('startDate')?.setValue(this.date);
+    }
+
+    if(this.agendaEventToEdit) {
+      this.form.patchValue({
+        name: this.agendaEventToEdit.name,
+        type: this.agendaEventToEdit.type,
+        isEveryWeek: this.agendaEventToEdit.type ? this.agendaEventToEdit.type.isAutomaticallyEveryWeek : false,
+        isEveryMonth: this.agendaEventToEdit.type ? this.agendaEventToEdit.type.isAutomaticallyEveryMonth : false,
+        isEveryYear: this.agendaEventToEdit.type ? this.agendaEventToEdit.type.isAutomaticallyEveryYear : false,
+        startDate: this.agendaEventToEdit.startDatetime,
+        endDate: this.agendaEventToEdit.endDatetime,
+        startTime: this.agendaEventToEdit.startDatetime,
+        endTime: this.agendaEventToEdit.endDatetime,
+      })
+    }
+
     this.form.get('type')?.valueChanges.subscribe((value) => {
       this.patchBooleanValue(value);
     });
@@ -130,23 +161,11 @@ export class CreateOrUpdateEventComponent implements OnChanges, OnInit {
     });
   }
 
-  form = this.formBuilder.group({
-    name: ['', Validators.required],
-    type: [null],
-    groups: [null],
-    isEveryWeek: [false],
-    isEveryMonth: [false],
-    isEveryYear: [false],
-    startDate: [null as Date | null, Validators.required],
-    endDate: [null as Date | null],
-    startTime: [null as Date | null],
-    endTime: [null as Date | null],
-    fullDay: [true],
-  });
-
   cancel() {
     this.form.reset();
-    this.isDisplayed = false;
+    this.agendaEventToEdit = null;
+    this.date = null;
+    this.isDisplayedChange.emit(false);
   }
 
   valid() {
@@ -187,13 +206,13 @@ export class CreateOrUpdateEventComponent implements OnChanges, OnInit {
       formDates.endDatetime!,
       this.form.get('groups')?.value!
     ).subscribe({
-      next: (agendaEvent) => {
+      next: (agendaEvents) => {
         this.isCreating = false;
         this.notificationService.showSuccess(
           'Succès',
           "L'événement a été créé avec succès"
         );
-        this.newAgendaEvent.emit(agendaEvent);
+        this.newAgendaEvents.emit(agendaEvents);
         this.cancel();
       },
       error: (error) => {
