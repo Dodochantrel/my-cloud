@@ -1,0 +1,7 @@
+::ng-deep .p-tree-selectable, .tree {
+    width: 100%;
+}
+
+::ng-deep .p-tree-node-label {
+    width: 100%;
+}

@@ -6,8 +6,22 @@
 
             <ng-template #panel>
 
-                <p-tree [value]="treeCategories" [filter]="true" filterMode="strict" filterPlaceholder="Rechercher par nom" selectionMode="single" />
-            
+                <p-tree
+                class="tree"
+                [value]="treeCategories"
+                [filter]="true"
+                filterMode="strict"
+                filterPlaceholder="Rechercher par nom"
+                selectionMode="single"
+              >
+                <ng-template let-node pTemplate="default">
+                  <div>
+                    <span>{{ node.label }}</span>
+                    <p-button icon="pi pi-check"  class="add-category" [rounded]="true" [text]="true" />
+                  </div>
+                </ng-template>
+              </p-tree>
+                          
             </ng-template>
 
             <ng-template #panel>

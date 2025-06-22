@@ -5,10 +5,11 @@ import { PictureCategory } from '../../class/picture-category';
 import { NotificationService } from '../../services/notification.service';
 import { BrowserService } from '../../services/browser.service';
 import { SplitterModule } from 'primeng/splitter';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-gallery',
-  imports: [TreeModule, SplitterModule],
+  imports: [TreeModule, SplitterModule, ButtonModule],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.css',
 })
