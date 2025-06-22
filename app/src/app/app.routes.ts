@@ -9,6 +9,7 @@ import { VideoDetailsComponent } from './pages/videos/video-details/video-detail
 import { GroupComponent } from './pages/groups/group/group.component';
 import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create-or-update-recipe.component';
 import { EventComponent } from './pages/events/event/event.component';
+import { GalleryComponent } from './pages/gallery/gallery.component';
 
 export const routes: Routes = [
   {
@@ -85,6 +86,15 @@ export const routes: Routes = [
         data: {
           title: 'Événements',
           breadcrumb: [{ label: 'Événements' }],
+        },
+      },
+      {
+        path: 'gallery',
+        title: 'Gallery',
+        component: GalleryComponent,
+        data: {
+          title: 'Galerie',
+          breadcrumb: [{ label: 'Galerie' }],
         },
       }
     ],

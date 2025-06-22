@@ -90,7 +90,7 @@ export class RecipesService {
     if (recipe.fileData) {
       await this.filesManager.deleteFile(recipe.fileData);
     }
-    const fileData = await this.createOrEditFileData(file, id, userId);
+    const fileData = this.createOrEditFileData(file, id, userId);
     return this.filesManager.uploadFile(file, fileData);
   }
 
@@ -99,17 +99,15 @@ export class RecipesService {
     recipeId: number,
     userId: number,
     id: number = null,
-  ): Promise<FileData> {
-    return this.filesManager.save(
-      new FileData({
-        id: id,
-        path: 'recipes/',
-        mimetype: file.mimetype,
-        size: file.size,
-        recipe: new Recipe({ id: recipeId }),
-        user: new User({ id: userId }),
-      }),
-    );
+  ): FileData {
+    return new FileData({
+      id: id,
+      path: 'recipes/',
+      mimetype: file.mimetype,
+      size: file.size,
+      recipe: new Recipe({ id: recipeId }),
+      user: new User({ id: userId }),
+    });
   }
 
   private canAccess(recipe: Recipe, userId: number) {

@@ -1,0 +1,23 @@
+<div class="container">
+
+    <div class="bloc-default">
+
+        <p-splitter [panelSizes]="[30, 70]">
+
+            <ng-template #panel>
+
+                <p-tree [value]="treeCategories" [filter]="true" filterMode="strict" filterPlaceholder="Rechercher par nom" selectionMode="single" />
+            
+            </ng-template>
+
+            <ng-template #panel>
+
+                <h1>Contenu</h1>
+
+            </ng-template>
+
+        </p-splitter>
+
+    </div>
+
+</div>

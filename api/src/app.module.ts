@@ -31,6 +31,12 @@ import { RecurringEventProcessor } from './events/recurring/recurring-event-proc
 import { WeeklyRecurringEventStrategy } from './events/recurring/weekly-recurring-event.strategy';
 import { MonthlyRecurringEventStrategy } from './events/recurring/monthly-recurring-event.strategy';
 import { YearlyRecurringEventStrategy } from './events/recurring/yearly-recurring-event.strategy';
+import { PicturesController } from './pictures/pictures.controller';
+import { PicturesService } from './pictures/pictures.service';
+import { PicturesCategoriesService } from './pictures-categories/pictures-categories.service';
+import { PicturesCategoriesController } from './pictures-categories/pictures-categories.controller';
+import { Picture } from './pictures/picture.entity';
+import { PicturesCategory } from './pictures-categories/pictures-category.entity';
 
 @Module({
   imports: [
@@ -45,6 +51,8 @@ import { YearlyRecurringEventStrategy } from './events/recurring/yearly-recurrin
       Video,
       EventData,
       EventDataType,
+      PicturesCategory,
+      Picture,
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -64,6 +72,8 @@ import { YearlyRecurringEventStrategy } from './events/recurring/yearly-recurrin
     VideosController,
     EventsController,
     UsersController,
+    PicturesController,
+    PicturesCategoriesController,
   ],
   providers: [
     TokensService,
@@ -80,6 +90,8 @@ import { YearlyRecurringEventStrategy } from './events/recurring/yearly-recurrin
     WeeklyRecurringEventStrategy,
     MonthlyRecurringEventStrategy,
     YearlyRecurringEventStrategy,
+    PicturesService,
+    PicturesCategoriesService,
   ],
 })
 export class AppModule {}

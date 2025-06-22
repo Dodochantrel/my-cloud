@@ -1,5 +1,5 @@
 import { CommonModule, registerLocaleData } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import {
   CalendarDateFormatter,
   CalendarEvent,
@@ -37,7 +37,7 @@ registerLocaleData(localeFr);
   ],
 })
 export class CalendarComponent implements OnInit {
-  public viewDate: Date = new Date();
+  public viewDate = signal(new Date());
   public locale: string = 'fr';
   public agendaEvents: AgendaEvent[] = [];
   public calendarEventsSignal = signal<CalendarEvent[]>([]);
@@ -45,39 +45,58 @@ export class CalendarComponent implements OnInit {
   public eventsOfDate: AgendaEvent[] = [];
   public selectedDate: Date | null = null;
 
+  public start = signal(new Date());
+  public end = signal(new Date());
+
   public isCreatingOrUpdating: boolean = false;
 
   public agendaEventEditing: AgendaEvent | null = null;
 
   constructor(
-    private router: Router,
     readonly agendaEventService: AgendaEventService,
     private readonly notificationService: NotificationService
-  ) {}
+  ) {
+    effect(() => {
+      if (this.viewDate() < this.start()) {
+        const newStart = new Date(this.start());
+        newStart.setFullYear(this.start().getFullYear() - 1);
+        this.start.set(newStart);
+        this.getAll(this.start(), this.viewDate());
+      }
+      if( this.viewDate() > this.end()) {
+        const newEnd = new Date(this.end());
+        newEnd.setFullYear(this.end().getFullYear() + 1);
+        this.end.set(newEnd);
+        this.getAll(this.viewDate(), this.end());
+      }
+    });
+  }
 
   ngOnInit(): void {
-    const start = new Date();
-    start.setFullYear(start.getFullYear() - 1);
-    const end = new Date();
-    end.setFullYear(end.getFullYear() + 1);
-    this.getAll(start, end);
+    this.start().setFullYear(this.start().getFullYear() - 1);
+    this.end().setFullYear(this.end().getFullYear() + 1);
+    this.getAll(this.start(), this.end());
   }
 
   goPreviousMonth(): void {
-    this.viewDate = new Date(
-      this.viewDate.setMonth(this.viewDate.getMonth() - 1)
-    );
+    this.viewDate.update(date => {
+      const newDate = new Date(date);
+      newDate.setMonth(date.getMonth() - 1);
+      return newDate;
+    });
   }
-
+  
   goNextMonth(): void {
-    this.viewDate = new Date(
-      this.viewDate.setMonth(this.viewDate.getMonth() + 1)
-    );
+    this.viewDate.update(date => {
+      const newDate = new Date(date);
+      newDate.setMonth(date.getMonth() + 1);
+      return newDate;
+    });
   }
-
+  
   goToday(): void {
-    this.viewDate = new Date();
-  }
+    this.viewDate.set(new Date());
+  }  
 
   // Modification ici : Type de paramètre
   onDayClick({ day }: { day: MonthViewDay }) {
@@ -95,9 +114,9 @@ export class CalendarComponent implements OnInit {
   getAll(from: Date, to: Date): void {
     this.agendaEventService.getAll(from, to, '').subscribe({
       next: (events) => {
-        this.agendaEvents = events;
+        this.agendaEvents.push(...events);
         this.calendarEventsSignal.set(
-          this.agendaEventService.mapFromAgendaEventsToEvents(events)
+          this.agendaEventService.mapFromAgendaEventsToEvents(this.agendaEvents)
         );
       },
       error: (error) => {
@@ -139,7 +158,6 @@ export class CalendarComponent implements OnInit {
   }
 
   removeAgendaEventEdit() {
-    console.log('removeAgendaEventEdit');
     this.agendaEventEditing = null;
   }
 

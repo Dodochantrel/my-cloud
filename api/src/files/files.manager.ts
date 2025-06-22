@@ -14,7 +14,7 @@ export class FilesManager {
 
   private readonly logger = new Logger(FilesManager.name);
 
-  async save(fileData: FileData): Promise<FileData> {
+  private save(fileData: FileData): Promise<FileData> {
     fileData.prepareFileName();
     return this.fileDataRepository.save(fileData);
   }
@@ -45,12 +45,13 @@ export class FilesManager {
     fileData: FileData,
   ): Promise<string> {
     try {
+      const fileDataSaved = await this.save(fileData);
       const storageBasePath = process.env.STORAGE_BASE_PATH;
 
-      const basePath = path.join(storageBasePath, fileData.path);
+      const basePath = path.join(storageBasePath, fileDataSaved.path);
       const filePath = path.join(
         basePath,
-        `${fileData.name}${this.getExtension(file.mimetype)}`,
+        `${fileDataSaved.name}${this.getExtension(file.mimetype)}`,
       );
 
       // Crée le dossier si nécessaire
@@ -59,7 +60,7 @@ export class FilesManager {
       // Enregistre le fichier sur le disque
       await fs.promises.writeFile(filePath, file.buffer);
 
-      return this.getFile(fileData);
+      return this.getFile(fileDataSaved);
     } catch (error) {
       this.logger.error('Error uploading file', error);
       throw new Error('Failed to upload file');

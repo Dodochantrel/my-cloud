@@ -2,12 +2,12 @@
 
     <div class="line">
 
-        <h2>{{ viewDate | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
+        <h2>{{ viewDate() | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
         <p-button label="Ajouter" (onClick)="isCreatingOrUpdating = true" class="button-add"/>
 
     </div>
 
-    <mwl-calendar-month-view [viewDate]="viewDate"
+    <mwl-calendar-month-view [viewDate]="viewDate()"
         [events]="calendarEventsSignal()" [weekStartsOn]="1" [locale]="locale"
         (dayClicked)="onDayClick($event)">
     </mwl-calendar-month-view>
