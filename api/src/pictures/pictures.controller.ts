@@ -7,12 +7,14 @@ import {
   Res,
   UseInterceptors,
   Body,
+  Query,
 } from '@nestjs/common';
 import { PicturesService } from './pictures.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { Response } from 'express';
 import { PictureRequestDto } from './dto/picture-request.dto';
+import { WidthOptions } from 'src/files/files.manager';
 
 @Controller('pictures')
 export class PicturesController {
@@ -45,9 +47,10 @@ export class PicturesController {
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: number,
     @Res() res: Response,
+    @Query('width') width?: WidthOptions,
   ) {
     return res.sendFile(
-      await this.picturesService.getFileById(tokenPayload.groupsId, id),
+      await this.picturesService.getFileById(tokenPayload.groupsId, id, width),
     );
   }
 }

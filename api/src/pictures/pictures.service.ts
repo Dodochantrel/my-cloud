@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Picture } from './picture.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FilesManager } from 'src/files/files.manager';
+import { FilesManager, WidthOptions } from 'src/files/files.manager';
 import { FileData } from 'src/files/file-data.entity';
 import { User } from 'src/users/user.entity';
 import { PicturesCategory } from 'src/pictures-categories/pictures-category.entity';
@@ -70,7 +70,11 @@ export class PicturesService {
     };
   }
 
-  public async getFileById(groupsId: number[], id: number): Promise<string> {
+  public async getFileById(
+    groupsId: number[],
+    id: number,
+    width?: WidthOptions,
+  ): Promise<string> {
     const picture = await this.pictureRepository.findOne({
       where: {
         id: id,
@@ -86,7 +90,7 @@ export class PicturesService {
       );
     }
 
-    return this.filesManager.getFile(picture.fileData);
+    return this.filesManager.getFile(picture.fileData, width);
   }
 
   private canAccess(picture: Picture, groupsId: number[]) {

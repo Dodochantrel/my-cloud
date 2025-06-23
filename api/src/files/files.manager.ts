@@ -141,10 +141,11 @@ export class FilesManager {
     }
   }
 
-  getFile(fileData: FileData, width: number = 100): string {
+  getFile(fileData: FileData, widthOptions: WidthOptions = 'big'): string {
     if (!fileData) {
       throw new NotFoundException('File not found');
     }
+    const width = this.getWidth(widthOptions);
     const storageBasePath = path.resolve(
       this.configService.get<string>('STORAGE_BASE_PATH'),
     );
@@ -159,4 +160,19 @@ export class FilesManager {
     }
     return `.${parts[1]}`;
   }
+
+  private getWidth(widthOption: WidthOptions): number {
+    switch (widthOption) {
+      case 'small':
+        return 20;
+      case 'medium':
+        return 60;
+      case 'big':
+        return 100;
+      default:
+        throw new Error(`Invalid width option: ${widthOption}`);
+    }
+  }
 }
+
+export type WidthOptions = 'small' | 'medium' | 'big';
