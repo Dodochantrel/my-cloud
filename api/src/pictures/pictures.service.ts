@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Picture } from './picture.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FilesManager } from 'src/files/files.manager';
 import { FileData } from 'src/files/file-data.entity';
 import { User } from 'src/users/user.entity';
+import { PicturesCategory } from 'src/pictures-categories/pictures-category.entity';
 
 @Injectable()
 export class PicturesService {
@@ -21,9 +22,16 @@ export class PicturesService {
   public async uploadPictures(
     files: Array<Express.Multer.File>,
     userId: number,
+    categoriesId: number[] = [],
   ) {
     const uploadPromises = files.map(async (file) => {
-      const picture = await this.save(new Picture({}));
+      const picture = await this.save(
+        new Picture({
+          picturesCategories: categoriesId.map(
+            (categoryId) => new PicturesCategory({ id: categoryId }),
+          ),
+        }),
+      );
       const fileData = this.createOrEditFileData(file, picture.id, userId);
       return this.filesManager.uploadFile(file, fileData);
     });
@@ -48,7 +56,6 @@ export class PicturesService {
   }
 
   public async getPicturesByCategory(
-    groupsId: number[],
     categoryId,
   ): Promise<{ ids: number[]; count: number }> {
     const [data, count] = await this.pictureRepository.findAndCount({
@@ -87,13 +94,11 @@ export class PicturesService {
       throw new Error('Picture not found');
     }
 
-    if (
-      !picture.picturesCategories ||
-      !picture.picturesCategories.groups ||
-      !picture.picturesCategories.groups.some((group) =>
-        groupsId.includes(group.id),
-      )
-    ) {
+    const hasAccess = picture.picturesCategories?.some((category) =>
+      category.groups?.some((group) => groupsId.includes(group.id)),
+    );
+
+    if (!hasAccess) {
       throw new Error('You do not have access to this picture');
     }
   }

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, DataSource, Repository } from 'typeorm';
 import { PicturesCategory } from './pictures-category.entity';
+import { Group } from 'src/groups/group.entity';
 
 @Injectable()
 export class PicturesCategoriesService {
@@ -49,5 +50,45 @@ export class PicturesCategoriesService {
 
   public async delete(id: number): Promise<void> {
     await this.picturesCategoryRepository.delete(id);
+  }
+
+  public async update(
+    id: number,
+    name: string,
+    groupsId: number[],
+  ): Promise<PicturesCategory> {
+    const category = await this.picturesCategoryRepository.findOne({
+      where: { id },
+      relations: ['user', 'groups'],
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
+    this.canAccess(category.user.id, groupsId, category);
+
+    category.name = name;
+    category.groups = groupsId.map((groupId) => new Group({ id: groupId }));
+
+    return this.picturesCategoryRepository.save(category);
+  }
+
+  public async canAccess(
+    userId: number,
+    groupsId: number[],
+    picturesCategory: PicturesCategory,
+  ) {
+    if (picturesCategory.user.id === userId) {
+      throw new UnauthorizedException('User cannot access their own category');
+    }
+    if (picturesCategory.groups.length === 0) {
+      throw new UnauthorizedException('User cannot access their own category');
+    }
+    if (!picturesCategory.groups.some((group) => groupsId.includes(group.id))) {
+      throw new UnauthorizedException(
+        'User cannot access this category due to group restrictions',
+      );
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { PicturesCategoriesService } from './pictures-categories.service';
 import {
   mapFromPicturesCategoriesToResponseDtos,
@@ -44,6 +44,30 @@ export class PicturesCategoriesController {
             ? dto.groupsId.map((groupId) => new Group({ id: groupId }))
             : [],
         }),
+      ),
+    );
+  }
+
+  @Patch(':id')
+  @ApiBody({
+    type: PicturesCategoryRequestDto,
+    description: 'Update an existing pictures category',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The pictures category has been successfully updated.',
+    type: PicturesCategoryResponseDto,
+  })
+  async update(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Body() dto: PicturesCategoryRequestDto,
+    @Param('id') id: string,
+  ): Promise<PicturesCategoryResponseDto> {
+    return mapFromPicturesCategoryToResponseDto(
+      await this.picturesCategoriesService.update(
+        Number(id),
+        dto.name,
+        dto.groupsId ? dto.groupsId : [],
       ),
     );
   }

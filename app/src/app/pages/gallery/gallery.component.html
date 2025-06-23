@@ -14,12 +14,16 @@
                 filterPlaceholder="Rechercher par nom"
                 selectionMode="single"
               >
+
                 <ng-template let-node pTemplate="default">
+                    
                   <div>
                     <span>{{ node.label }}</span>
-                    <p-button icon="pi pi-check"  class="add-category" [rounded]="true" [text]="true" />
+                    <p-button icon="pi pi-pen-to-square" class="add-category" [rounded]="true" [text]="true" (onClick)="isAddingCategory = true" />
                   </div>
+
                 </ng-template>
+
               </p-tree>
                           
             </ng-template>
@@ -35,3 +39,5 @@
     </div>
 
 </div>
+
+<app-add-or-edit-picture-category [(isDisplayed)]="isAddingCategory"></app-add-or-edit-picture-category>

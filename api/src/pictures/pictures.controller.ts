@@ -6,11 +6,13 @@ import {
   UploadedFiles,
   Res,
   UseInterceptors,
+  Body,
 } from '@nestjs/common';
 import { PicturesService } from './pictures.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { Response } from 'express';
+import { PictureRequestDto } from './dto/picture-request.dto';
 
 @Controller('pictures')
 export class PicturesController {
@@ -21,8 +23,13 @@ export class PicturesController {
   async uploadPicture(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Body() dto: PictureRequestDto,
   ) {
-    return this.picturesService.uploadPictures(files, tokenPayload.id);
+    return this.picturesService.uploadPictures(
+      files,
+      tokenPayload.id,
+      dto.categoriesId,
+    );
   }
 
   @Get('categories/:categoryId')
@@ -30,10 +37,7 @@ export class PicturesController {
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('categoryId') categoryId: number,
   ) {
-    return this.picturesService.getPicturesByCategory(
-      tokenPayload.groupsId,
-      categoryId,
-    );
+    return this.picturesService.getPicturesByCategory(categoryId);
   }
 
   @Get(':id')

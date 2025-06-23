@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { AgendaEvent, defaultAgendaEvent } from '../../../class/agenda-event';
+import { AgendaEvent } from '../../../class/agenda-event';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';

@@ -1,0 +1,34 @@
+<p-dialog header="Créer une catégorie" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
+
+    <form class="form" [formGroup]="form">
+
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="Anniversaire de Gillou" formControlName="name"
+                    [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+            <small class="p-error block error-message">Le nom est requis</small>
+            }
+        </div>
+
+        <div class="input-container">
+            <label for="groups" class="label">Associer a des groupes</label>
+            <p-iconfield [ngClass]="{'p-error': form.get('groups')?.invalid && form.get('groups')?.dirty}">
+                <p-inputicon styleClass="pi pi-user" />
+                <p-multiselect [options]="myGroups" optionLabel="name" optionValue="id"
+                    placeholder="Associer a des groupes" formControlName="groups" appendTo="body" />
+            </p-iconfield>
+        </div>
+
+        <div class="buttons-container">
+            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isLoading" />
+            <p-button label="Enregistrer" [loading]="isLoading" />
+        </div>
+
+    </form>
+
+</p-dialog>
