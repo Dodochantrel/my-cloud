@@ -1,4 +1,5 @@
 import { Group } from 'src/groups/group.entity';
+import { Picture } from 'src/pictures/picture.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -36,6 +37,9 @@ export class PicturesCategory {
 
   @ManyToOne(() => User, (user) => user.picturesCategories)
   user: Relation<User>;
+
+  @ManyToMany(() => Picture, (picture) => picture.picturesCategories)
+  pictures: Relation<Picture[]>;
 
   @UpdateDateColumn({
     type: 'timestamp',

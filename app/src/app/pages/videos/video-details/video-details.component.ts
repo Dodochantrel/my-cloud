@@ -73,7 +73,6 @@ export class VideoDetailsComponent implements OnInit {
   public video: Video = defaultVideo;
 
   getVideoDetails(type: VideoType, id: number): Observable<Video> {
-    console.log('getVideoDetails', type, id);
     if (type === 'movie') {
       return this.videoService.getOneMovie(id);
     } else if (type === 'serie') {

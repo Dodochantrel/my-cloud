@@ -87,11 +87,11 @@ export class RecipesService {
       relations: ['fileData', 'user', 'groups'],
     });
     this.canAccess(recipe, userId);
-    if (recipe.fileData) {
-      await this.filesManager.deleteFile(recipe.fileData);
-    }
     const fileData = this.createOrEditFileData(file, id, userId);
-    return this.filesManager.uploadFile(file, fileData);
+    recipe.fileData
+      ? await this.filesManager.updateFile(file, recipe.fileData, fileData)
+      : await this.filesManager.uploadFile(file, fileData);
+    return this.filesManager.getFile(fileData);
   }
 
   createOrEditFileData(

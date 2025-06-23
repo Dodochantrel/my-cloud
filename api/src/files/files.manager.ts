@@ -4,12 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as path from 'path';
 import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class FilesManager {
   constructor(
     @InjectRepository(FileData)
     private fileDataRepository: Repository<FileData>,
+    private readonly configService: ConfigService,
   ) {}
 
   private readonly logger = new Logger(FilesManager.name);
@@ -40,45 +43,77 @@ export class FilesManager {
     this.logger.log(`FileData with id ${id} deleted`);
   }
 
-  async uploadFile(
-    file: Express.Multer.File,
-    fileData: FileData,
-  ): Promise<string> {
+  async uploadFile(file: Express.Multer.File, fileData: FileData) {
     try {
       const fileDataSaved = await this.save(fileData);
-      const storageBasePath = process.env.STORAGE_BASE_PATH;
+      const basePath = this.prepareBasePath(fileDataSaved);
 
-      const basePath = path.join(storageBasePath, fileDataSaved.path);
-      const filePath = path.join(
-        basePath,
-        `${fileDataSaved.name}${this.getExtension(file.mimetype)}`,
-      );
-
-      // Crée le dossier si nécessaire
-      await fs.promises.mkdir(basePath, { recursive: true });
-
-      // Enregistre le fichier sur le disque
-      await fs.promises.writeFile(filePath, file.buffer);
-
-      return this.getFile(fileDataSaved);
+      return await this.saveFile(file, basePath, fileDataSaved);
     } catch (error) {
       this.logger.error('Error uploading file', error);
       throw new Error('Failed to upload file');
     }
   }
 
-  async deleteFile(fileData: FileData): Promise<void> {
-    try {
-      const storageBasePath = process.env.STORAGE_BASE_PATH;
+  private prepareBasePath(fileData: FileData): string {
+    const storageBasePath = this.configService.get<string>('STORAGE_BASE_PATH');
 
-      const basePath = path.join(storageBasePath, fileData.path);
+    return path.join(storageBasePath, fileData.path);
+  }
+
+  async saveFile(
+    file: Express.Multer.File,
+    basePath: string,
+    fileData: FileData,
+  ) {
+    const writePromises = [];
+
+    const metadata = await sharp(file.buffer).metadata();
+    const originalWidth = metadata.width;
+
+    for (let i = 0; i < 3; i++) {
+      const taux = 100 - i * 40;
+      const dirPath = path.join(basePath, `${taux}`);
       const filePath = path.join(
-        basePath,
-        `${fileData.name}${this.getExtension(fileData.mimetype)}`,
+        dirPath,
+        `${fileData.name}${this.getExtension(file.mimetype)}`,
       );
 
-      await fs.promises.unlink(filePath);
-      this.logger.log(`File deleted: ${filePath}`);
+      // Crée le dossier si nécessaire
+      await fs.promises.mkdir(dirPath, { recursive: true });
+
+      // Redimensionne l'image avec sharp
+      const resizePromise = sharp(file.buffer)
+        .resize({ width: Math.round(originalWidth * (taux / 100)) })
+        .toFile(filePath);
+
+      writePromises.push(resizePromise);
+    }
+
+    // Attend que tous les fichiers soient écrits
+    return await Promise.all(writePromises);
+  }
+
+  async deleteFile(fileData: FileData): Promise<void> {
+    try {
+      const storageBasePath =
+        this.configService.get<string>('STORAGE_BASE_PATH');
+
+      const basePath = path.join(storageBasePath, fileData.path);
+      // Récupérer tout les répertoires dans le chemin
+      const directories = await fs.promises.readdir(basePath, {
+        withFileTypes: true,
+      });
+      // Supprimer les répertoires vides
+      for (const dir of directories) {
+        const filePath = path.join(
+          basePath,
+          `${dir.name}/${fileData.name}${this.getExtension(fileData.mimetype)}`,
+        );
+
+        await fs.promises.unlink(filePath);
+        this.logger.log(`File deleted: ${filePath}`);
+      }
     } catch (error) {
       if (error.code === 'ENOENT') {
         this.logger.warn(`File not found: ${error.path}`);
@@ -93,27 +128,28 @@ export class FilesManager {
     newFile: Express.Multer.File,
     oldFileData: FileData,
     newFileData: FileData,
-  ): Promise<string> {
+  ) {
     try {
+      newFileData.id = oldFileData.id;
       // Supprimer l'ancien fichier
       await this.deleteFile(oldFileData);
       // Ajouter le nouveau fichier
-      await this.uploadFile(newFile, newFileData);
-
-      return this.getFile(newFileData);
+      return await this.uploadFile(newFile, newFileData);
     } catch (error) {
       this.logger.error('Error updating file', error);
       throw new Error('Failed to update file');
     }
   }
 
-  getFile(fileData: FileData): string {
+  getFile(fileData: FileData, width: number = 100): string {
     if (!fileData) {
       throw new NotFoundException('File not found');
     }
-    const storageBasePath = path.resolve(process.env.STORAGE_BASE_PATH);
+    const storageBasePath = path.resolve(
+      this.configService.get<string>('STORAGE_BASE_PATH'),
+    );
     const fileName = `${fileData.name}${this.getExtension(fileData.mimetype)}`;
-    return path.join(storageBasePath, 'recipes', fileName);
+    return path.join(storageBasePath, fileData.path, `${width}`, fileName);
   }
 
   private getExtension(mimetype: string): string {

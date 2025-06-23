@@ -1,3 +1,4 @@
+import { Picture } from 'src/pictures/picture.entity';
 import { Recipe } from 'src/recipes/recipe.entity';
 import { User } from 'src/users/user.entity';
 import {
@@ -31,6 +32,9 @@ export class FileData {
 
   @ManyToOne(() => User, (user) => user.filesData)
   user: Relation<User>;
+
+  @OneToOne(() => Picture, (picture) => picture.fileData)
+  pictures: Relation<Picture>;
 
   constructor(partial: Partial<FileData>) {
     Object.assign(this, partial);
