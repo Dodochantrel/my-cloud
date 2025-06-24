@@ -1,50 +1,45 @@
 <div class="container">
 
-    <div class="bloc-default">
+  <div class="bloc-default">
 
-        <p-splitter [panelSizes]="[35, 65]">
+    <p-splitter [panelSizes]="[35, 65]">
 
-            <ng-template #panel>
+      <ng-template #panel>
 
-                <p-tree
-                class="tree"
-                [value]="treeCategories"
-                [filter]="true"
-                filterMode="strict"
-                filterPlaceholder="Rechercher par nom"
-                selectionMode="single"
-              >
+        <p-tree class="tree" [value]="treeCategories" [filter]="true" filterMode="strict"
+          filterPlaceholder="Rechercher par nom" selectionMode="single" [draggableNodes]="true" [droppableNodes]="true" (onNodeDrop)="onNodeDrop($event)"
+          draggableScope="self" droppableScope="self">
 
-                <ng-template let-node pTemplate="default">
-                  <div class="tree-line">
-                    <span>{{ node.label }}</span>
 
-                    <p-menu #menu [popup]="true" [model]="menuItems" styleClass="custom-menu"></p-menu>
+          <ng-template let-node pTemplate="default">
+            <div class="tree-line">
+              <span>{{ node.label }}</span>
 
-                    <p-button
-                      icon="pi pi-ellipsis-h"
-                      [rounded]="true"
-                      [text]="true"
-                      [style]="{ float: 'right' }"
-                      (onClick)="openMenu($event, menu, node)"
-                    />
-                  </div>
-                </ng-template>
+              <p-menu #menu [popup]="true" [model]="menuItems" styleClass="custom-menu"></p-menu>
 
-              </p-tree>
-                          
-            </ng-template>
+              <p-button icon="pi pi-ellipsis-h" [rounded]="true" [text]="true" [style]="{ float: 'right' }"
+                (onClick)="openMenu($event, menu, node)" />
+            </div>
+          </ng-template>
 
-            <ng-template #panel>
+        </p-tree>
 
-                <h1>Contenu</h1>
+      </ng-template>
 
-            </ng-template>
+      <ng-template #panel>
 
-        </p-splitter>
+        <h1>Contenu</h1>
 
-    </div>
+        <app-photo [categoryId]="currentNode!.data!.id"></app-photo>
+
+      </ng-template>
+
+    </p-splitter>
+
+  </div>
 
 </div>
 
-<app-add-or-edit-picture-category [(isDisplayed)]="isAddingOrEditingCategory" [pictureCategory]="currentNode?.data" [isEditMode]="isEditingCategory" (newCategoryCreated)="addNew($event)" (categoryEdited)="editOne($event)"></app-add-or-edit-picture-category>
+<app-add-or-edit-picture-category [(isDisplayed)]="isAddingOrEditingCategory" [pictureCategory]="currentNode?.data"
+  [isEditMode]="isEditingCategory" (newCategoryCreated)="addNew($event)"
+  (categoryEdited)="editOne($event)"></app-add-or-edit-picture-category>

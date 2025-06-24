@@ -6,21 +6,30 @@ import { NotificationService } from '../../services/notification.service';
 import { BrowserService } from '../../services/browser.service';
 import { SplitterModule } from 'primeng/splitter';
 import { ButtonModule } from 'primeng/button';
-import { AddOrEditPictureCategoryComponent } from '../../components/gallery/add-or-edit-picture-category/add-or-edit-picture-category.component';
-import { MenuItem, TreeNode } from 'primeng/api';
+import { AddOrEditPictureCategoryComponent } from '../../components/galleries/add-or-edit-picture-category/add-or-edit-picture-category.component';
+import { MenuItem, TreeDragDropService, TreeNode } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
+import { PhotoComponent } from '../../components/galleries/photo/photo.component';
 
 @Component({
   selector: 'app-gallery',
-  imports: [TreeModule, SplitterModule, ButtonModule, AddOrEditPictureCategoryComponent, MenuModule],
+  imports: [
+    TreeModule,
+    SplitterModule,
+    ButtonModule,
+    AddOrEditPictureCategoryComponent,
+    MenuModule,
+    PhotoComponent,
+  ],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.css',
+  providers: [TreeDragDropService],
 })
 export class GalleryComponent implements OnInit {
   constructor(
     private readonly pictureService: PictureService,
     private readonly notificationService: NotificationService,
-        private readonly browserService: BrowserService,
+    private readonly browserService: BrowserService
   ) {}
 
   public categories: PictureCategory[] = [];
@@ -43,12 +52,11 @@ export class GalleryComponent implements OnInit {
     {
       label: 'Supprimer',
       icon: 'pi pi-trash',
-      command: () => this.onDelete(),
+      command: (event) => this.onDelete(event.originalEvent!),
       style: { color: 'red' },
     },
   ];
   public currentNode: TreeNode | null = null;
-
 
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
@@ -64,7 +72,10 @@ export class GalleryComponent implements OnInit {
         this.treeCategories = this.mapForTree(categories);
       },
       error: (error) => {
-        this.notificationService.showError('Erreur récupération des catégories', error);
+        this.notificationService.showError(
+          'Erreur récupération des catégories',
+          error
+        );
       },
       complete: () => {
         this.isLoadingDate = false;
@@ -90,8 +101,14 @@ export class GalleryComponent implements OnInit {
     this.isEditingCategory = true;
   }
 
-  onDelete() {
-    console.log('Supprimer', this.currentNode);
+  onDelete(event: Event) {
+    this.notificationService.confirm(
+      event,
+      'Voulez-vous vraiment supprimer cet élément ?',
+      'Cela supprimera également toutes les sous-catégories et les images associées.',
+      () => {},
+      () => {}
+    );
   }
 
   openMenu(event: MouseEvent, menu: any, node: TreeNode) {
@@ -105,10 +122,38 @@ export class GalleryComponent implements OnInit {
   }
 
   editOne(pictureCategory: PictureCategory) {
-    const index = this.categories.findIndex(cat => cat.id === pictureCategory.id);
+    const index = this.categories.findIndex(
+      (cat) => cat.id === pictureCategory.id
+    );
     if (index !== -1) {
       this.categories[index] = pictureCategory;
       this.treeCategories[index] = this.mapForTree([pictureCategory])[0];
     }
+  }
+
+  onNodeDrop(event: any) {
+    const newParent = event.originalEvent.target.classList?.contains('p-tree-node-droppoint') ? null : event.dropNode.data;
+    const category = event.dragNode.data;
+    this.pictureService.changeParent(category.id, newParent ? newParent.id : null).subscribe({
+      next: (updatedCategory) => {
+        const message =  newParent ? `Catégorie ${category.name} déplacée vers ${newParent.name}` : `Catégorie ${category.name} déplacée vers la racine`;
+        this.notificationService.showSuccess(
+          'Succès', message
+        );
+        const index = this.categories.findIndex(
+          (cat) => cat.id === updatedCategory.id
+        );
+        if (index !== -1) {
+          this.categories[index] = updatedCategory;
+          this.treeCategories[index] = this.mapForTree([updatedCategory])[0];
+        }
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          'Erreur lors du déplacement de la catégorie',
+          error
+        ); 
+      },
+    });
   }
 }

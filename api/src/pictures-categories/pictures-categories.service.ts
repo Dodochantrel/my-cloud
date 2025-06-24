@@ -76,7 +76,43 @@ export class PicturesCategoriesService {
     return this.picturesCategoryRepository.save(category);
   }
 
-  public async canAccess(
+  public async changeParent(
+    id: number,
+    userId: number,
+    parentId: number | null,
+  ): Promise<PicturesCategory> {
+    const category = await this.picturesCategoryRepository.findOne({
+      where: { id },
+      relations: ['user', 'groups'],
+    });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
+    this.canAccess(
+      userId,
+      category.groups.map((g) => g.id),
+      category,
+    );
+
+    let newParent: PicturesCategory | null = null;
+
+    if (parentId !== null) {
+      newParent = await this.picturesCategoryRepository.findOneBy({
+        id: parentId,
+      });
+      if (!newParent) {
+        throw new Error('New parent category not found');
+      }
+    }
+
+    category.parent = newParent;
+
+    return this.picturesCategoryRepository.save(category);
+  }
+
+  private async canAccess(
     userId: number,
     groupsId: number[],
     picturesCategory: PicturesCategory,

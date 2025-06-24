@@ -39,4 +39,17 @@ export class PictureService {
       body
     ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
   }
+
+  changeParent(
+    id: number,
+    parentId: number | null
+  ): Observable<PictureCategory> {
+    const body = {
+      parentId
+    }
+    return this.httpClient.patch<PictureCategoryDto>(
+      `${environment.apiUrl}pictures-categories/${id}/parent`,
+      body
+    ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
+  }
 }

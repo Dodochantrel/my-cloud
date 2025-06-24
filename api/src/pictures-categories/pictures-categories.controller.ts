@@ -11,6 +11,7 @@ import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { PicturesCategory } from './pictures-category.entity';
 import { User } from 'src/users/user.entity';
 import { Group } from 'src/groups/group.entity';
+import { PicturesCategoryParentRequestDto } from './dto/picture-category-parent-request.dto';
 
 @Controller('pictures-categories')
 export class PicturesCategoriesController {
@@ -80,6 +81,31 @@ export class PicturesCategoriesController {
       await this.picturesCategoriesService.findMy(
         tokenPayload.id,
         tokenPayload.groupsId,
+      ),
+    );
+  }
+
+  @Patch(':id/parent')
+  @ApiBody({
+    type: PicturesCategoryParentRequestDto,
+    description: 'Update the parent of an existing pictures category',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'The parent of the pictures category has been successfully updated.',
+    type: PicturesCategoryResponseDto,
+  })
+  async changeParent(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Body() dto: PicturesCategoryParentRequestDto,
+    @Param('id') id: string,
+  ): Promise<PicturesCategoryResponseDto> {
+    return mapFromPicturesCategoryToResponseDto(
+      await this.picturesCategoriesService.changeParent(
+        Number(id),
+        tokenPayload.id,
+        dto.parentId,
       ),
     );
   }
