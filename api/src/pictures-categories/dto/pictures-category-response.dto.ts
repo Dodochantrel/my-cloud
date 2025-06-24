@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PicturesCategory } from '../pictures-category.entity';
+import {
+  GroupResponseDto,
+  mapFromGroupsToGroupsResponseDto,
+} from 'src/groups/dtos/group-response.dto';
 
 export class PicturesCategoryResponseDto {
   @ApiProperty({
@@ -20,6 +24,14 @@ export class PicturesCategoryResponseDto {
     isArray: true,
   })
   childrens: PicturesCategoryResponseDto[];
+
+  @ApiProperty({
+    description: 'The groups associated with the pictures category',
+    type: () => GroupResponseDto,
+    isArray: true,
+    required: false,
+  })
+  groups?: GroupResponseDto[];
 }
 
 export const mapFromPicturesCategoryToResponseDto = (
@@ -30,6 +42,9 @@ export const mapFromPicturesCategoryToResponseDto = (
   responseDto.name = picturesCategory.name;
   responseDto.childrens = picturesCategory.childrens
     ? mapFromPicturesCategoriesToResponseDtos(picturesCategory.childrens)
+    : undefined;
+  responseDto.groups = picturesCategory.groups
+    ? mapFromGroupsToGroupsResponseDto(picturesCategory.groups)
     : undefined;
   return responseDto;
 };

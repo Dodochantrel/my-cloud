@@ -24,7 +24,7 @@ export class PicturesCategoriesService {
   ): Promise<PicturesCategory[]> {
     const qb = this.picturesCategoryRepository.createQueryBuilder('category');
     qb.leftJoin('category.user', 'user');
-    qb.leftJoin('category.groups', 'group');
+    qb.leftJoinAndSelect('category.groups', 'group');
     qb.where('category.parent IS NULL').andWhere(
       new Brackets((qb) => {
         qb.where('user.id = :userId', { userId });
@@ -41,7 +41,9 @@ export class PicturesCategoriesService {
     const trees: PicturesCategory[] = [];
 
     for (const root of roots) {
-      const fullTree = await treeRepo.findDescendantsTree(root);
+      const fullTree = await treeRepo.findDescendantsTree(root, {
+        relations: ['groups'],
+      });
       trees.push(fullTree);
     }
 
@@ -79,16 +81,14 @@ export class PicturesCategoriesService {
     groupsId: number[],
     picturesCategory: PicturesCategory,
   ) {
-    if (picturesCategory.user.id === userId) {
+    if (
+      picturesCategory.user.id === userId &&
+      !picturesCategory.groups.some((group) => groupsId.includes(group.id))
+    ) {
       throw new UnauthorizedException('User cannot access their own category');
     }
     if (picturesCategory.groups.length === 0) {
       throw new UnauthorizedException('User cannot access their own category');
-    }
-    if (!picturesCategory.groups.some((group) => groupsId.includes(group.id))) {
-      throw new UnauthorizedException(
-        'User cannot access this category due to group restrictions',
-      );
     }
   }
 }

@@ -2,7 +2,7 @@
 
     <div class="bloc-default">
 
-        <p-splitter [panelSizes]="[30, 70]">
+        <p-splitter [panelSizes]="[35, 65]">
 
             <ng-template #panel>
 
@@ -16,12 +16,19 @@
               >
 
                 <ng-template let-node pTemplate="default">
-                    
-                  <div>
+                  <div class="tree-line">
                     <span>{{ node.label }}</span>
-                    <p-button icon="pi pi-pen-to-square" class="add-category" [rounded]="true" [text]="true" (onClick)="isAddingCategory = true" />
-                  </div>
 
+                    <p-menu #menu [popup]="true" [model]="menuItems" styleClass="custom-menu"></p-menu>
+
+                    <p-button
+                      icon="pi pi-ellipsis-h"
+                      [rounded]="true"
+                      [text]="true"
+                      [style]="{ float: 'right' }"
+                      (onClick)="openMenu($event, menu, node)"
+                    />
+                  </div>
                 </ng-template>
 
               </p-tree>
@@ -40,4 +47,4 @@
 
 </div>
 
-<app-add-or-edit-picture-category [(isDisplayed)]="isAddingCategory"></app-add-or-edit-picture-category>
+<app-add-or-edit-picture-category [(isDisplayed)]="isAddingOrEditingCategory" [pictureCategory]="currentNode?.data" [isEditMode]="isEditingCategory" (newCategoryCreated)="addNew($event)" (categoryEdited)="editOne($event)"></app-add-or-edit-picture-category>

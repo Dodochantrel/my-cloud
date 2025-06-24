@@ -77,12 +77,14 @@ export class EventsController {
           user: new User({
             id: tokenPayload.id,
           }),
-          groups: dto.groupsId.map(
-            (groupId) =>
-              new Group({
-                id: groupId,
-              }),
-          ),
+          groups: dto.groupsId
+            ? dto.groupsId.map(
+                (groupId) =>
+                  new Group({
+                    id: groupId,
+                  }),
+              )
+            : [],
         }),
       ),
     );
