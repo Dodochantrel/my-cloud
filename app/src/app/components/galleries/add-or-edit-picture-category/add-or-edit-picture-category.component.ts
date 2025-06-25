@@ -110,7 +110,7 @@ export class AddOrEditPictureCategoryComponent implements OnChanges, OnInit {
   }
 
   edit() {
-    this.pictureService.edit(
+    this.pictureService.editPictureCategory(
       this.pictureCategory!.id,
       this.form.value.name!,
       this.form.value.groups!,
@@ -137,7 +137,7 @@ export class AddOrEditPictureCategoryComponent implements OnChanges, OnInit {
   }
 
   create() {
-    this.pictureService.create(
+    this.pictureService.createPictureCategory(
       this.form.value.name!,
       this.form.value.groups!,
       this.pictureCategory?.id

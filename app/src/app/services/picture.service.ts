@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment.development';
 import { mapFromPictureCategoriesDto, mapFromPictureCategoryDto, PictureCategoryDto } from '../dto/picture-category.dto';
 import { map, Observable } from 'rxjs';
 import { PictureCategory } from '../class/picture-category';
+import { PicturesByCategoryDto } from '../dto/pictures-by-category.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -11,13 +12,13 @@ import { PictureCategory } from '../class/picture-category';
 export class PictureService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getAll(): Observable<PictureCategory[]> {
+  getAllPictureCategory(): Observable<PictureCategory[]> {
     return this.httpClient.get<PictureCategoryDto[]>(
       `${environment.apiUrl}pictures-categories`
     ).pipe(map(mapFromPictureCategoriesDto));
   }
 
-  create(name: string, groupsId: number[], parentId: number | null = null): Observable<PictureCategory> {
+  createPictureCategory(name: string, groupsId: number[], parentId: number | null = null): Observable<PictureCategory> {
     const body = {
       name,
       groupsId,
@@ -29,7 +30,7 @@ export class PictureService {
     ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
   }
 
-  edit(id: number, name: string, groupsId: number[]): Observable<PictureCategory> {
+  editPictureCategory(id: number, name: string, groupsId: number[]): Observable<PictureCategory> {
     const body = {
       name,
       groupsId
@@ -40,7 +41,7 @@ export class PictureService {
     ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
   }
 
-  changeParent(
+  changeParentPictureCategory(
     id: number,
     parentId: number | null
   ): Observable<PictureCategory> {
@@ -51,5 +52,32 @@ export class PictureService {
       `${environment.apiUrl}pictures-categories/${id}/parent`,
       body
     ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
+  }
+
+  getPicturesByCategory(categoryId: number): Observable<{ ids: number[]; count: number }> {
+    return this.httpClient.get<PicturesByCategoryDto>(
+      `${environment.apiUrl}pictures/categories/${categoryId}`
+    );
+  }
+
+  getFile(id: number): Observable<Blob> {
+    return this.httpClient.get(`${environment.apiUrl}pictures/${id}`, {
+      responseType: 'blob',
+    });
+  }
+
+  uploadFiles(pictureCategoryId: number, files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+    formData.append('categoryId', pictureCategoryId.toString());
+    return this.httpClient.post(
+      `${environment.apiUrl}pictures/`,
+      formData,
+      {
+        responseType: 'blob',
+      }
+    );
   }
 }

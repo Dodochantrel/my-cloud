@@ -7,6 +7,7 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Relation,
   Tree,
@@ -38,7 +39,7 @@ export class PicturesCategory {
   @ManyToOne(() => User, (user) => user.picturesCategories)
   user: Relation<User>;
 
-  @ManyToMany(() => Picture, (picture) => picture.picturesCategories)
+  @OneToMany(() => Picture, (picture) => picture.pictureCategory)
   pictures: Relation<Picture[]>;
 
   @UpdateDateColumn({

@@ -34,7 +34,7 @@ export class FileData {
   user: Relation<User>;
 
   @OneToOne(() => Picture, (picture) => picture.fileData)
-  pictures: Relation<Picture>;
+  picture: Relation<Picture>;
 
   constructor(partial: Partial<FileData>) {
     Object.assign(this, partial);

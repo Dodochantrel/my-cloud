@@ -54,6 +54,10 @@ body {
     width: 100% !important;
 }
 
+.no-margin {
+    margin: 0;
+}
+
 .p-error {
     color: var(--p-inputtext-invalid-placeholder-color);
 }

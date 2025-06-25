@@ -1,0 +1,47 @@
+<p-fileUpload
+  #uploader
+  name="files"
+  [multiple]="true"
+  accept="image/*"
+  maxFileSize="10000000"
+  (onSelect)="onFileSelect($event)"
+  url="http://localhost:3000/my-cloud-api/pictures"
+>
+
+  <ng-template #header let-chooseCallback="chooseCallback" let-uploadCallback="uploadCallback">
+    <div class="header">
+
+      <span>Fichiers : {{ selectedFilesCount }} / 20</span>
+      <div class="buttons-container">
+        <p-button (onClick)="choose($event, chooseCallback)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+        <p-button icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" (onClick)="uploadEvent(uploadCallback)" />
+        <p-button icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger"/>
+      </div>
+
+    </div>
+  </ng-template>
+
+  <ng-template #file></ng-template>
+  
+  <ng-template #content let-files let-removeFileCallback="removeFileCallback">
+    <div class="content">
+
+        @if (selectedFilesCount > 0) {
+            <div class="files-container">
+                @for (file of files; track $index) {
+                    <div class="file-bloc">
+                        <img [src]="file.objectURL" alt="Image preview" class="file-image" />
+                        <p>{{ file.name }}</p>
+                        <p-button icon="pi pi-times" (onClick)="onRemoveTemplatingFile($event, removeFileCallback, $index)" [rounded]="true" [outlined]="true" severity="danger"/>
+                    </div>
+                }
+            </div>
+        } @else {
+            <p>Aucun fichier sélectionné</p>
+        }
+
+    </div>
+
+  </ng-template>
+
+</p-fileUpload>

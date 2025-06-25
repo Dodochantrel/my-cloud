@@ -6,7 +6,7 @@
 
       <ng-template #panel>
 
-        <p-tree class="tree" [value]="treeCategories" [filter]="true" filterMode="strict"
+        <p-tree class="tree" [value]="treeCategories" [filter]="true" filterMode="strict" (onNodeSelect)="this.currentNode = $event.node"
           filterPlaceholder="Rechercher par nom" selectionMode="single" [draggableNodes]="true" [droppableNodes]="true" (onNodeDrop)="onNodeDrop($event)"
           draggableScope="self" droppableScope="self">
 
@@ -28,9 +28,13 @@
 
       <ng-template #panel>
 
-        <h1>Contenu</h1>
+        <div class="div">
 
-        <app-photo [categoryId]="currentNode!.data!.id"></app-photo>
+          <h1 class="no-margin">{{ currentNode === null ? 'Sélectionné une catégorie' : currentNode?.data?.name }}</h1>
+
+          <app-photo [categoryId]="currentNode?.data?.id"></app-photo>
+          
+        </div>
 
       </ng-template>
 

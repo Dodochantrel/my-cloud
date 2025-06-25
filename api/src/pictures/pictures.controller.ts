@@ -15,6 +15,8 @@ import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { Response } from 'express';
 import { PictureRequestDto } from './dto/picture-request.dto';
 import { WidthOptions } from 'src/files/files.manager';
+import { PictureByCategoryResponseDto } from './dto/pictures-by-category-response.dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('pictures')
 export class PicturesController {
@@ -30,16 +32,23 @@ export class PicturesController {
     return this.picturesService.uploadPictures(
       files,
       tokenPayload.id,
-      dto.categoriesId,
+      dto.categoryId,
     );
   }
 
   @Get('categories/:categoryId')
+  @ApiResponse({
+    status: 200,
+    description:
+      'Returns the list of picture IDs and count in the specified category.',
+    type: PictureByCategoryResponseDto,
+  })
   async getPicturesByCategory(
-    @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('categoryId') categoryId: number,
-  ) {
-    return this.picturesService.getPicturesByCategory(categoryId);
+  ): Promise<PictureByCategoryResponseDto> {
+    const response =
+      await this.picturesService.getPicturesByCategory(categoryId);
+    return new PictureByCategoryResponseDto(response.ids, response.count);
   }
 
   @Get(':id')

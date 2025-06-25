@@ -3,7 +3,8 @@ import { PicturesCategory } from 'src/pictures-categories/pictures-category.enti
 import {
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   Relation,
@@ -15,14 +16,15 @@ export class Picture {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => FileData, (fileData) => fileData.pictures)
+  @OneToOne(() => FileData, (fileData) => fileData.picture)
+  @JoinColumn()
   fileData: Relation<FileData>;
 
-  @ManyToMany(
+  @ManyToOne(
     () => PicturesCategory,
     (picturesCategory) => picturesCategory.pictures,
   )
-  picturesCategories: Relation<PicturesCategory[]>;
+  pictureCategory: Relation<PicturesCategory>;
 
   @UpdateDateColumn({
     type: 'timestamp',

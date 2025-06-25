@@ -66,7 +66,7 @@ export class GalleryComponent implements OnInit {
 
   getCategories() {
     this.isLoadingDate = true;
-    this.pictureService.getAll().subscribe({
+    this.pictureService.getAllPictureCategory().subscribe({
       next: (categories) => {
         this.categories = categories;
         this.treeCategories = this.mapForTree(categories);
@@ -134,7 +134,7 @@ export class GalleryComponent implements OnInit {
   onNodeDrop(event: any) {
     const newParent = event.originalEvent.target.classList?.contains('p-tree-node-droppoint') ? null : event.dropNode.data;
     const category = event.dragNode.data;
-    this.pictureService.changeParent(category.id, newParent ? newParent.id : null).subscribe({
+    this.pictureService.changeParentPictureCategory(category.id, newParent ? newParent.id : null).subscribe({
       next: (updatedCategory) => {
         const message =  newParent ? `Catégorie ${category.name} déplacée vers ${newParent.name}` : `Catégorie ${category.name} déplacée vers la racine`;
         this.notificationService.showSuccess(

@@ -22,14 +22,12 @@ export class PicturesService {
   public async uploadPictures(
     files: Array<Express.Multer.File>,
     userId: number,
-    categoriesId: number[] = [],
+    categorieId: number,
   ) {
     const uploadPromises = files.map(async (file) => {
       const picture = await this.save(
         new Picture({
-          picturesCategories: categoriesId.map(
-            (categoryId) => new PicturesCategory({ id: categoryId }),
-          ),
+          pictureCategory: new PicturesCategory({ id: categorieId }),
         }),
       );
       const fileData = this.createOrEditFileData(file, picture.id, userId);
@@ -46,11 +44,11 @@ export class PicturesService {
     id: number = null,
   ): FileData {
     return new FileData({
-      id: id,
+      id: id ? id : undefined,
       path: 'pictures/',
       mimetype: file.mimetype,
       size: file.size,
-      pictures: new Picture({ id: pictureId }),
+      picture: new Picture({ id: pictureId }),
       user: new User({ id: userId }),
     });
   }
@@ -60,7 +58,7 @@ export class PicturesService {
   ): Promise<{ ids: number[]; count: number }> {
     const [data, count] = await this.pictureRepository.findAndCount({
       where: {
-        picturesCategories: { id: categoryId },
+        pictureCategory: { id: categoryId },
       },
       select: ['id'],
     });
@@ -98,7 +96,12 @@ export class PicturesService {
       throw new Error('Picture not found');
     }
 
-    const hasAccess = picture.picturesCategories?.some((category) =>
+    const categories = Array.isArray(picture.pictureCategory)
+      ? picture.pictureCategory
+      : picture.pictureCategory
+        ? [picture.pictureCategory]
+        : [];
+    const hasAccess = categories.some((category) =>
       category.groups?.some((group) => groupsId.includes(group.id)),
     );
 
