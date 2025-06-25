@@ -5,6 +5,7 @@ import { mapFromPictureCategoriesDto, mapFromPictureCategoryDto, PictureCategory
 import { map, Observable } from 'rxjs';
 import { PictureCategory } from '../class/picture-category';
 import { PicturesByCategoryDto } from '../dto/pictures-by-category.dto';
+import { FileWidth } from '../tools/file-width.type';
 
 @Injectable({
   providedIn: 'root',
@@ -60,8 +61,8 @@ export class PictureService {
     );
   }
 
-  getFile(id: number): Observable<Blob> {
-    return this.httpClient.get(`${environment.apiUrl}pictures/${id}`, {
+  getFile(id: number, width: FileWidth): Observable<Blob> {
+    return this.httpClient.get(`${environment.apiUrl}pictures/${id}?width=${width}`, {
       responseType: 'blob',
     });
   }

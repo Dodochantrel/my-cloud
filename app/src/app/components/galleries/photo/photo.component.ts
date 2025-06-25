@@ -4,6 +4,8 @@ import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { FileUpload } from 'primeng/fileupload';
+import { FileWidth } from '../../../tools/file-width.type';
+import { PictureCategory } from '../../../class/picture-category';
 
 @Component({
   selector: 'app-photo',
@@ -12,7 +14,7 @@ import { FileUpload } from 'primeng/fileupload';
   styleUrl: './photo.component.css'
 })
 export class PhotoComponent {
-  categoryId = input<number>();
+  category = input<PictureCategory>();
   public picturesFilesUrls: string[] = [];
   public selectedFilesCount: number = 0;
   public isAddingFiles: boolean = false;
@@ -22,14 +24,15 @@ export class PhotoComponent {
     private readonly notificationService: NotificationService
   ) {
     effect(() => {
-      if (this.categoryId()) {
+      if (this.category()!.id) {
         this.getPicturesByCategory();
+        this.picturesFilesUrls = [];
       }
     });
   }
 
   getPicturesByCategory() {
-    this.pictureService.getPicturesByCategory(this.categoryId()!).subscribe({
+    this.pictureService.getPicturesByCategory(this.category()!.id).subscribe({
       next: (content) => {
         this.getPictures(content);
       },
@@ -41,12 +44,12 @@ export class PhotoComponent {
 
   getPictures(content: { ids: number[], count: number }) {
     content.ids.forEach((id) => {
-      this.getPictureFile(id);
+      this.getPictureFile(id, 'small');
     });    
   }
 
-  getPictureFile(id: number) {
-    this.pictureService.getFile(id).subscribe({
+  getPictureFile(id: number, width: FileWidth = 'large') {
+    this.pictureService.getFile(id, width).subscribe({
       next: (blob: Blob) => {
         this.picturesFilesUrls.push(URL.createObjectURL(blob));
       },
@@ -73,4 +76,10 @@ export class PhotoComponent {
     callback();
   }
 
+  onBeforeSend(event: any) {
+    const formData: FormData = event.formData;
+  
+    // Ajouter ton champ personnalisé
+    formData.append('categoryId', this.category()!.id.toString());
+  }
 }

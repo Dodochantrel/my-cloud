@@ -22,12 +22,12 @@ export class PicturesService {
   public async uploadPictures(
     files: Array<Express.Multer.File>,
     userId: number,
-    categorieId: number,
+    categoryId: number,
   ) {
     const uploadPromises = files.map(async (file) => {
       const picture = await this.save(
         new Picture({
-          pictureCategory: new PicturesCategory({ id: categorieId }),
+          pictureCategory: new PicturesCategory({ id: categoryId }),
         }),
       );
       const fileData = this.createOrEditFileData(file, picture.id, userId);
@@ -77,7 +77,7 @@ export class PicturesService {
       where: {
         id: id,
       },
-      relations: ['fileData', 'picturesCategories.groups'],
+      relations: ['fileData', 'pictureCategory.groups'],
     });
 
     this.canAccess(picture, groupsId);

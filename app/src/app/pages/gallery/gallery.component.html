@@ -30,9 +30,7 @@
 
         <div class="div">
 
-          <h1 class="no-margin">{{ currentNode === null ? 'Sélectionné une catégorie' : currentNode?.data?.name }}</h1>
-
-          <app-photo [categoryId]="currentNode?.data?.id"></app-photo>
+          <app-photo [category]="currentNode?.data"></app-photo>
           
         </div>
 

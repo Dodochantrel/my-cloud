@@ -19,6 +19,7 @@ export class FilesManager {
 
   private save(fileData: FileData): Promise<FileData> {
     fileData.prepareFileName();
+    console.log('FileData to save:', fileData);
     return this.fileDataRepository.save(fileData);
   }
 
@@ -145,7 +146,7 @@ export class FilesManager {
     if (!fileData) {
       throw new NotFoundException('File not found');
     }
-    const width = this.getWidth(widthOptions);
+    const width = widthOptions ? this.getWidth(widthOptions) : null;
     const storageBasePath = path.resolve(
       this.configService.get<string>('STORAGE_BASE_PATH'),
     );

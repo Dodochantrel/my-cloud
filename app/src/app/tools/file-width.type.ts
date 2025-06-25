@@ -1,0 +1,1 @@
+export type FileWidth = 'small' | 'medium' | 'large';
