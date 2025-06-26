@@ -24,7 +24,7 @@ export class PhotoComponent {
     private readonly notificationService: NotificationService
   ) {
     effect(() => {
-      if (this.category()!.id) {
+      if (this.category()?.id) {
         this.getPicturesByCategory();
         this.picturesFilesUrls = [];
       }

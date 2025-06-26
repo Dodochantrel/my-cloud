@@ -11,8 +11,8 @@
   </div>
 
   <p-fileUpload #uploader name="files" [multiple]="true" accept="image/*" maxFileSize="10000000"
-    (onSelect)="onFileSelect($event)" (onBeforeSend)="onBeforeSend($event)"
-    [url]="'http://localhost:3000/my-cloud-api/pictures?categoryId=' + category()!.id">
+    (onSelect)="onFileSelect($event)" (onBeforeSend)="onBeforeSend($event)" class="file-upload"
+    [url]="'http://localhost:3000/my-cloud-api/pictures?categoryId=' + category()?.id">
 
     <ng-template #header let-chooseCallback="chooseCallback" let-uploadCallback="uploadCallback">
       <div class="header">
