@@ -41,7 +41,7 @@ export class SerieComponent {
   public search: string = '';
 
   onMovieSelect(event: any) {
-    this.router.navigate([`videos/details/${event.value.id}`]);
+    this.router.navigate([`videos/details/serie/${event.value.id}`]);
   }
 
   searchSeries() {

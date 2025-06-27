@@ -36,6 +36,9 @@ export class FileData {
   @OneToOne(() => Picture, (picture) => picture.fileData)
   picture: Relation<Picture>;
 
+  @OneToOne(() => FileData, (fileData) => fileData.tasting)
+  tasting: Relation<FileData>;
+
   constructor(partial: Partial<FileData>) {
     Object.assign(this, partial);
   }

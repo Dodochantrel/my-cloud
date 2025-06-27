@@ -18,7 +18,7 @@ export const navigationItems: NavigationItem[] = [
       isOpen: false,
       subNavigationItems: [
         { name: 'Entrées', icon: 'egg_alt', path: '/recipes/starters' },
-        { name: 'Plats', icon: 'room_service', path: '/recipes/dishes' },
+        { name: 'Plats', icon: 'room_service', path: '/recipes/mains' },
         { name: 'Desserts', icon: 'cookie', path: '/recipes/desserts' },
         { name: 'Boissons', icon: 'sports_bar', path: '/recipes/drinks' },
         { name: 'Ajouter', icon: 'add_circle_outline', path: '/recipes/add' },
@@ -27,4 +27,14 @@ export const navigationItems: NavigationItem[] = [
     { name: 'Groupes', icon: 'groups', path: '/groups' },
     { name: 'Event', icon: 'event', path: '/events' },
     { name : 'Ma galerie', icon: 'add_photo_alternate', path: '/gallery' },
+    {
+      name: 'Dégustations',
+      icon: 'liquor',
+      path: null,
+      isOpen: false,
+      subNavigationItems: [
+        { name: 'Mes dégustations', icon: 'local_bar', path: '/tastings' },
+        { name: 'Ajouter', icon: 'add_circle_outline', path: '/tastings/add' },
+      ],
+    }
   ];

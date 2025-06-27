@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { WithLeftNavigationComponent } from './templates/with-left-navigation/with-left-navigation.component';
-import { StarterComponent } from './pages/recipes/starter/starter.component';
+import { RecipeComponent } from './pages/recipes/recipe/recipe.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { NoNavigationComponent } from './templates/no-navigation/no-navigation.component';
 import { MovieComponent } from './pages/videos/movie/movie.component';
@@ -10,6 +10,8 @@ import { GroupComponent } from './pages/groups/group/group.component';
 import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create-or-update-recipe.component';
 import { EventComponent } from './pages/events/event/event.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
+import { TastingComponent } from './pages/tastings/tasting/tasting.component';
+import { AddOrUpdateTastingComponent } from './pages/tastings/add-or-update-tasting/add-or-update-tasting.component';
 
 export const routes: Routes = [
   {
@@ -19,10 +21,37 @@ export const routes: Routes = [
       {
         path: 'recipes/starters',
         title: 'Recipes - Starters',
-        component: StarterComponent,
+        component: RecipeComponent,
         data: {
           title: 'Entrées',
           breadcrumb: [{ label: 'Recettes' }, { label: 'Entrées' }],
+        },
+      },
+      {
+        path: 'recipes/mains',
+        title: 'Recipes - Mains',
+        component: RecipeComponent,
+        data: {
+          title: 'Plats Principaux',
+          breadcrumb: [{ label: 'Recettes' }, { label: 'Plats Principaux' }],
+        },
+      },
+      {
+        path: 'recipes/desserts',
+        title: 'Recipes - Desserts',
+        component: RecipeComponent,
+        data: {
+          title: 'Desserts',
+          breadcrumb: [{ label: 'Recettes' }, { label: 'Desserts' }],
+        },
+      },
+      {
+        path: 'recipes/drinks',
+        title: 'Recipes - Drinks',
+        component: RecipeComponent,
+        data: {
+          title: 'Boissons',
+          breadcrumb: [{ label: 'Recettes' }, { label: 'Boissons' }],
         },
       },
       {
@@ -95,6 +124,33 @@ export const routes: Routes = [
         data: {
           title: 'Galerie',
           breadcrumb: [{ label: 'Galerie' }],
+        },
+      },
+      {
+        path: 'tastings',
+        title: 'Tastings',
+        component: TastingComponent,
+        data: {
+          title: 'Dégustations',
+          breadcrumb: [{ label: 'Dégustations' }],
+        },
+      },
+      {
+        path: 'tastings/:id',
+        title: 'Tasting Details',
+        component: AddOrUpdateTastingComponent,
+        data: {
+          title: 'Détails de la Dégustation',
+          breadcrumb: [{ label: 'Dégustations' }, { label: 'Détails' }],
+        },
+      },
+      {
+        path: 'tastings/add',
+        title: 'Add Tasting',
+        component: AddOrUpdateTastingComponent,
+        data: {
+          title: 'Ajouter une Dégustation',
+          breadcrumb: [{ label: 'Dégustations' }, { label: 'Ajouter' }],
         },
       }
     ],

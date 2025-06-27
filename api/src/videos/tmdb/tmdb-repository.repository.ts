@@ -205,6 +205,7 @@ export class TmdbRepositoryRepository {
   }
 
   private getGenreName(ids: number[], tmdbGenre: TmdbGenre[]): string[] | null {
+    if (!ids || ids.length === 0) return [];
     const genre = tmdbGenre.find((g) => ids.includes(g.id));
     return genre ? [genre.name] : [];
   }

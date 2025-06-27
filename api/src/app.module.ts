@@ -37,6 +37,10 @@ import { PicturesCategoriesService } from './pictures-categories/pictures-catego
 import { PicturesCategoriesController } from './pictures-categories/pictures-categories.controller';
 import { Picture } from './pictures/picture.entity';
 import { PicturesCategory } from './pictures-categories/pictures-category.entity';
+import { TastingsController } from './tastings/tastings.controller';
+import { TastingsService } from './tastings/tastings.service';
+import { Tasting } from './tastings/tasting.entity';
+import { TastingCategory } from './tastings/tasting-category.entity';
 
 @Module({
   imports: [
@@ -53,6 +57,8 @@ import { PicturesCategory } from './pictures-categories/pictures-category.entity
       EventDataType,
       PicturesCategory,
       Picture,
+      Tasting,
+      TastingCategory,
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -74,6 +80,7 @@ import { PicturesCategory } from './pictures-categories/pictures-category.entity
     UsersController,
     PicturesController,
     PicturesCategoriesController,
+    TastingsController,
   ],
   providers: [
     TokensService,
@@ -92,6 +99,7 @@ import { PicturesCategory } from './pictures-categories/pictures-category.entity
     YearlyRecurringEventStrategy,
     PicturesService,
     PicturesCategoriesService,
+    TastingsService,
   ],
 })
 export class AppModule {}

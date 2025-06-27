@@ -49,7 +49,7 @@ export class MovieComponent implements OnInit {
   }
 
   onMovieSelect(event: any) {
-    this.router.navigate([`videos/details/${event.value.id}`]);
+    this.router.navigate([`videos/details/movie/${event.value.id}`]);
   }
 
   searchMovies() {

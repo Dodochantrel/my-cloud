@@ -8,12 +8,12 @@ import { PaginatedMeta } from '../../../class/paginated-meta';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-starter',
+  selector: 'app-recipe',
   imports: [],
-  templateUrl: './starter.component.html',
-  styleUrl: './starter.component.css',
+  templateUrl: './recipe.component.html',
+  styleUrl: './recipe.component.css',
 })
-export class StarterComponent implements OnInit {
+export class RecipeComponent implements OnInit {
   constructor(
     private readonly recipeService: RecipeService,
     private readonly browserService: BrowserService,
@@ -27,13 +27,28 @@ export class StarterComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
-      this.getRecipes();
+      this.getRecipes();    
+    }
+  }
+
+  getType() {
+    switch (this.router.url) {
+      case '/recipes/starters':
+        return 'starter';
+      case '/recipes/mains':
+        return 'main';
+      case '/recipes/desserts':
+        return 'dessert';
+      case '/recipes/drinks':
+        return 'drink';
+      default:
+        return 'unknown';
     }
   }
 
   getRecipes() {
     this.isLoadingData = true;
-    this.recipeService.getRecipes('starter', '', 1, 30).subscribe({
+    this.recipeService.getRecipes(this.getType(), '', 1, 30).subscribe({
       next: (response: Paginated<Recipe>) => {
         this.addFileToRecipe(response.data);
         this.paginatedRecipes = response;

@@ -16,7 +16,7 @@ import { User } from 'src/users/user.entity';
 export class RecipesService {
   constructor(
     @InjectRepository(Recipe)
-    private userRepository: Repository<Recipe>,
+    private recipeRepository: Repository<Recipe>,
     private readonly filesManager: FilesManager,
   ) {}
 
@@ -27,7 +27,7 @@ export class RecipesService {
     type: string,
     search: string,
   ): Promise<PaginatedResponse<Recipe>> {
-    const query = this.userRepository
+    const query = this.recipeRepository
       .createQueryBuilder('recipe')
       .leftJoinAndSelect('recipe.user', 'user')
       .leftJoinAndSelect('recipe.groups', 'group')
@@ -51,11 +51,11 @@ export class RecipesService {
   }
 
   save(recipe: Recipe): Promise<Recipe> {
-    return this.userRepository.save(recipe);
+    return this.recipeRepository.save(recipe);
   }
 
   async getById(id: number, userId: number): Promise<Recipe> {
-    const recipe = await this.userRepository.findOne({
+    const recipe = await this.recipeRepository.findOne({
       where: { id },
       relations: ['fileData', 'user', 'groups'],
     });
@@ -64,7 +64,7 @@ export class RecipesService {
   }
 
   delete(id: number): Promise<DeleteResult> {
-    return this.userRepository.delete(id);
+    return this.recipeRepository.delete(id);
   }
 
   async getFile(id: number, userId: number): Promise<string> {
@@ -73,16 +73,16 @@ export class RecipesService {
   }
 
   async update(recipe: Recipe, userId: number): Promise<Recipe> {
-    const recipeInDb = await this.userRepository.findOne({
+    const recipeInDb = await this.recipeRepository.findOne({
       where: { id: recipe.id },
       relations: ['fileData', 'user', 'groups'],
     });
     this.canAccess(recipeInDb, userId);
-    return this.userRepository.save(recipe);
+    return this.recipeRepository.save(recipe);
   }
 
   async uploadFile(file: Express.Multer.File, id: number, userId: number) {
-    const recipe = await this.userRepository.findOne({
+    const recipe = await this.recipeRepository.findOne({
       where: { id },
       relations: ['fileData', 'user', 'groups'],
     });

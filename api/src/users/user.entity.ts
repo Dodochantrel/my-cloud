@@ -2,6 +2,7 @@ import { EventData } from 'src/events/event-data.entity';
 import { Group } from 'src/groups/group.entity';
 import { PicturesCategory } from 'src/pictures-categories/pictures-category.entity';
 import { Recipe } from 'src/recipes/recipe.entity';
+import { Tasting } from 'src/tastings/tasting.entity';
 import { Video } from 'src/videos/video.entity';
 import {
   Column,
@@ -67,6 +68,9 @@ export class User {
     (picturesCategory) => picturesCategory.user,
   )
   picturesCategories: Relation<PicturesCategory[]>;
+
+  @OneToMany(() => Tasting, (tasting) => tasting.user)
+  tastings: Relation<Tasting[]>;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
