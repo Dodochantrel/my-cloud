@@ -19,7 +19,7 @@ export class TastingComponent implements OnInit {
     private readonly browserService: BrowserService
   ) {}
 
-  public tets: Paginated<Tasting> = new Paginated<Tasting>([], defaultPaginatedMeta);
+  public paginatedTasting: Paginated<Tasting> = new Paginated<Tasting>([], defaultPaginatedMeta);
 
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
@@ -28,6 +28,13 @@ export class TastingComponent implements OnInit {
   }
 
   getAll() {
-
+    this.tastingService.getRecipes().subscribe({
+      next: (paginatedTasting: Paginated<Tasting>) => {
+        this.paginatedTasting = paginatedTasting;
+      },
+      error: (error) => {
+        this.notificationService.showError('Erreur', 'Erreur lors de la récupération des dégustations');
+      }
+    });
   }
 }
