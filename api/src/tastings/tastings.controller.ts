@@ -5,6 +5,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -27,6 +28,10 @@ import { PageQuery } from 'src/pagination/page-query';
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { WidthOptions } from 'src/files/files.manager';
+import { User } from 'src/users/user.entity';
+import { TastingCategory } from './tasting-category.entity';
 
 @Controller('tastings')
 export class TastingsController {
@@ -54,13 +59,18 @@ export class TastingsController {
     description: 'The tasting has been successfully created.',
     type: TastingResponseDto,
   })
-  async create(@Body() dto: TastingRequestDto): Promise<TastingResponseDto> {
+  async create(
+    @Body() dto: TastingRequestDto,
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+  ): Promise<TastingResponseDto> {
     return mapFromTastingToDto(
       await this.tastingsService.save(
         new Tasting({
           name: dto.name,
           description: dto.description,
           rating: dto.rating,
+          category: new TastingCategory({ id: dto.categoryId }),
+          user: new User({ id: tokenPayload.id }),
         }),
       ),
     );
@@ -134,5 +144,22 @@ export class TastingsController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.tastingsService.uploadFile(Number(id), file, tokenPayload.id);
+  }
+
+  @Get('file/:id')
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the file of a tasting by ID.',
+    type: String,
+  })
+  async getFile(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Query('id') id: number,
+    @Res() res: Response,
+    @Query('width') width?: WidthOptions,
+  ) {
+    return res.sendFile(
+      await this.tastingsService.getFile(Number(id), tokenPayload.id, width),
+    );
   }
 }

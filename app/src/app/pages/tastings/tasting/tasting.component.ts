@@ -14,10 +14,11 @@ import { TastingCategory } from '../../../class/tasting-category';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { AddOrEditTastingComponent } from '../../../components/tastings/add-or-edit-tasting/add-or-edit-tasting.component';
 
 @Component({
   selector: 'app-tasting',
-  imports: [InputIconModule, IconFieldModule, InputTextModule, CommonModule, FormsModule, TreeSelectModule, ButtonModule],
+  imports: [InputIconModule, IconFieldModule, InputTextModule, CommonModule, FormsModule, TreeSelectModule, ButtonModule, AddOrEditTastingComponent],
   templateUrl: './tasting.component.html',
   styleUrl: './tasting.component.css'
 })
@@ -61,6 +62,11 @@ export class TastingComponent implements OnInit {
         this.notificationService.showError('Erreur', 'Erreur lors de la récupération des catégories de dégustation');
       }
     });
+  }
+
+  addTasting(tasting: Tasting) {
+    this.paginatedTasting.data.unshift(tasting);
+    this.isAddingOrEditing = false;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Tasting } from './tasting.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,7 @@ import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { FileData } from 'src/files/file-data.entity';
 import { User } from 'src/users/user.entity';
+import { FilesManager, WidthOptions } from 'src/files/files.manager';
 
 @Injectable()
 export class TastingsService {
@@ -17,6 +18,7 @@ export class TastingsService {
     @InjectRepository(TastingCategory)
     private tastingCategoryRepository: Repository<TastingCategory>,
     private readonly dataSource: DataSource,
+    private readonly filesManager: FilesManager,
   ) {}
 
   findCategories(): Promise<TastingCategory[]> {
@@ -69,11 +71,20 @@ export class TastingsService {
     return this.tastingRepository.save(tasting);
   }
 
-  async uploadFile(
-    id: number,
-    file: Express.Multer.File,
-    userId: number,
-  ): Promise<string> {
+  async findOne(id: number, userId: number): Promise<Tasting | null> {
+    const tasting = await this.tastingRepository.findOne({
+      where: { id, user: { id: userId } },
+      relations: ['fileData', 'user'],
+    });
+    if (!tasting) {
+      throw new NotFoundException(
+        `Tasting with ID ${id} not found for user with ID ${userId}`,
+      );
+    }
+    return tasting;
+  }
+
+  async uploadFile(id: number, file: Express.Multer.File, userId: number) {
     const tasting = await this.tastingRepository.findOne({
       where: { id, user: { id: userId } },
       relations: ['fileData', 'user'],
@@ -85,8 +96,20 @@ export class TastingsService {
       tasting.fileData?.id || null,
     );
     tasting.fileData
-      ? await this.filesManager.updateFile(file, recipe.fileData, fileData)
+      ? await this.filesManager.updateFile(file, tasting.fileData, fileData)
       : await this.filesManager.uploadFile(file, fileData);
+  }
+
+  async getFile(
+    id: number,
+    userId: number,
+    width?: WidthOptions,
+  ): Promise<string> {
+    const tasting = await this.findOne(id, userId);
+    if (!tasting.fileData) {
+      throw new NotFoundException(`File for tasting with ID ${id} not found`);
+    }
+    return this.filesManager.getFile(tasting.fileData, width);
   }
 
   private createOrEditFileData(

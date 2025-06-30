@@ -11,3 +11,5 @@ export class Tasting {
         this.description = description;
     }
 }
+
+export const defaultTasting = new Tasting(0, '', 0, '');

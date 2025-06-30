@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Tasting } from '../class/tasting';
 import { Paginated } from '../class/paginated';
 import { map, Observable } from 'rxjs';
-import { mapFromDtosToTastings, TastingDto } from '../dto/tasting.dto';
+import { mapFromDtosToTastings, mapFromDtoToTasting, TastingDto } from '../dto/tasting.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { environment } from '../../environments/environment.development';
 import {
@@ -42,5 +42,16 @@ export class TastingService {
           );
         })
       );
+  }
+
+  add(name: string, categoryId: number, rating: number, description: string): Observable<Tasting> {
+    return this.httpClient
+      .post<TastingDto>(`${environment.apiUrl}tastings`, {
+        name,
+        categoryId,
+        rating,
+        description,
+      })
+      .pipe(map(mapFromDtoToTasting));
   }
 }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddOrUpdateTastingComponent } from './add-or-update-tasting.component';
+import { AddOrUpdateTastingComponent } from './add-or-edit-tasting.component';
 
 describe('AddOrUpdateTastingComponent', () => {
   let component: AddOrUpdateTastingComponent;
