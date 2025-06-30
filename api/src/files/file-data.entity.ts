@@ -1,5 +1,6 @@
 import { Picture } from 'src/pictures/picture.entity';
 import { Recipe } from 'src/recipes/recipe.entity';
+import { Tasting } from 'src/tastings/tasting.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -36,8 +37,8 @@ export class FileData {
   @OneToOne(() => Picture, (picture) => picture.fileData)
   picture: Relation<Picture>;
 
-  @OneToOne(() => FileData, (fileData) => fileData.tasting)
-  tasting: Relation<FileData>;
+  @OneToOne(() => Tasting, (tasting) => tasting.fileData)
+  tasting: Relation<Tasting>;
 
   constructor(partial: Partial<FileData>) {
     Object.assign(this, partial);

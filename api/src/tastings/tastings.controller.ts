@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { TastingsService } from './tastings.service';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import {
@@ -17,6 +26,7 @@ import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { PageQuery } from 'src/pagination/page-query';
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('tastings')
 export class TastingsController {
@@ -114,5 +124,15 @@ export class TastingsController {
     return mapFromTastingToDto(
       await this.tastingsService.update(tokenPayload.id, tasting),
     );
+  }
+
+  @Post('file/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Query('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.tastingsService.uploadFile(Number(id), file, tokenPayload.id);
   }
 }

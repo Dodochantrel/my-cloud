@@ -50,7 +50,7 @@ body {
     gap: 1rem;
 }
 
-.p-inputtext, .buttons, .input-container, .p-password, .p-password-input, .p-datepicker, .p-select, .p-datepicker-input, .p-multiselect, .p-autocomplete {
+.p-inputtext, .buttons, .input-container, .p-password, .p-password-input, .p-datepicker, .p-select, .p-datepicker-input, .p-multiselect, .p-autocomplete, .p-treeselect {
     width: 100% !important;
 }
 

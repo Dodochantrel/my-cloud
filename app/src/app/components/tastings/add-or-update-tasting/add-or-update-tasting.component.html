@@ -1,0 +1,25 @@
+<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
+
+    <form class="form" [formGroup]="form">
+
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="Le nom" formControlName="name"
+                    [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+            <small class="p-error block error-message">Le nom est requis</small>
+            }
+        </div>
+
+        <div class="buttons-container">
+            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isLoadingEditOrAdd" />
+            <p-button label="Enregistrer" [loading]="isLoadingEditOrAdd" (onClick)="valid()" />
+        </div>
+
+    </form>
+
+</p-dialog>

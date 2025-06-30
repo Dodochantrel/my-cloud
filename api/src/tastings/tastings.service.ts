@@ -6,6 +6,8 @@ import { TastingCategory } from './tasting-category.entity';
 import { DataSource } from 'typeorm';
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
+import { FileData } from 'src/files/file-data.entity';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class TastingsService {
@@ -15,39 +17,7 @@ export class TastingsService {
     @InjectRepository(TastingCategory)
     private tastingCategoryRepository: Repository<TastingCategory>,
     private readonly dataSource: DataSource,
-  ) {
-    this.tastingCategoryRepository.save([
-      // new TastingCategory({
-      //   name: 'Bière',
-      //   icon: 'default-child-icon',
-      // }),
-      // new TastingCategory({
-      //   name: 'Blonde',
-      //   icon: 'default-child-icon',
-      //   parent: new TastingCategory({ id: 13 }),
-      // }),
-      // new TastingCategory({
-      //   name: 'Brune',
-      //   icon: 'default-child-icon',
-      //   parent: new TastingCategory({ id: 13 }),
-      // }),
-      // new TastingCategory({
-      //   name: 'Blanche',
-      //   icon: 'default-child-icon',
-      //   parent: new TastingCategory({ id: 13 }),
-      // }),
-      // new TastingCategory({
-      //   name: 'Ambrée',
-      //   icon: 'default-child-icon',
-      //   parent: new TastingCategory({ id: 13 }),
-      // }),
-      // new TastingCategory({
-      //   name: 'IPA',
-      //   icon: 'default-child-icon',
-      //   parent: new TastingCategory({ id: 13 }),
-      // }),
-    ]);
-  }
+  ) {}
 
   findCategories(): Promise<TastingCategory[]> {
     return this.dataSource.manager
@@ -97,5 +67,41 @@ export class TastingsService {
       throw new Error('Tasting not found or does not belong to user');
     }
     return this.tastingRepository.save(tasting);
+  }
+
+  async uploadFile(
+    id: number,
+    file: Express.Multer.File,
+    userId: number,
+  ): Promise<string> {
+    const tasting = await this.tastingRepository.findOne({
+      where: { id, user: { id: userId } },
+      relations: ['fileData', 'user'],
+    });
+    const fileData = this.createOrEditFileData(
+      file,
+      tasting.id,
+      userId,
+      tasting.fileData?.id || null,
+    );
+    tasting.fileData
+      ? await this.filesManager.updateFile(file, recipe.fileData, fileData)
+      : await this.filesManager.uploadFile(file, fileData);
+  }
+
+  private createOrEditFileData(
+    file: Express.Multer.File,
+    tastingId: number,
+    userId: number,
+    id: number = null,
+  ): FileData {
+    return new FileData({
+      id: id,
+      path: 'tastings/',
+      mimetype: file.mimetype,
+      size: file.size,
+      tasting: new Tasting({ id: tastingId }),
+      user: new User({ id: userId }),
+    });
   }
 }

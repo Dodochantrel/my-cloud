@@ -11,7 +11,6 @@ import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create
 import { EventComponent } from './pages/events/event/event.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
 import { TastingComponent } from './pages/tastings/tasting/tasting.component';
-import { AddOrUpdateTastingComponent } from './pages/tastings/add-or-update-tasting/add-or-update-tasting.component';
 
 export const routes: Routes = [
   {
@@ -135,24 +134,6 @@ export const routes: Routes = [
           breadcrumb: [{ label: 'Dégustations' }],
         },
       },
-      {
-        path: 'tastings/:id',
-        title: 'Tasting Details',
-        component: AddOrUpdateTastingComponent,
-        data: {
-          title: 'Détails de la Dégustation',
-          breadcrumb: [{ label: 'Dégustations' }, { label: 'Détails' }],
-        },
-      },
-      {
-        path: 'tastings/add',
-        title: 'Add Tasting',
-        component: AddOrUpdateTastingComponent,
-        data: {
-          title: 'Ajouter une Dégustation',
-          breadcrumb: [{ label: 'Dégustations' }, { label: 'Ajouter' }],
-        },
-      }
     ],
   },
   {

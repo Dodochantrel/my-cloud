@@ -6,15 +6,26 @@ import { map, Observable } from 'rxjs';
 import { mapFromDtosToTastings, TastingDto } from '../dto/tasting.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { environment } from '../../environments/environment.development';
+import {
+  mapFromDtosToTastingCategories,
+  TastingCategoryDto,
+} from '../dto/tasting-category.dto';
+import { TastingCategory } from '../class/tasting-category';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TastingService {
   constructor(private readonly httpClient: HttpClient) {}
 
+  getCategories(): Observable<TastingCategory[]> {
+    return this.httpClient
+      .get<TastingCategoryDto[]>(`${environment.apiUrl}tastings/categories`)
+      .pipe(map(mapFromDtosToTastingCategories));
+  }  
+
   getRecipes(
-    categoryId: string,
+    categoryId: number,
     search: string,
     page: number,
     limit: number

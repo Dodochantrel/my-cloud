@@ -4,12 +4,32 @@
 
     <h2 class="no-margin">Mes dégustations</h2>
 
+    <div class="header">
+
+      <div class="input-container">
+        <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="search" />
+        </p-iconfield>
+      </div>
+
+      <p-treeselect [(ngModel)]="categoryId" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
+  
+      <p-button icon="pi pi-plus-circle" label="Ajouter" (onClick)="isAddingOrEditing = true" />
+
+    </div>
+
     <div class="tasting-container">
 
-        
+        @for (tasting of paginatedTasting.data; track $index) {
+          <div class="tasting-card">
+            <p>Name</p>
+          </div>
+        }
 
     </div>
 
   </div>
 
 </div>
+
