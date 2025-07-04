@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Query,
@@ -136,11 +137,11 @@ export class TastingsController {
     );
   }
 
-  @Post('file/:id')
+  @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Query('id') id: string,
+    @Body() { id }: { id: number },
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.tastingsService.uploadFile(Number(id), file, tokenPayload.id);
@@ -154,7 +155,7 @@ export class TastingsController {
   })
   async getFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Query('id') id: number,
+    @Param('id') id: number,
     @Res() res: Response,
     @Query('width') width?: WidthOptions,
   ) {

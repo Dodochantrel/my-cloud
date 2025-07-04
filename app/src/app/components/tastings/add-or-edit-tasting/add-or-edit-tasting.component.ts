@@ -16,6 +16,8 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { RatingModule } from 'primeng/rating';
 import { EditorModule } from 'primeng/editor';
 import { defaultTasting, Tasting } from '../../../class/tasting';
+import { FileUploadModule } from 'primeng/fileupload';
+import { setImageUrl } from '../../../tools/set-image-url';
 
 @Component({
   selector: 'app-add-or-edit-tasting',
@@ -31,6 +33,7 @@ import { defaultTasting, Tasting } from '../../../class/tasting';
     TreeSelectModule,
     RatingModule,
     EditorModule,
+    FileUploadModule,
   ],
   templateUrl: './add-or-edit-tasting.component.html',
   styleUrl: './add-or-edit-tasting.component.css',
@@ -44,17 +47,19 @@ export class AddOrEditTastingComponent {
   private readonly formBuilder = inject(FormBuilder);
 
   public isLoadingEditOrAdd: boolean = false;
+  public previewUrl: string | null = null;
 
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly tastingService: TastingService,
+    private readonly tastingService: TastingService
   ) {}
 
   form = this.formBuilder.group({
     name: ['', Validators.required],
-    category: [defaultTasting, Validators.required],
+    category: [null as any, Validators.required],
     rating: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
     description: [''],
+    image: [null as File | null],
   });
 
   cancel() {
@@ -71,29 +76,74 @@ export class AddOrEditTastingComponent {
     }
   }
 
+  setImageUrl(url: string | null | undefined): string {
+    return setImageUrl(url);
+  }
+
   save() {
     this.isLoadingEditOrAdd = true;
     this.tastingService
       .add(
         this.form.value.name!,
-        this.form.value.category!.id!,
+        this.form.value.category!.data!.id!,
         this.form.value.rating!,
-        this.form.value.description!,
-      ).subscribe({
+        this.form.value.description!
+      )
+      .subscribe({
         next: (tasting) => {
-          this.notificationService.showSuccess('Succès', `La dégustation a été ajoutée avec succès`);
+          this.notificationService.showSuccess(
+            'Succès',
+            `La dégustation a été ajoutée avec succès`
+          );
+          this.uploadFile(tasting.id);
           this.isDisplayedChange.emit(false);
           this.form.reset();
           this.isLoadingEditOrAdd = false;
           this.newTasting.emit(tasting);
+          this.previewUrl = null; // Reset preview URL after saving
         },
         error: (error) => {
-          this.notificationService.showError('Erreur', `La dégustation n'a pas pu être ajoutée`);
+          this.notificationService.showError(
+            'Erreur',
+            `La dégustation n'a pas pu être ajoutée`
+          );
           this.isLoadingEditOrAdd = false;
         },
         complete: () => {
           this.isLoadingEditOrAdd = false;
         },
-      })
+      });
+  }
+
+  onFileSelect(event: any): void {
+    const file: File = event.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result as string;
+        this.form.get('image')?.setValue(file);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  uploadFile(id: number) {
+    const file = this.form.get('image')?.value;
+    if (file) {
+      this.tastingService.uploadFile(id, file).subscribe({
+        next: () => {
+          this.notificationService.showSuccess(
+            'Image enregistrée',
+            'L\'image a été enregistré avec succès.'
+          );
+        },
+        error: (error) => {
+          this.notificationService.showError(
+            'Erreur lors de l\'enregistremement de l\'image',
+            'Une erreur est survenue lors de l\'enregistremement de l\'image.'
+          );
+        },
+      });
+    }
   }
 }

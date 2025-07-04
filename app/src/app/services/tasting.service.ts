@@ -11,6 +11,7 @@ import {
   TastingCategoryDto,
 } from '../dto/tasting-category.dto';
 import { TastingCategory } from '../class/tasting-category';
+import { FileWidth } from '../tools/file-width.type';
 
 @Injectable({
   providedIn: 'root',
@@ -25,14 +26,15 @@ export class TastingService {
   }  
 
   getRecipes(
-    categoryId: number,
+    categoryId: number | null,
     search: string,
     page: number,
     limit: number
   ): Observable<Paginated<Tasting>> {
+    const category = categoryId || '';
     return this.httpClient
       .get<PaginatedDto<TastingDto>>(
-        `${environment.apiUrl}tastings?categoryId=${categoryId}&search=${search}&page=${page}&limit=${limit}`
+        `${environment.apiUrl}tastings?categoryId=${category}&search=${search}&page=${page}&limit=${limit}`
       )
       .pipe(
         map((response: PaginatedDto<TastingDto>) => {
@@ -53,5 +55,24 @@ export class TastingService {
         description,
       })
       .pipe(map(mapFromDtoToTasting));
+  }
+
+  uploadFile(id: number, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('id', id.toString());
+    return this.httpClient.post(
+      `${environment.apiUrl}tastings/file`,
+      formData,
+      {
+        responseType: 'blob',
+      }
+    );
+  }
+
+  getFile(id: number, width: FileWidth): Observable<Blob> {
+    return this.httpClient.get(`${environment.apiUrl}tastings/file/${id}?width=${width}`, {
+      responseType: 'blob',
+    });
   }
 }

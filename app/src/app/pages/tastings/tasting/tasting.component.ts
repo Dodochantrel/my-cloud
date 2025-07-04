@@ -18,9 +18,18 @@ import { AddOrEditTastingComponent } from '../../../components/tastings/add-or-e
 
 @Component({
   selector: 'app-tasting',
-  imports: [InputIconModule, IconFieldModule, InputTextModule, CommonModule, FormsModule, TreeSelectModule, ButtonModule, AddOrEditTastingComponent],
+  imports: [
+    InputIconModule,
+    IconFieldModule,
+    InputTextModule,
+    CommonModule,
+    FormsModule,
+    TreeSelectModule,
+    ButtonModule,
+    AddOrEditTastingComponent,
+  ],
   templateUrl: './tasting.component.html',
-  styleUrl: './tasting.component.css'
+  styleUrl: './tasting.component.css',
 })
 export class TastingComponent implements OnInit {
   constructor(
@@ -33,7 +42,10 @@ export class TastingComponent implements OnInit {
   public categoryId: number = 0;
   public TastingCategoryTree: TreeNode<TastingCategory>[] = [];
   public isAddingOrEditing: boolean = false;
-  public paginatedTasting: Paginated<Tasting> = new Paginated<Tasting>([], defaultPaginatedMeta);
+  public paginatedTasting: Paginated<Tasting> = new Paginated<Tasting>(
+    [],
+    defaultPaginatedMeta
+  );
 
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
@@ -43,13 +55,17 @@ export class TastingComponent implements OnInit {
   }
 
   getAll() {
-    this.tastingService.getRecipes(1, '', 1, 1).subscribe({
+    this.tastingService.getRecipes(null, '', 1, 10).subscribe({
       next: (paginatedTasting: Paginated<Tasting>) => {
         this.paginatedTasting = paginatedTasting;
+        this.addFile(paginatedTasting.data);
       },
       error: (error) => {
-        this.notificationService.showError('Erreur', 'Erreur lors de la récupération des dégustations');
-      }
+        this.notificationService.showError(
+          'Erreur',
+          'Erreur lors de la récupération des dégustations'
+        );
+      },
     });
   }
 
@@ -59,8 +75,11 @@ export class TastingComponent implements OnInit {
         this.TastingCategoryTree = mapFromCategoriesToTreeNode(categories);
       },
       error: (error) => {
-        this.notificationService.showError('Erreur', 'Erreur lors de la récupération des catégories de dégustation');
-      }
+        this.notificationService.showError(
+          'Erreur',
+          'Erreur lors de la récupération des catégories de dégustation'
+        );
+      },
     });
   }
 
@@ -68,15 +87,45 @@ export class TastingComponent implements OnInit {
     this.paginatedTasting.data.unshift(tasting);
     this.isAddingOrEditing = false;
   }
+
+  addFile(tastings: Tasting[]) {
+    tastings.forEach((tasting) => {
+      this.getFile(tasting);
+    });
+  }
+
+  getFile(tasting: Tasting) {
+    this.tastingService.getFile(tasting.id, 'small').subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const index = this.paginatedTasting.data.findIndex(
+          (r) => r.id === tasting.id
+        );
+        if (index !== -1) {
+          this.paginatedTasting.data[index].fileBlobUrl = url;
+        }
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          'Erreur',
+          'Erreur lors du téléchargement du fichier'
+        );
+      },
+    });
+  }
 }
 
-export const mapFromCategoriesToTreeNode = (categories: TastingCategory[]): TreeNode<TastingCategory>[] => {
+export const mapFromCategoriesToTreeNode = (
+  categories: TastingCategory[]
+): TreeNode<TastingCategory>[] => {
   return categories.map((category) => {
     return {
       label: category.name,
       data: category,
       key: category.id.toString(),
-      children: category.childrens ? mapFromCategoriesToTreeNode(category.childrens) : []
+      children: category.childrens
+        ? mapFromCategoriesToTreeNode(category.childrens)
+        : [],
     };
   });
-}
+};

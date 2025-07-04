@@ -23,7 +23,8 @@
 
         @for (tasting of paginatedTasting.data; track $index) {
           <div class="tasting-card">
-            <p>Name</p>
+            <img src="{{ tasting.fileBlobUrl }}" alt="{{ tasting.name }}" class="card-image"/>
+            <p>{{ tasting.name }}</p>
           </div>
         }
 

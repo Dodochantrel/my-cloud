@@ -1,4 +1,4 @@
-<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
+<p-dialog header="Ajouter une découverte" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 
@@ -40,6 +40,12 @@
                 </ng-template>
             </p-editor>
         </div>
+
+        <img [src]="setImageUrl(previewUrl)" alt="Preview" class="image" />
+
+        <p-fileUpload #fu mode="basic" [chooseLabel]="previewUrl ? 'Changer image' : 'Choisir une image'"
+            chooseIcon="pi pi-upload" accept="image/*" maxFileSize="1000000" (onSelect)="onFileSelect($event)"> 
+        </p-fileUpload>
 
         <div class="buttons-container">
             <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isLoadingEditOrAdd" />
