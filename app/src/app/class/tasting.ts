@@ -1,9 +1,12 @@
+import { TastingCategory } from "./tasting-category";
+
 export class Tasting {
     id: number;
     name: string;
     rating: number;
     description: string;
     fileBlobUrl: string | null = null;
+    category: TastingCategory | null = null;
 
     constructor(id: number, name: string, rating: number, description: string) {
         this.id = id;

@@ -26,12 +26,12 @@ export class TastingService {
   }  
 
   getRecipes(
-    categoryId: number | null,
+    categoriesId: number[] | null,
     search: string,
     page: number,
     limit: number
   ): Observable<Paginated<Tasting>> {
-    const category = categoryId || '';
+    const category = categoriesId || '';
     return this.httpClient
       .get<PaginatedDto<TastingDto>>(
         `${environment.apiUrl}tastings?categoryId=${category}&search=${search}&page=${page}&limit=${limit}`
@@ -74,5 +74,22 @@ export class TastingService {
     return this.httpClient.get(`${environment.apiUrl}tastings/file/${id}?width=${width}`, {
       responseType: 'blob',
     });
+  }
+
+  edit(
+    id: number,
+    name: string,
+    categoryId: number,
+    rating: number,
+    description: string
+  ): Observable<Tasting> {
+    return this.httpClient
+      .patch<TastingDto>(`${environment.apiUrl}tastings/${id}`, {
+        name,
+        categoryId,
+        rating,
+        description,
+      })
+      .pipe(map(mapFromDtoToTasting));
   }
 }

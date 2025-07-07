@@ -4,54 +4,34 @@
 
   <div class="photos-container">
     @for (url of picturesFilesUrls; track $index) {
-    <div class="photo-bloc">
-      <img [src]="url" alt="Photo {{ $index + 1 }}" class="file-image" />
-    </div>
+    <img [src]="url" alt="Photo {{ $index + 1 }}" class="file-image" />
     }
   </div>
 
-  <p-fileUpload #uploader name="files" [multiple]="true" accept="image/*" maxFileSize="10000000"
-    (onSelect)="onFileSelect($event)" (onBeforeSend)="onBeforeSend($event)" class="file-upload"
-    [url]="'http://localhost:3000/my-cloud-api/pictures?categoryId=' + category()?.id">
+  @if(category()) {
+  @if(isSendingFiles) {
+  <app-loader></app-loader>
+  } @else {
+  <p-fileUpload name="demo[]" [multiple]="true" accept="image/*" maxFileSize="10000000" class="file-upload"
+    mode="advanced" [auto]="false" #fileUpload>
 
-    <ng-template #header let-chooseCallback="chooseCallback" let-uploadCallback="uploadCallback">
-      <div class="header">
-
-        <span>Fichiers : {{ selectedFilesCount }} / 20</span>
-        <div class="buttons-container">
-          <p-button (onClick)="choose($event, chooseCallback)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
-          <p-button icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success"
-            (onClick)="uploadEvent(uploadCallback)" />
-          <p-button icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" />
-        </div>
-
-      </div>
+    <ng-template #header let-chooseCallback="chooseCallback" let-uploadCallback="uploadCallback" let-files
+      let-clearCallback="clearCallback">
+      <h3 class="no-margin">Ajouter des fichiers</h3>
+      <p-button (onClick)="chooseCallback()" icon="pi pi-images" [rounded]="true" [outlined]="true"
+        class="first-button" />
+      <p-button (onClick)="uploadEvent(uploadCallback, files)" icon="pi pi-cloud-upload" [rounded]="true"
+        [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+      <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger"
+        [disabled]="!files || files.length === 0" />
     </ng-template>
 
-    <ng-template #file></ng-template>
-
-    <ng-template #content let-files let-removeFileCallback="removeFileCallback">
-      <div class="content">
-
-        @if (selectedFilesCount > 0) {
-        <div class="files-container">
-          @for (file of files; track $index) {
-          <div class="file-bloc">
-            <img [src]="file.objectURL" alt="Image preview" class="file-image" />
-            <p>{{ file.name }}</p>
-            <p-button icon="pi pi-times" (onClick)="onRemoveTemplatingFile($event, removeFileCallback, $index)"
-              [rounded]="true" [outlined]="true" severity="danger" />
-          </div>
-          }
-        </div>
-        } @else {
-        <p>Aucun fichier sélectionné</p>
-        }
-
-      </div>
-
+    <ng-template #empty>
+      <div>Faites glisser les fichiers ici pour les ajouter.</div>
     </ng-template>
 
   </p-fileUpload>
+  }
+  }
 
 </div>

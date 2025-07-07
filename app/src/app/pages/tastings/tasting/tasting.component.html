@@ -9,11 +9,11 @@
       <div class="input-container">
         <p-iconfield>
             <p-inputicon styleClass="pi pi-search" />
-            <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="search" />
+            <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="search" (ngModelChange)="getAll(paginatedTasting.paginatedMeta.page, paginatedTasting.paginatedMeta.limit)" />
         </p-iconfield>
       </div>
 
-      <p-treeselect [(ngModel)]="categoryId" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
+      <p-treeselect [(ngModel)]="categoriesSelected" (ngModelChange)="getAll(paginatedTasting.paginatedMeta.page, paginatedTasting.paginatedMeta.limit)" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
   
       <p-button icon="pi pi-plus-circle" label="Ajouter" (onClick)="isAddingOrEditing = true" />
 
@@ -21,17 +21,36 @@
 
     <div class="tasting-container">
 
+      @if (isLoadingTastings) {
+        <app-loader></app-loader>
+      }
+
         @for (tasting of paginatedTasting.data; track $index) {
           <div class="tasting-card">
-            <img src="{{ tasting.fileBlobUrl }}" alt="{{ tasting.name }}" class="card-image"/>
-            <p>{{ tasting.name }}</p>
+            <p-speeddial [model]="getButtonsEdit(tasting)" direction="down" mask [style]="{ position: 'absolute', right: '.5rem', top: '.5rem' }" />
+            @if (isLoadingFileMap[tasting.id]) {
+              <app-loader></app-loader>
+            } @else {
+              <img src="{{ tasting.fileBlobUrl }}" alt="{{ tasting.name }}" class="card-image"/>
+            }            
+            <div class="content">
+              <div class="line">
+                <h5 class="tasting-title no-margin">{{ tasting.name }}</h5>
+                <p class="tasting-category no-margin">{{ tasting.category?.name }}</p>
+              </div>
+              <div class="line">
+                <p-rating [(ngModel)]="tasting.rating" [readonly]="true" />
+              </div>
+            </div>
           </div>
         }
 
     </div>
 
+    <app-footer-table [meta]="paginatedTasting.paginatedMeta" (pageChange)="getAll($event.page, $event.limit)"></app-footer-table>
+
   </div>
 
 </div>
 
-<app-add-or-edit-tasting [(isDisplayed)]="isAddingOrEditing" [categories]="TastingCategoryTree" (newTasting)="addTasting($event)"></app-add-or-edit-tasting>
+<app-add-or-edit-tasting [(isDisplayed)]="isAddingOrEditing" [categories]="TastingCategoryTree" (newTasting)="addTasting($event)" [tastingToEdit]="tastingToEdit" (tastingToEditChange)="editTasting($event!)"></app-add-or-edit-tasting>

@@ -8,6 +8,11 @@
     height: 35px;
 }
 
+::ng-deep .p-paginator  {
+    flex-wrap: nowrap;
+    flex: auto;
+}
+
 .flex-end {
     justify-content: flex-end;
 }

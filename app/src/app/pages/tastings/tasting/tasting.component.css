@@ -8,4 +8,52 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.header > :nth-child(1),
+.header > :nth-child(2) {
+  flex: 1 1 auto;
+  max-width: 50%;
+  min-width: 200px;
+}
+
+.tasting-card {
+    border: var(--border);
+    width: 100%;
+    max-width: 250px;
+    position: relative;
+}
+
+.card-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.content {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tasting-category {
+    padding: .2rem 0.5rem;
+    background-color: var(--first-color);
+    color: white;
+    border-radius: 1rem;
+    font-size: .8rem;
+}
+
+::ng-deep .p-button-sm.p-button-icon-only.p-button-rounded {
+    height: var(--p-button-icon-only-width) !important;
+    width: var(--p-button-icon-only-width) !important;
 }

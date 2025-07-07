@@ -7,6 +7,7 @@ import {
   Res,
   UseInterceptors,
   Query,
+  Body,
 } from '@nestjs/common';
 import { PicturesService } from './pictures.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -25,12 +26,12 @@ export class PicturesController {
   async uploadPicture(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Query() query: { categoryId: number },
+    @Body() { categoryId }: { categoryId: number },
   ) {
     return this.picturesService.uploadPictures(
       files,
       tokenPayload.id,
-      query.categoryId,
+      categoryId,
     );
   }
 

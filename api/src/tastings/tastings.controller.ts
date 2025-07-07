@@ -82,14 +82,22 @@ export class TastingsController {
   async findAll(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Query() params: QueryGetWithParamsDto,
-    @Query('categoryId') categoryId: number,
+    @Query('categoryId') categoriesIdString: string,
   ): Promise<PaginatedResponse<TastingResponseDto>> {
+    const categoriesId = categoriesIdString
+      ? categoriesIdString
+          .split(',')
+          .map((id) => parseInt(id.trim(), 10))
+          .filter((id) => !isNaN(id))
+      : [];
+
     const paginatedResponse = await this.tastingsService.findMy(
       tokenPayload.id,
       new PageQuery(params.page, params.limit),
-      categoryId || null,
+      categoriesId,
       params.search || null,
     );
+
     return new PaginatedResponse<TastingResponseDto>(
       mapFromTastingsToDtos(paginatedResponse.data),
       new PageQuery(params.page, params.limit),
@@ -123,14 +131,15 @@ export class TastingsController {
   })
   async update(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Query('id') id: number,
+    @Param('id') id: string,
     @Body() dto: TastingRequestDto,
   ): Promise<TastingResponseDto | null> {
     const tasting = new Tasting({
-      id,
+      id: Number(id),
       name: dto.name,
       description: dto.description,
       rating: dto.rating,
+      category: new TastingCategory({ id: dto.categoryId }),
     });
     return mapFromTastingToDto(
       await this.tastingsService.update(tokenPayload.id, tasting),

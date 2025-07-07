@@ -6,10 +6,11 @@ import { ButtonModule } from 'primeng/button';
 import { FileUpload } from 'primeng/fileupload';
 import { FileWidth } from '../../../tools/file-width.type';
 import { PictureCategory } from '../../../class/picture-category';
+import { LoaderComponent } from '../../loader/loader.component';
 
 @Component({
   selector: 'app-photo',
-  imports: [FileUpload, ButtonModule, CommonModule],
+  imports: [FileUpload, ButtonModule, CommonModule, LoaderComponent],
   templateUrl: './photo.component.html',
   styleUrl: './photo.component.css'
 })
@@ -18,6 +19,7 @@ export class PhotoComponent {
   public picturesFilesUrls: string[] = [];
   public selectedFilesCount: number = 0;
   public isAddingFiles: boolean = false;
+  public isSendingFiles: boolean = false;
 
   constructor(
     private readonly pictureService: PictureService,
@@ -59,27 +61,22 @@ export class PhotoComponent {
     });
   }
 
-  choose(event: any, callback: any) {
+  uploadEvent(callback: any, files: File[]) {
     callback();
-  }
-
-  onFileSelect(event: { files: File[] }) {
-    this.selectedFilesCount = this.selectedFilesCount + event.files.length;
-  }
-
-  onRemoveTemplatingFile(event: any, removeFileCallback: any, index: number) {
-    removeFileCallback(event, index);
-    this.selectedFilesCount--;
-  }
-
-  uploadEvent(callback: any) {
-    callback();
-  }
-
-  onBeforeSend(event: any) {
-    const formData: FormData = event.formData;
-  
-    // Ajouter ton champ personnalisé
-    formData.append('categoryId', this.category()!.id.toString());
+    this.isSendingFiles = true;
+    this.pictureService.uploadFiles(this.category()!.id, files).subscribe({
+      next: (content) => {
+        this.notificationService.showSuccess('Succès', 'Photos envoyées avec succès');
+        files.forEach((file) => {
+          this.picturesFilesUrls.push(URL.createObjectURL(file));
+        });
+      },
+      error: (error) => {
+        this.notificationService.showError('Erreur', 'Erreur lors de l\'envoi des photos');
+      },
+      complete: () => {
+        this.isSendingFiles = false;
+      }
+    });
   }
 }

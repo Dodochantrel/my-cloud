@@ -34,7 +34,9 @@ export const mapFromTastingCategory = (
     id: category.id,
     name: category.name,
     icon: category.icon,
-    childrens: category.childrens.map(mapFromTastingCategory),
+    childrens: category.childrens
+      ? category.childrens.map(mapFromTastingCategory)
+      : [],
   };
 };
 

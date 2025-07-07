@@ -3,7 +3,7 @@ import { Tasting } from './tasting.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TastingCategory } from './tasting-category.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, In, Like } from 'typeorm';
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { FileData } from 'src/files/file-data.entity';
@@ -40,16 +40,18 @@ export class TastingsService {
   public async findMy(
     userId: number,
     pageQuery: PageQuery,
-    categoryId: number | null = null,
+    categoriesId: number[],
     search: string | null = null,
   ): Promise<PaginatedResponse<Tasting>> {
     const where: any = { user: { id: userId } };
 
-    if (categoryId !== null) where.category = { id: categoryId };
-    if (search) where.name = { $like: `%${search}%` };
+    if (categoriesId && categoriesId.length)
+      where.category = { id: In(categoriesId) };
+    if (search) where.name = Like(`%${search}%`);
 
     const [data, count] = await this.tastingRepository.findAndCount({
       where,
+      relations: ['category'],
       order: { createdAt: 'DESC' },
       take: pageQuery.limit,
       skip: (pageQuery.page - 1) * pageQuery.limit,
@@ -61,13 +63,16 @@ export class TastingsService {
     );
   }
 
-  update(userId: number, tasting: Tasting): Promise<Tasting> {
+  async update(userId: number, tasting: Tasting): Promise<Tasting> {
     const existingTasting = this.tastingRepository.findOne({
       where: { id: tasting.id, user: { id: userId } },
     });
     if (!existingTasting) {
       throw new Error('Tasting not found or does not belong to user');
     }
+    tasting.category = await this.tastingCategoryRepository.findOne({
+      where: { id: tasting.category.id },
+    });
     return this.tastingRepository.save(tasting);
   }
 

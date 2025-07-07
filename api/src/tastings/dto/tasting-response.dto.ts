@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Tasting } from '../tasting.entity';
+import {
+  mapFromTastingCategory,
+  TastingCategoryResponseDto,
+} from './tasting-category-response.dto';
 
 export class TastingResponseDto {
   @ApiProperty({
@@ -29,6 +33,12 @@ export class TastingResponseDto {
     required: false,
   })
   rating: number;
+
+  @ApiProperty({
+    description: 'The category of the tasting',
+    required: false,
+  })
+  category: TastingCategoryResponseDto;
 }
 
 export const mapFromTastingToDto = (tasting: Tasting): TastingResponseDto => {
@@ -37,6 +47,7 @@ export const mapFromTastingToDto = (tasting: Tasting): TastingResponseDto => {
   dto.name = tasting.name;
   dto.description = tasting.description;
   dto.rating = tasting.rating;
+  dto.category = mapFromTastingCategory(tasting.category);
   return dto;
 };
 
