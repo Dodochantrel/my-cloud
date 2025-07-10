@@ -16,7 +16,7 @@ export class AuthenticationsService {
     private readonly hashsService: HashsService,
   ) {}
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string, rememberMe: boolean) {
     const user = await this.usersService.getOneByEmail(email, ['groups']);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -28,7 +28,7 @@ export class AuthenticationsService {
       throw new UnauthorizedException('User is not authorized');
     }
     const accessTokenPromise = this.generateAccessToken(user);
-    const refreshTokenPromise = this.generateRefreshToken(user);
+    const refreshTokenPromise = this.generateRefreshToken(user, rememberMe);
 
     const [accessToken, refreshToken] = await Promise.all([
       accessTokenPromise,
@@ -83,7 +83,7 @@ export class AuthenticationsService {
     );
   }
 
-  async generateRefreshToken(user: User): Promise<string> {
-    return this.tokensService.generateRefreshToken(user.id);
+  async generateRefreshToken(user: User, rememberMe: boolean): Promise<string> {
+    return this.tokensService.generateRefreshToken(user.id, rememberMe);
   }
 }

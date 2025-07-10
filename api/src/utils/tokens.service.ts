@@ -26,10 +26,13 @@ export class TokensService {
     });
   }
 
-  async generateRefreshToken(id: number): Promise<string> {
+  async generateRefreshToken(id: number, rememberMe: boolean): Promise<string> {
     const payload: RefreshTokenPayload = { id };
+    const lifetime = rememberMe
+      ? this.configService.get<string>('JWT_REFRESH_LIFETIME_REMEMBER')
+      : this.configService.get<string>('JWT_REFRESH_LIFETIME');
     return this.jwtService.signAsync(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      secret: lifetime,
       expiresIn: parseInt(
         this.configService.get<string>('JWT_REFRESH_LIFETIME'),
       ),

@@ -12,4 +12,10 @@ export class LoginRequestDto {
     required: true,
   })
   password: string;
+
+  @ApiProperty({
+    description: `Remember me option`,
+    required: true,
+  })
+  rememberMe: boolean;
 }

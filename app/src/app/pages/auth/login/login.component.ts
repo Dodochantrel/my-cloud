@@ -9,6 +9,7 @@ import { PasswordModule } from 'primeng/password';
 import { updateFailedInputs } from '../../../tools/update-failed-inputs';
 import { NotificationService } from '../../../services/notification.service';
 import { AuthService } from '../../../services/auth.service';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ import { AuthService } from '../../../services/auth.service';
     InputIconModule,
     ButtonModule,
     PasswordModule,
+    CheckboxModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -32,6 +34,7 @@ export class LoginComponent {
   form = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
+    rememberMe: [false],
   });
 
   public isLoading: boolean = false;
@@ -47,7 +50,7 @@ export class LoginComponent {
 
   login() {
     this.isLoading = true;
-    this.authService.login(this.form.value.email!, this.form.value.password!).subscribe({
+    this.authService.login(this.form.value.email!, this.form.value.password!, this.form.value.rememberMe!).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.notificationService.showSuccess('Connexion réussie', 'Vous êtes maintenant connecté.');

@@ -28,13 +28,9 @@ export const navigationItems: NavigationItem[] = [
     { name: 'Event', icon: 'event', path: '/events' },
     { name : 'Ma galerie', icon: 'add_photo_alternate', path: '/gallery' },
     {
-      name: 'Dégustations',
+      name: 'Mes dégustations',
       icon: 'liquor',
-      path: null,
+      path: '/tastings',
       isOpen: false,
-      subNavigationItems: [
-        { name: 'Mes dégustations', icon: 'local_bar', path: '/tastings' },
-        { name: 'Ajouter', icon: 'add_circle_outline', path: '/tastings/add' },
-      ],
     }
   ];

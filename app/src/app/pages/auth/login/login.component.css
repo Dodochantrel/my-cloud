@@ -1,0 +1,23 @@
+.line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buttons-container {
+    width: 100%;
+}
+
+p-button, ::ng-deep .p-button {
+    width: 100%;
+}
+
+.no-account-text {
+    text-align: center;
+}
+
+.remember-bloc {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}

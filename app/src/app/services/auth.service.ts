@@ -10,8 +10,8 @@ export class AuthService {
 
   constructor(private readonly httpClient: HttpClient, private readonly cookieService: CookieService) { }
 
-  login(email: string, password: string) {
-    return this.httpClient.post(`${environment.apiUrl}authentications/login`, { email, password }, { withCredentials: true });
+  login(email: string, password: string, rememberMe: boolean) {
+    return this.httpClient.post(`${environment.apiUrl}authentications/login`, { email, password, rememberMe }, { withCredentials: true });
   }
 
   refreshAccessToken() {

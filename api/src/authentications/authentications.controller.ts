@@ -35,6 +35,7 @@ export class AuthenticationsController {
     const loginResponse = await this.authenticationsService.login(
       body.email,
       body.password,
+      body.rememberMe,
     );
     return this.prepareCookies(
       loginResponse.accessToken,
