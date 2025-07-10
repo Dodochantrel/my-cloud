@@ -2,22 +2,26 @@
 
     <div class="bloc-default">
 
-        <div class="input-container">
-            <p-iconfield>
-                <p-inputicon styleClass="pi pi-user" />
-                <p-autocomplete [suggestions]="groupsToSearch" [autoZIndex]="false" placeholder="Rechercher un groupe"
-                    [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="search"
-                    (completeMethod)="getGroups()">
-                    <ng-template let-movie #item>
-                        <div class="line-movie-search">
-                            <div>{{ movie.title }}</div>
-                        </div>
-                    </ng-template>
-                </p-autocomplete>
-            </p-iconfield>
+        <div class="header">
+            
+            <div class="input-container">
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-user" />
+                    <p-autocomplete [suggestions]="groupsToSearch" [autoZIndex]="false" placeholder="Rechercher un groupe"
+                        [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="search"
+                        (completeMethod)="getGroups()">
+                        <ng-template let-movie #item>
+                            <div class="line-movie-search">
+                                <div>{{ movie.title }}</div>
+                            </div>
+                        </ng-template>
+                    </p-autocomplete>
+                </p-iconfield>
+            </div>
+    
+            <p-button icon="pi pi-add" class="button-add" label="Créer un groupe" (onClick)="isCreatingGroup = true" />
+            
         </div>
-
-        <p-button icon="pi pi-add" label="Créer un groupe" (onClick)="isCreatingGroup = true" />
 
         <div class="groups-container">
 

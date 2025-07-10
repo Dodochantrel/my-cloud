@@ -7,10 +7,11 @@ import { FileUpload } from 'primeng/fileupload';
 import { FileWidth } from '../../../tools/file-width.type';
 import { PictureCategory } from '../../../class/picture-category';
 import { LoaderComponent } from '../../loader/loader.component';
+import { ImageModule } from 'primeng/image';
 
 @Component({
   selector: 'app-photo',
-  imports: [FileUpload, ButtonModule, CommonModule, LoaderComponent],
+  imports: [FileUpload, ButtonModule, CommonModule, LoaderComponent, ImageModule],
   templateUrl: './photo.component.html',
   styleUrl: './photo.component.css'
 })

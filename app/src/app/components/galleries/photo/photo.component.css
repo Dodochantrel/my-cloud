@@ -46,3 +46,9 @@
 .file-upload {
     margin-top: auto;
 }
+
+::ng-deep .p-image-preview, ::ng-deep .p-image-preview img, ::ng-deep .p-image-preview button {
+    width: 100% !important;
+    height: 100%;
+    object-fit: cover;
+}

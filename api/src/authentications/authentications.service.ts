@@ -59,6 +59,22 @@ export class AuthenticationsService {
     );
   }
 
+  async refreshTokens(refreshToken: string, userId: number) {
+    const user = await this.usersService.getOneById(userId, ['groups']);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (!user.isAuthorized) {
+      throw new UnauthorizedException('User is not authorized');
+    }
+    const accessToken = await this.generateAccessToken(user);
+
+    return {
+      accessToken,
+      user,
+    };
+  }
+
   async generateAccessToken(user: User): Promise<string> {
     return this.tokensService.generateAccessToken(
       user.id,

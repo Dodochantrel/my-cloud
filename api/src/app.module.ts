@@ -64,9 +64,10 @@ import { TastingCategory } from './tastings/tasting-category.entity';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
+        global: true,
         secret: configService.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn: configService.get<number>('JWT_ACCESS_LIFETIME'),
+          expiresIn: parseInt(configService.get<string>('JWT_ACCESS_LIFETIME')),
         },
       }),
     }),

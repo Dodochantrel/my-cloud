@@ -13,7 +13,7 @@
         </p-iconfield>
       </div>
 
-      <p-treeselect [(ngModel)]="categoriesSelected" (ngModelChange)="getAll(paginatedTasting.paginatedMeta.page, paginatedTasting.paginatedMeta.limit)" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
+      <p-treeselect class="treeselect-container" [(ngModel)]="categoriesSelected" (ngModelChange)="getAll(paginatedTasting.paginatedMeta.page, paginatedTasting.paginatedMeta.limit)" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
   
       <p-button icon="pi pi-plus-circle" label="Ajouter" (onClick)="isAddingOrEditing = true" />
 

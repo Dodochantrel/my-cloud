@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
@@ -23,12 +24,14 @@ import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { ApiPaginatedResponse } from 'src/pagination/response-paginated.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { AddOrRemoveUserGroupRequestDto } from './dtos/add-or-remove-user-group-request.dto';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiPaginatedResponse(GroupResponseDto, 'Groups')
   async getAll(
     @TokenPayload() tokenPayload: AccessTokenPayload,

@@ -19,7 +19,6 @@ export class FilesManager {
 
   private save(fileData: FileData): Promise<FileData> {
     fileData.prepareFileName();
-    console.log('FileData to save:', fileData);
     return this.fileDataRepository.save(fileData);
   }
 

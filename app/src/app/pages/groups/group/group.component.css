@@ -1,12 +1,21 @@
-.input-container {
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     width: 100%;
 }
 
-.groups-container {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    width: 100%;
+.bloc-default {
+    min-height: 50vh;
+}
+  
+.input-container {
+    flex: 1;
+    min-width: 0;
+}
+  
+.button-add {
+    white-space: nowrap;
 }
 
 .group {
@@ -89,4 +98,8 @@
 
 .group-users {
     margin-bottom: 1rem;
+}
+
+app-footer-table {
+    margin-top: auto;
 }

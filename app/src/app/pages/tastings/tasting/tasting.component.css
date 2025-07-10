@@ -11,12 +11,15 @@
     width: 100%;
     flex-wrap: wrap;
 }
-
-.header > :nth-child(1),
-.header > :nth-child(2) {
-  flex: 1 1 auto;
-  max-width: 50%;
-  min-width: 200px;
+  
+.input-container, .treeselect-container {
+    flex: 1 1 0;
+    min-width: 200px;
+}
+  
+.header p-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .tasting-card {

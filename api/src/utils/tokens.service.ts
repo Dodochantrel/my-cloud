@@ -20,7 +20,9 @@ export class TokensService {
     const payload: AccessTokenPayload = { id, email, groupsId };
     return this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_ACCESS_LIFETIME'),
+      expiresIn: parseInt(
+        this.configService.get<string>('JWT_ACCESS_LIFETIME'),
+      ),
     });
   }
 
@@ -28,7 +30,9 @@ export class TokensService {
     const payload: RefreshTokenPayload = { id };
     return this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_REFRESH_LIFETIME'),
+      expiresIn: parseInt(
+        this.configService.get<string>('JWT_REFRESH_LIFETIME'),
+      ),
     });
   }
 }
@@ -51,5 +55,16 @@ export const TokenPayload = createParamDecorator(
     }
     const accessToken = request.headers.authorization.split(' ')[1];
     return jwtDecode<AccessTokenPayload>(accessToken);
+  },
+);
+
+export const RefreshTokenPayload = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    if (!request.cookies || !request.cookies.refreshToken) {
+      return null;
+    }
+    const refreshToken = request.cookies.refreshToken;
+    return jwtDecode<RefreshTokenPayload>(refreshToken);
   },
 );

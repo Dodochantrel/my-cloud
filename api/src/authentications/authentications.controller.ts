@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthenticationsService } from './authentications.service';
 import { LoginRequestDto } from './dtos/login-request.dto';
@@ -8,6 +8,9 @@ import {
 } from './dtos/login-response.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RegisterRequestDto } from './dtos/register-request.dto';
+import { RefreshGuard } from './refresh.guard';
+import { RefreshToken } from './refresh-token.decorator';
+import { RefreshTokenPayload } from 'src/utils/tokens.service';
 
 @Controller('authentications')
 export class AuthenticationsController {
@@ -60,9 +63,39 @@ export class AuthenticationsController {
     );
   }
 
+  @Post('refresh')
+  @UseGuards(RefreshGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'Token refresh successful',
+    type: LoginResponseDto,
+  })
+  async refresh(
+    @Res() res: Response,
+    @RefreshToken() refreshToken: string,
+    @RefreshTokenPayload() user: RefreshTokenPayload,
+  ): Promise<Response> {
+    const refreshResponse = await this.authenticationsService.refreshTokens(
+      refreshToken,
+      user.id,
+    );
+    return this.prepareAccessTokenCookie(refreshResponse.accessToken, res)
+      .status(200)
+      .json(mapFromUserToLoginResponseDto(refreshResponse.user));
+  }
+
   private prepareCookies(
     accessToken: string,
     refreshToken: string,
+    res: Response,
+  ): Response {
+    res = this.prepareAccessTokenCookie(accessToken, res);
+    res = this.prepareRefreshTokenCookie(refreshToken, res);
+    return res;
+  }
+
+  private prepareAccessTokenCookie(
+    accessToken: string,
     res: Response,
   ): Response {
     res.cookie('accessToken', accessToken, {
@@ -70,6 +103,13 @@ export class AuthenticationsController {
       secure: true,
       sameSite: 'strict',
     });
+    return res;
+  }
+
+  private prepareRefreshTokenCookie(
+    refreshToken: string,
+    res: Response,
+  ): Response {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,

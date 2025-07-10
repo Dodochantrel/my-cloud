@@ -15,6 +15,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { fr } from "primelocale/fr.json";
 import { BearerTokenInterceptor } from './interceptors/bearer-token.interceptor';
+import { HttpForbiddenInterceptor } from './interceptors/http-forbidden.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([BearerTokenInterceptor]), withFetch()),
+    provideHttpClient(withInterceptors([BearerTokenInterceptor, HttpForbiddenInterceptor]), withFetch()),
     provideClientHydration(),
     provideAnimationsAsync(),
     providePrimeNG({
