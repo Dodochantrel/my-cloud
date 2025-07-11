@@ -1,0 +1,19 @@
+.separator {
+    margin: 1rem 0;
+}
+
+.buttons-container {
+    width: 100%;
+}
+
+p-button, ::ng-deep .p-button {
+    width: 100%;
+}
+
+.already-have-account-text {
+    text-align: center;
+}
+
+.link {
+    color: var(--primary-color);
+}

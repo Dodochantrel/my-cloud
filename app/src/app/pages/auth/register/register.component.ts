@@ -1,19 +1,18 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NotificationService } from '../../../services/notification.service';
+import { AuthService } from '../../../services/auth.service';
+import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { updateFailedInputs } from '../../../tools/update-failed-inputs';
-import { NotificationService } from '../../../services/notification.service';
-import { AuthService } from '../../../services/auth.service';
-import { CheckboxModule } from 'primeng/checkbox';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   imports: [
     ReactiveFormsModule,
     CommonModule,
@@ -23,48 +22,52 @@ import { Router, RouterLink } from '@angular/router';
     ButtonModule,
     PasswordModule,
     RouterLink,
-    CheckboxModule,
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
 })
-export class LoginComponent {
+export class RegisterComponent {
   private formBuilder = inject(FormBuilder);
 
-  constructor(private readonly notificationService: NotificationService, private readonly authService: AuthService, private readonly router: Router) {}
+  constructor(private readonly notificationService: NotificationService, private readonly authService: AuthService, private readonly router: Router) { }
 
   form = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
     password: ['', Validators.required],
-    rememberMe: [false],
+    confirmPassword: ['', Validators.required],
   });
 
   public isLoading: boolean = false;
 
   submit() {
     if (this.form.valid) {
-      this.login();
+      this.register();
     } else {
       updateFailedInputs(this.form);
       this.notificationService.showError('Erreur de validation', 'Veuillez vérifier les champs du formulaire.');
     }
   }
 
-  login() {
+  register() {
     this.isLoading = true;
-    this.authService.login(this.form.value.email!, this.form.value.password!, this.form.value.rememberMe!).subscribe({
+    this.authService.register(
+      this.form.value.email!,
+      this.form.value.firstName!,
+      this.form.value.lastName!,
+      this.form.value.password!
+    ).subscribe({
       next: (response) => {
-        this.isLoading = false;
-        this.notificationService.showSuccess('Connexion réussie', 'Vous êtes maintenant connecté.');
-        this.router.navigate(['/']);
+        this.notificationService.showSuccess('Inscription réussie', 'Votre compte a été créé avec succès.');
+        this.router.navigate(['/auth/valid-email']);
       },
       error: (error) => {
-        this.isLoading = false;
-        this.notificationService.showError('Erreur de connexion', error.message);
+        this.notificationService.showError('Erreur d\'inscription', 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
       },
       complete: () => {
         this.isLoading = false;
-      },
+      }
     });
   }
 }

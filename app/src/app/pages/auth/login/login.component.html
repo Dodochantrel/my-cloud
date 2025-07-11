@@ -42,7 +42,7 @@
                 <p-checkbox formControlName="rememberMe" [binary]="true" />
                 <span>Se souvenir de moi</span>
             </div>
-            <a class="forgot-password" routerLink="/auth/forgot-password">Mot de passe oublié ?</a>
+            <a class="forgot-password link" routerLink="/auth/forgot-password">Mot de passe oublié ?</a>
         </div>
 
         <div class="buttons-container">
@@ -51,7 +51,7 @@
 
         <div class="separator"></div>
 
-        <p class="no-account-text">Pas encore de compte ? <span class="bold">Créer un compte</span></p>
+        <p class="no-account-text">Pas encore de compte ? <a class="bold link" routerLink="/auth/register">Créer un compte</a></p>
 
     </form>
 

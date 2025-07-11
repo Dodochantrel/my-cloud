@@ -1,0 +1,22 @@
+<div class="auth-pages">
+
+    <form class="form" [formGroup]="form" class="form-auth">
+
+        <h2 class="auth-title no-margin">Valider votre email</h2>
+
+        <p class="auth-sub-title">Vous avez reçu un email avec votre code de validation</p>
+
+
+        <div class="input-container">
+            <label for="code" class="label">Code</label>
+            <p-inputotp formControlName="code" [integerOnly]="true" />
+            @if(form.get('code')?.invalid && form.get('code')?.dirty) {
+                @if(form.get('code')?.errors?.['code']) {
+                    <small class="p-error block error-message">Le code est requis</small>
+                }
+            }
+        </div>
+
+    </form>
+
+</div>

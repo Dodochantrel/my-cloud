@@ -1,0 +1,105 @@
+<div class="auth-pages">
+
+    <form class="form" [formGroup]="form" class="form-auth">
+
+        <h2 class="auth-title no-margin">Créer un compte</h2>
+
+        <p class="auth-sub-title">Inscrivez-vous pour demander l'accès a l'application</p>
+
+
+        <div class="input-container">
+            <label for="email" class="label">Adresse email</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="michel.dumas@orange.fr" formControlName="email"
+                    [ngClass]="{'p-invalid': form.get('email')?.invalid && form.get('email')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('email')?.invalid && form.get('email')?.dirty) {
+                @if(form.get('email')?.errors?.['required']) {
+                    <small class="p-error block error-message">L'email est requis</small>
+                }
+                @if(form.get('email')?.errors?.['email']) {
+                    <small class="p-error block error-message">L'email n'est pas valide</small>
+                }
+            }
+        </div>
+
+        <div class="input-container">
+            <label for="firstName" class="label">Prénom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('firstName')?.invalid && form.get('firstName')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="Michel" formControlName="firstName"
+                    [ngClass]="{'p-invalid': form.get('firstName')?.invalid && form.get('firstName')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('firstName')?.invalid && form.get('firstName')?.dirty) {
+                @if(form.get('firstName')?.errors?.['required']) {
+                    <small class="p-error block error-message">Le prénom est requis</small>
+                }
+            }
+        </div>
+
+        <div class="input-container">
+            <label for="lastName" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('lastName')?.invalid && form.get('lastName')?.dirty}"
+                    styleClass="pi pi-user" />
+                <input type="text" pInputText placeholder="Dumas" formControlName="lastName"
+                    [ngClass]="{'p-invalid': form.get('lastName')?.invalid && form.get('lastName')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('lastName')?.invalid && form.get('lastName')?.dirty) {
+                @if(form.get('lastName')?.errors?.['required']) {
+                    <small class="p-error block error-message">Le nom est requis</small>
+                }
+            }
+        </div>
+
+        <div class="input-container">
+            <label for="password" class="label">Mot de passe</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('password')?.invalid && form.get('password')?.dirty}"
+                    styleClass="pi pi-lock" />
+                <p-password formControlName="password" [toggleMask]="true" placeholder="Votre mot de passe"
+                    [ngClass]="{'p-invalid': form.get('password')?.invalid && form.get('password')?.dirty}" >
+                    <ng-template pTemplate="footer">
+                        <div class="separator"></div>
+                        <p>Suggestions</p>
+                        <ul>
+                            <li>Minimum un character minuscule</li>
+                            <li>Minimum un character majuscule</li>
+                            <li>Minimum un chiffre</li>
+                            <li>Minimum 8 charactères</li>
+                        </ul>
+                    </ng-template>
+                </p-password>
+            </p-iconfield>
+            @if(form.get('password')?.invalid && form.get('password')?.dirty) {
+            <small class="p-error block error-message">Votre mot de passe est requis</small>
+            }
+        </div>
+
+        <div class="input-container">
+            <label for="confirmPassword" class="label">Confirmer mot de passe</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.dirty}"
+                    styleClass="pi pi-lock" />
+                <p-password [feedback]="false" formControlName="confirmPassword" [toggleMask]="true" placeholder="Votre mot de passe"
+                    [ngClass]="{'p-invalid': form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.dirty) {
+            <small class="p-error block error-message">Votre mot de passe est requis</small>
+            }
+        </div>
+
+        <div class="buttons-container">
+            <p-button label="Inscription" (onClick)="submit()" [disabled]="isLoading" />
+        </div>
+
+        <div class="separator"></div>
+
+        <p class="already-have-account-text">Déjà un compte ? <a class="bold link" routerLink="/auth/login">Se connecter</a></p>
+
+    </form>
+
+</div>

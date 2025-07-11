@@ -21,3 +21,7 @@ p-button, ::ng-deep .p-button {
     align-items: center;
     gap: .3rem;
 }
+
+.link {
+    color: var(--primary-color);
+}

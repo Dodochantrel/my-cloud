@@ -11,6 +11,8 @@ import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create
 import { EventComponent } from './pages/events/event/event.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
 import { TastingComponent } from './pages/tastings/tasting/tasting.component';
+import { RegisterComponent } from './pages/auth/register/register.component';
+import { ValidEmailComponent } from './pages/auth/valid-email/valid-email.component';
 
 export const routes: Routes = [
   {
@@ -144,6 +146,28 @@ export const routes: Routes = [
         path: 'auth/login',
         title: 'Login',
         component: LoginComponent,
+      },
+    ],
+  },
+  {
+    path: '',
+    component: NoNavigationComponent,
+    children: [
+      {
+        path: 'auth/register',
+        title: 'Register',
+        component: RegisterComponent,
+      },
+    ],
+  },
+  {
+    path: '',
+    component: NoNavigationComponent,
+    children: [
+      {
+        path: 'auth/valid-email',
+        title: 'Valid Email',
+        component: ValidEmailComponent,
       },
     ],
   }

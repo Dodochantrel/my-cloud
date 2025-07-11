@@ -14,6 +14,10 @@ export class AuthService {
     return this.httpClient.post(`${environment.apiUrl}authentications/login`, { email, password, rememberMe }, { withCredentials: true });
   }
 
+  register(email: string, firstName: string, lastName: string, password: string) {
+    return this.httpClient.post(`${environment.apiUrl}authentications/register`, { email, firstName, lastName, password });
+  }
+
   refreshAccessToken() {
     return this.httpClient.post(`${environment.apiUrl}authentications/refresh`, {}, {
       withCredentials: true
