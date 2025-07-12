@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Not, Repository } from 'typeorm';
+import { Like, Not, Repository } from 'typeorm';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { PageQuery } from 'src/pagination/page-query';
 
@@ -19,6 +19,20 @@ export class UsersService {
     });
   }
 
+  getMe(id: number): Promise<User> {
+    const user = this.userRepository.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  isFirstUser(): Promise<boolean> {
+    return this.userRepository.count().then((count) => count === 0);
+  }
+
   getOneById(id: number, relations: string[] = []): Promise<User | null> {
     return this.userRepository.findOne({
       where: { id },
@@ -27,10 +41,12 @@ export class UsersService {
   }
 
   async getAll(
+    search: string,
     pageQuery: PageQuery,
     relations: string[] = [],
   ): Promise<PaginatedResponse<User>> {
     const [user, count] = await this.userRepository.findAndCount({
+      where: search ? { email: Like(`%${search}%`) } : {},
       take: pageQuery.limit,
       skip: pageQuery.offset,
       relations,
@@ -65,5 +81,14 @@ export class UsersService {
       select: ['id', 'email', 'firstName', 'lastName'],
       where: { id: Not(id) },
     });
+  }
+
+  async authorize(id: number): Promise<User> {
+    const user = await this.getOneById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.isAuthorized = true;
+    return this.save(user);
   }
 }

@@ -88,7 +88,12 @@
                     [ngClass]="{'p-invalid': form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.dirty}" />
             </p-iconfield>
             @if(form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.dirty) {
-            <small class="p-error block error-message">Votre mot de passe est requis</small>
+                @if(form.get('confirmPassword')?.errors?.['required']) {
+                    <small class="p-error block error-message">Votre mot de passe est requis</small>
+                }
+                @if(form.get('confirmPassword')?.errors?.['mismatch']) {
+                    <small class="p-error block error-message">Les mots de passe ne correspondent pas</small>
+                }
             }
         </div>
 

@@ -9,7 +9,6 @@ import {
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RegisterRequestDto } from './dtos/register-request.dto';
 import { RefreshGuard } from './refresh.guard';
-import { RefreshToken } from './refresh-token.decorator';
 import { RefreshTokenPayload } from 'src/utils/tokens.service';
 
 @Controller('authentications')
@@ -73,11 +72,9 @@ export class AuthenticationsController {
   })
   async refresh(
     @Res() res: Response,
-    @RefreshToken() refreshToken: string,
     @RefreshTokenPayload() user: RefreshTokenPayload,
   ): Promise<Response> {
     const refreshResponse = await this.authenticationsService.refreshTokens(
-      refreshToken,
       user.id,
     );
     return this.prepareAccessTokenCookie(refreshResponse.accessToken, res)

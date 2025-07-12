@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   trigger,
@@ -8,7 +8,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { navigationItems } from './left-navigations-items';
+import { adminNavigationItems, navigationItems } from './left-navigations-items';
 
 @Component({
   selector: 'app-left-navigation',
@@ -32,6 +32,7 @@ export class LeftNavigationComponent {
   @Input() isOpenNaviation: boolean = true;
 
   public navigationItems: NavigationItem[] = navigationItems;
+  public adminNavigationItems: NavigationItem[] = adminNavigationItems;
 
   public toggleSubNavigation(navigationItem: NavigationItem): void {
     navigationItem.isOpen = !navigationItem.isOpen;

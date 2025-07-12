@@ -1,8 +1,11 @@
 import {
+  ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Role } from 'src/roles/role.enum';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { HashsService } from 'src/utils/hashs.service';
@@ -21,11 +24,11 @@ export class AuthenticationsService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (!this.hashsService.compare(password, user.password)) {
+    if (!(await this.hashsService.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
     if (!user.isAuthorized) {
-      throw new UnauthorizedException('User is not authorized');
+      throw new ForbiddenException('User is not authorized');
     }
     const accessTokenPromise = this.generateAccessToken(user);
     const refreshTokenPromise = this.generateRefreshToken(user, rememberMe);
@@ -49,17 +52,25 @@ export class AuthenticationsService {
     lastName: string,
   ): Promise<User> {
     const hashedPassword = await this.hashsService.hash(password);
-    return await this.usersService.save(
-      new User({
-        email,
-        password: hashedPassword,
-        firstName,
-        lastName,
-      }),
-    );
+    const existingUser = await this.usersService.getOneByEmail(email);
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+    const user = new User({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+    });
+    user.roles.push(Role.User);
+    if (await this.usersService.isFirstUser()) {
+      user.isAuthorized = true;
+      user.roles.push(Role.Admin);
+    }
+    return await this.usersService.save(user);
   }
 
-  async refreshTokens(refreshToken: string, userId: number) {
+  async refreshTokens(userId: number) {
     const user = await this.usersService.getOneById(userId, ['groups']);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -80,6 +91,7 @@ export class AuthenticationsService {
       user.id,
       user.email,
       user.groups.map((group) => group.id),
+      user.roles,
     );
   }
 

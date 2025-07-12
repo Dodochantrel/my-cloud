@@ -34,3 +34,22 @@ export const navigationItems: NavigationItem[] = [
       isOpen: false,
     }
   ];
+
+  export const adminNavigationItems: NavigationItem[] = [
+    {
+      name: 'Utilisateurs',
+      icon: 'people',
+      path: '/admin/users',
+      isOpen: false,
+    },
+    {
+      name: 'Catégories',
+      icon: 'source',
+      path: null,
+      isOpen: false,
+      subNavigationItems: [
+        { name: 'Événements', icon: 'event', path: '/admin/categories/events' },
+        { name: 'Dégustations', icon: 'sports_bar', path: '/admin/categories/tastings' },
+      ],
+    },
+  ];

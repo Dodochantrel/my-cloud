@@ -42,6 +42,7 @@ export class RegisterComponent {
   public isLoading: boolean = false;
 
   submit() {
+    this.checkPasswordsMatch();
     if (this.form.valid) {
       this.register();
     } else {
@@ -60,14 +61,30 @@ export class RegisterComponent {
     ).subscribe({
       next: (response) => {
         this.notificationService.showSuccess('Inscription réussie', 'Votre compte a été créé avec succès.');
-        this.router.navigate(['/auth/valid-email']);
+        this.router.navigate(['/auth/login']);
       },
       error: (error) => {
-        this.notificationService.showError('Erreur d\'inscription', 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
+        if( error.status === 409) {
+          this.notificationService.showError('Email déjà utilisé', 'L\'adresse email que vous avez saisie est déjà utilisée');
+        } else {
+          this.notificationService.showError('Erreur d\'inscription', 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
+        }
+        this.isLoading = false;
       },
       complete: () => {
         this.isLoading = false;
       }
     });
+  }
+
+  checkPasswordsMatch() {
+    const password = this.form.get('password')?.value;
+    const confirmPassword = this.form.get('confirmPassword')?.value;
+
+    if (password !== confirmPassword) {
+      this.form.get('confirmPassword')?.setErrors({ mismatch: true });
+    } else {
+      this.form.get('confirmPassword')?.setErrors(null);
+    }
   }
 }

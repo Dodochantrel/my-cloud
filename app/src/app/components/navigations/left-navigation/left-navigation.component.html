@@ -32,4 +32,30 @@
             }
         }
     </div>
+
+    <div class="block">
+        <p class="block-title first-color">Admins</p>
+        @for (navigationItem of adminNavigationItems; track $index) {
+            @if(navigationItem.subNavigationItems){
+                <a class="link" (click)="toggleSubNavigation(navigationItem)">
+                    <span class="material-icons-outlined first-color">{{ navigationItem.icon }}</span>
+                    {{ navigationItem.name }}
+                    <i class="pi pi-chevron-right open-icon" [class.navigation-is-open]="navigationItem.isOpen"></i>
+                </a>
+                <div *ngIf="navigationItem.isOpen" @subMenuAnimation>
+                    @for (subNavigationItem of navigationItem.subNavigationItems; track $index) {
+                        <a class="link link-open" [routerLink]="subNavigationItem.path" [routerLinkActive]="['active']">
+                            <span class="material-icons-outlined first-color">{{ subNavigationItem.icon }}</span>
+                            {{ subNavigationItem.name }}
+                        </a>
+                    }
+                </div>
+            } @else {
+                <a class="link" [routerLink]="navigationItem.path" [routerLinkActive]="['active']">
+                    <span class="material-icons-outlined first-color">{{ navigationItem.icon }}</span>
+                    {{ navigationItem.name }}
+                </a>
+            }
+        }
+    </div>
 </div>

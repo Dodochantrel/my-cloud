@@ -13,28 +13,11 @@
     width: 100%;
     padding: 1rem 0;
     justify-content: space-between;
-}
-
-.icon {
-    color: var(--text-color);
-    height: 30px;
-    width: 30px;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    border-radius: 50%;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.icon:hover {
-    background-color: var(--first-color);
-    color: white;
 }
 
 .part {
     display: flex;
-    gap: 1rem;
     align-content: center;
 }
 

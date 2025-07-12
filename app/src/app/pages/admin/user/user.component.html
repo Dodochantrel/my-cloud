@@ -1,0 +1,39 @@
+<div class="container">
+
+    <div class="bloc-default">
+
+        <h2>Gérer vos utilisateurs</h2>
+
+        <div class="header">
+            
+            <div class="input-container">
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-user" />
+                    <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="search" (ngModelChange)="getUsers()" />
+                </p-iconfield>
+            </div>
+            
+        </div>
+
+        <p-table [value]="paginatedUsers.data">
+            <ng-template #header>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Date inscription</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-user>
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.getFullName() }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+
+</div>

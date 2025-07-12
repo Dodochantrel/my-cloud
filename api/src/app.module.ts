@@ -41,6 +41,8 @@ import { TastingsController } from './tastings/tastings.controller';
 import { TastingsService } from './tastings/tastings.service';
 import { Tasting } from './tastings/tasting.entity';
 import { TastingCategory } from './tastings/tasting-category.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './roles/roles.guard';
 
 @Module({
   imports: [
@@ -101,6 +103,10 @@ import { TastingCategory } from './tastings/tasting-category.entity';
     PicturesService,
     PicturesCategoriesService,
     TastingsService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

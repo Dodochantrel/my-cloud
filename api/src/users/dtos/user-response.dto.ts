@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../user.entity';
+import {
+  mapFromRoleToRoleResponseDto,
+  RoleResponseDto,
+} from 'src/roles/dtos/role.dto';
 
 export class UserResponseDto {
   @ApiProperty({
@@ -27,6 +31,12 @@ export class UserResponseDto {
   email: string;
 
   @ApiProperty({
+    description: 'Unique identifier of the user',
+    example: '123e4567-e89b-12d3-a456-42661417400',
+  })
+  roles: RoleResponseDto;
+
+  @ApiProperty({
     description: 'Creation date of the user',
     example: '2023-10-01T12:00:00Z',
   })
@@ -45,6 +55,7 @@ export const mapFromUserToUserResponseDto = (user: User): UserResponseDto => {
     firstName: user.firstName ? user.firstName : null,
     lastName: user.lastName ? user.lastName : null,
     email: user.email ? user.email : null,
+    roles: user.roles ? mapFromRoleToRoleResponseDto(user.roles) : null,
     createdAt: user.createdAt ? user.createdAt.toISOString() : null,
     updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
   };

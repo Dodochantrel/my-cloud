@@ -12,12 +12,17 @@ import { EventComponent } from './pages/events/event/event.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
 import { TastingComponent } from './pages/tastings/tasting/tasting.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
-import { ValidEmailComponent } from './pages/auth/valid-email/valid-email.component';
+import { adminGuard } from './guards/admin.guard';
+import { UserComponent } from './pages/admin/user/user.component';
+import { EventCategoryComponent } from './pages/admin/categories/event-category/event-category.component';
+import { TastingCategoryComponent } from './pages/admin/categories/tasting-category/tasting-category.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: WithLeftNavigationComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'recipes/starters',
@@ -136,6 +141,45 @@ export const routes: Routes = [
           breadcrumb: [{ label: 'Dégustations' }],
         },
       },
+      {
+        path: 'admin',
+        canActivateChild: [adminGuard],
+        children: [
+          {
+            path: 'users',
+            title: 'Admin - Users',
+            component: UserComponent,
+            data: {
+              title: 'Utilisateurs',
+              breadcrumb: [{ label: 'Admin' }, { label: 'Utilisateurs' }],
+            },
+          },
+          {
+            path: 'categories',
+            canActivateChild: [adminGuard],
+            children: [
+              {
+                path: 'events',
+                title: 'Admin - Event Categories',
+                component: EventCategoryComponent,
+                data: {
+                  title: 'Catégories d\'Événements',
+                  breadcrumb: [{ label: 'Admin' }, { label: 'Catégories' }, { label: 'Évènemement' }],
+                },
+              },
+              {
+                path: 'tastings',
+                title: 'Admin - Tasting Categories',
+                component: TastingCategoryComponent,
+                data: {
+                  title: 'Catégories de dégustations',
+                  breadcrumb: [{ label: 'Admin' }, { label: 'Catégories' }, { label: 'Dégustation' }],
+                },
+              },
+            ],  
+          }
+        ],  
+      }
     ],
   },
   {
@@ -160,15 +204,4 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: '',
-    component: NoNavigationComponent,
-    children: [
-      {
-        path: 'auth/valid-email',
-        title: 'Valid Email',
-        component: ValidEmailComponent,
-      },
-    ],
-  }
 ];

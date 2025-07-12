@@ -2,6 +2,7 @@ import { EventData } from 'src/events/event-data.entity';
 import { Group } from 'src/groups/group.entity';
 import { PicturesCategory } from 'src/pictures-categories/pictures-category.entity';
 import { Recipe } from 'src/recipes/recipe.entity';
+import { Role } from 'src/roles/role.enum';
 import { Tasting } from 'src/tastings/tasting.entity';
 import { Video } from 'src/videos/video.entity';
 import {
@@ -34,6 +35,14 @@ export class User {
 
   @Column({ default: false })
   isAuthorized: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    array: true,
+    default: [Role.User],
+  })
+  roles: Role[];
 
   @UpdateDateColumn({
     type: 'timestamp',

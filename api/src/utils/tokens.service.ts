@@ -16,8 +16,9 @@ export class TokensService {
     id: number,
     email: string,
     groupsId: number[],
+    roles: string[],
   ): Promise<string> {
-    const payload: AccessTokenPayload = { id, email, groupsId };
+    const payload: AccessTokenPayload = { id, email, groupsId, roles };
     return this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
       expiresIn: parseInt(
@@ -32,10 +33,8 @@ export class TokensService {
       ? this.configService.get<string>('JWT_REFRESH_LIFETIME_REMEMBER')
       : this.configService.get<string>('JWT_REFRESH_LIFETIME');
     return this.jwtService.signAsync(payload, {
-      secret: lifetime,
-      expiresIn: parseInt(
-        this.configService.get<string>('JWT_REFRESH_LIFETIME'),
-      ),
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: lifetime,
     });
   }
 }
@@ -43,6 +42,7 @@ export class TokensService {
 export interface AccessTokenPayload {
   id: number;
   email: string;
+  roles: string[];
   groupsId: number[];
 }
 

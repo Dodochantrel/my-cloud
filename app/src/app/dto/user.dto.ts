@@ -1,12 +1,14 @@
 import { User } from '../class/user';
+import { mapFromDtosToRoles, mapFromRoleDtoToRoles, RoleDto } from './role.dto';
 
 export interface UserDto {
   id: number;
   firstName: string;
   lastName: string;
   email: string;
-  createdAt: string;
-  updatedAt: string;
+  roles: RoleDto | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export const mapFromUserDtoToUser = (dto: UserDto): User => {
@@ -15,8 +17,9 @@ export const mapFromUserDtoToUser = (dto: UserDto): User => {
     dto.firstName,
     dto.lastName,
     dto.email,
-    new Date(dto.createdAt),
-    new Date(dto.updatedAt)
+    dto.roles ? mapFromRoleDtoToRoles(dto.roles) : [],
+    dto.createdAt ? new Date(dto.createdAt) : null,
+    dto.updatedAt ? new Date(dto.updatedAt) : null
   );
 };
 

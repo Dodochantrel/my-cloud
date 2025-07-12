@@ -43,7 +43,8 @@ export class NotificationService {
     header: string,
     message: string,
     acceptCallback: () => void,
-    rejectCallback?: () => void
+    rejectCallback?: () => void,
+    validateString: string = 'Supprimer'
   ) {
     return this.confirmationService.confirm({
       target: event.target as EventTarget,
@@ -57,7 +58,7 @@ export class NotificationService {
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Supprimer',
+        label: validateString,
         severity: 'danger',
       },
       accept: acceptCallback,

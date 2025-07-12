@@ -3,21 +3,24 @@ export class User {
   firstName: string;
   lastName: string;
   email: string;
-  createdAt: Date;
-  updatedAt: Date;
+  roles: string[] | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 
   constructor(
     id: number,
     firstName: string,
     lastName: string,
     email: string,
-    createdAt: Date,
-    updatedAt: Date
+    roles: string[] | null,
+    createdAt: Date | null,
+    updatedAt: Date | null
   ) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
+    this.roles = roles;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -27,6 +30,10 @@ export class User {
     const lastNameInitial = this.lastName.charAt(0).toUpperCase();
     return `${firstNameInitial}${lastNameInitial}`;
   }
+
+  getFullName(): string {
+    return `${this.lastName.toUpperCase()} ${this.firstName}`;
+  }
 }
 
-export const defaultUser = new User(0, '', '', '', new Date(), new Date());
+export const defaultUser = new User(0, '', '', '', [], new Date(), new Date());

@@ -11,6 +11,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { AuthService } from '../../../services/auth.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +32,12 @@ import { Router, RouterLink } from '@angular/router';
 export class LoginComponent {
   private formBuilder = inject(FormBuilder);
 
-  constructor(private readonly notificationService: NotificationService, private readonly authService: AuthService, private readonly router: Router) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly userService: UserService
+  ) {}
 
   form = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -46,25 +52,64 @@ export class LoginComponent {
       this.login();
     } else {
       updateFailedInputs(this.form);
-      this.notificationService.showError('Erreur de validation', 'Veuillez vérifier les champs du formulaire.');
+      this.notificationService.showError(
+        'Erreur de validation',
+        'Veuillez vérifier les champs du formulaire.'
+      );
     }
   }
 
   login() {
     this.isLoading = true;
-    this.authService.login(this.form.value.email!, this.form.value.password!, this.form.value.rememberMe!).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.notificationService.showSuccess('Connexion réussie', 'Vous êtes maintenant connecté.');
-        this.router.navigate(['/']);
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.notificationService.showError('Erreur de connexion', error.message);
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
+    this.authService
+      .login(
+        this.form.value.email!,
+        this.form.value.password!,
+        this.form.value.rememberMe!
+      )
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.notificationService.showSuccess(
+            'Connexion réussie',
+            'Vous êtes maintenant connecté.'
+          );
+          this.userService.getMe();
+          this.router.navigate(['/']);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorHandler(error.status);
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
+      });
+  }
+
+  errorHandler(status: number) {
+    switch (status) {
+      case 401:
+        this.notificationService.showError(
+          "Identifiants invalides",
+          'Vos identifiants sont incorrects. Veuillez réessayer.'
+        );
+        break;
+      case 404:
+        this.notificationService.showError('Utilisateur non trouvé.', 'Aucun utilisateur trouvé avec ces identifiants.');
+        break;
+      case 403:
+        this.notificationService.showError(
+          'Accès non autorisé',
+          'L\'administrateur n\'a pas autorisé votre compte.'
+        );
+        break;
+      default:
+        this.notificationService.showError(
+          'Erreur',
+          'Une erreur inconnue est survenue.'
+        );
+        break;
+    }
   }
 }

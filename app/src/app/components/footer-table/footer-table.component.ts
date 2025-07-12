@@ -47,6 +47,9 @@ export class FooterTableComponent {
   ];
 
   onPageChange(event: any) {
+    if(event.rows < this.meta.itemCount) {
+      return;
+    }
     this.meta.page = event.page + 1;
     this.meta.limit = event.rows;
     this.pageChange.emit(this.meta);
