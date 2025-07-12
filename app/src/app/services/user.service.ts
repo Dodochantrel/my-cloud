@@ -44,7 +44,10 @@ export class UserService {
 
   isAdmin(): boolean {
     const user = this.cookieService.getUser();
-    return user?.roles?.includes('admin') ?? false;
+    if(user && user.roles && user.roles.includes('admin')) {
+      return true;
+    }
+    return false;
   }
 
   getAll(page: number, limit: number, search: string = ''): Observable<Paginated<User>> {

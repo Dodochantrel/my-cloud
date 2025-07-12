@@ -15,13 +15,14 @@
             
         </div>
 
-        <p-table [value]="paginatedUsers.data">
+        <p-table [value]="paginatedUsers.data" stripedRows editMode="row">
             <ng-template #header>
                 <tr>
                     <th>#</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Date inscription</th>
+                    <th></th>
                 </tr>
             </ng-template>
             <ng-template #body let-user>
@@ -30,6 +31,18 @@
                     <td>{{ user.getFullName() }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <button
+                        pButton
+                        pRipple
+                        type="button"
+                        icon="pi pi-pencil"
+                        (click)="validUser(user)"
+                        text
+                        rounded
+                        severity="secondary"
+                    ></button>
+                    </td>
                 </tr>
             </ng-template>
         </p-table>

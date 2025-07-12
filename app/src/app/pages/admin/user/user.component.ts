@@ -43,7 +43,8 @@ export class UserComponent implements OnInit {
     this.userService
       .getAll(
         this.paginatedUsers.paginatedMeta.page,
-        this.paginatedUsers.paginatedMeta.limit
+        this.paginatedUsers.paginatedMeta.limit,
+        this.search
       )
       .subscribe({
         next: (users) => {
@@ -60,5 +61,9 @@ export class UserComponent implements OnInit {
           this.isLoadingUsers = false;
         },
       });
+  }
+
+  validUser(user: User): void {
+    console.log('Validating user:', user);
   }
 }
