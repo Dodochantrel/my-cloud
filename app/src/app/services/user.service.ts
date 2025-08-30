@@ -44,7 +44,6 @@ export class UserService {
 
   isAdmin(): boolean {
     const user = this.cookieService.getUser();
-    console.log(user);
     if(user && user.roles && user.roles.includes('admin')) {
       return true;
     }

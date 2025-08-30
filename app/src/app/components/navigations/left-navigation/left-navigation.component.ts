@@ -9,6 +9,7 @@ import {
   animate,
 } from '@angular/animations';
 import { adminNavigationItems, navigationItems } from './left-navigations-items';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-left-navigation',
@@ -30,6 +31,8 @@ import { adminNavigationItems, navigationItems } from './left-navigations-items'
 })
 export class LeftNavigationComponent {
   @Input() isOpenNaviation: boolean = true;
+
+  constructor(protected readonly userService: UserService) {}
 
   public navigationItems: NavigationItem[] = navigationItems;
   public adminNavigationItems: NavigationItem[] = adminNavigationItems;
