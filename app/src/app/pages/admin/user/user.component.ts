@@ -11,10 +11,11 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-user',
-  imports: [CommonModule, InputTextModule, IconFieldModule, InputIconModule, FormsModule, TableModule],
+  imports: [CommonModule, InputTextModule, IconFieldModule, InputIconModule, FormsModule, TableModule, ButtonModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })

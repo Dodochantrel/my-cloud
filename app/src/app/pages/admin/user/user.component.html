@@ -33,15 +33,15 @@
                     <td>{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
                     <td>
                         <button
-                        pButton
-                        pRipple
-                        type="button"
-                        icon="pi pi-pencil"
-                        (click)="validUser(user)"
-                        text
-                        rounded
-                        severity="secondary"
-                    ></button>
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-check-circle"
+                            (click)="validUser(user)"
+                            text
+                            rounded
+                            severity="secondary"
+                        ></button>
                     </td>
                 </tr>
             </ng-template>
