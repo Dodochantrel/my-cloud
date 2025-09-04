@@ -1,19 +1,19 @@
 <p-drawer [(visible)]="isSidebarVisible" position="right">
 
-    <h3>{{ selectedDate | date: 'dd/MM/yyyy' }}</h3>
+    <h3>{{ agendaEventService.selectedDate | date: 'dd/MM/yyyy' }}</h3>
 
     <div class="events-container">
-        @for (event of agendaEvents; track $index) {
+        @for (event of agendaEventService.eventsOfDate; track $index) {
         <div class="event">
             <div class="left">
                 <p class="name">{{ event.name }}</p>
                 <p class="hours">{{ event.startDatetime | date: 'HH:MM' }} - {{ event.endDatetime | date: 'HH:MM' }}</p>
             </div>
             <i class="pi pi-trash remove-icon" (click)="prepareDelete($event, event)"></i>
-            <i class="pi pi-pencil edit-icon" (click)="openEditEvent.emit(event)"></i>
+            <i class="pi pi-pencil edit-icon" (click)="openEdit(event)"></i>
         </div>
         }
     </div>
     
-    <p-button label="Ajouter" (onClick)="openAddEvent.emit(selectedDate!)" class="button-add"/>
+    <p-button label="Ajouter" (onClick)="openWithDate(agendaEventService.selectedDate!)" class="button-add"/>
 </p-drawer>

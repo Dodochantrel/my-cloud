@@ -13,8 +13,7 @@ async function bootstrap() {
   // Définition d'un préfixe globale de l'API
   app.setGlobalPrefix('my-cloud-api');
   app.enableCors({
-    origin: 'http://192.168.1.126:80',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: 'http://localhost:4200',
     credentials: true,
   });
 

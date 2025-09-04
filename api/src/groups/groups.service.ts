@@ -129,4 +129,15 @@ export class GroupsService {
       throw new UnauthorizedException('You are not allowed to edit this group');
     }
   }
+
+  async hasUserInGroup(groupId: number, userId: number): Promise<boolean> {
+    const group = await this.userRepository.findOne({
+      where: { id: groupId, users: { id: userId } },
+      relations: ['users'],
+    });
+    if(!group) {
+      throw new UnauthorizedException('You are not member of this group');
+    }
+    return true;
+  }
 }

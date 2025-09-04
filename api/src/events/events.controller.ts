@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
@@ -108,6 +109,52 @@ export class EventsController {
   async findAllTypes(): Promise<EventDataTypeResponseDto[]> {
     return mapFromEventDataTypeToEventDataTypeResponseDtos(
       await this.eventsService.findAllTypes(),
+    );
+  }
+
+  @Put(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Event updated successfully',
+    type: EventDataResponseDto,
+  })
+  @ApiBody({
+    type: EventDataRequestDto,
+    description: 'Event data to update',
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() dto: EventDataRequestDto,
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+  ): Promise<EventDataResponseDto[]> {
+    return mapFromEventDataToEventDataResponseDtos(
+      await this.eventsService.update(
+        tokenPayload.id,
+        new EventData({
+          id: Number(id),
+          name: dto.name,
+          startDate: new Date(dto.startDate),
+          endDate: new Date(dto.endDate),
+          description: dto.description,
+          isEveryWeek: dto.isEveryWeek,
+          isEveryMonth: dto.isEveryMonth,
+          isEveryYear: dto.isEveryYear,
+          eventDataType: new EventDataType({
+            id: dto.eventDataTypeId,
+          }),
+          user: new User({
+            id: tokenPayload.id,
+          }),
+          groups: dto.groupsId
+            ? dto.groupsId.map(
+                (groupId) =>
+                  new Group({
+                    id: groupId,
+                  }),
+              )
+            : [],
+        }),
+      ),
     );
   }
 }

@@ -13,25 +13,19 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './events-of-date.component.css',
 })
 export class EventsOfDateComponent {
-  @Input() selectedDate: Date | null = null;
-  @Output() selectedDateChange = new EventEmitter<null>();
-  @Input() agendaEvents: AgendaEvent[] = [];
-  @Output() agendaEventDeleted = new EventEmitter<AgendaEvent>();
-  @Output() openAddEvent = new EventEmitter<Date>();
-  @Output() openEditEvent = new EventEmitter<AgendaEvent>();
 
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly agendaEventService: AgendaEventService
+    protected readonly agendaEventService: AgendaEventService
   ) {}
 
   get isSidebarVisible(): boolean {
-    return this.selectedDate !== null;
+    return this.agendaEventService.selectedDate !== null;
   }
 
   set isSidebarVisible(value: boolean) {
     if (!value) {
-      this.selectedDateChange.emit(null);
+      this.agendaEventService.selectedDate = null;
     }
   }
 
@@ -56,8 +50,8 @@ export class EventsOfDateComponent {
           'Évennement supprimé',
           `L'évennement ${agendaEvent.name} a été supprimé avec succès`
         );
-        this.agendaEventDeleted.emit(agendaEvent);
-        this.agendaEvents = this.agendaEvents.filter(
+        this.removeAgendaEvent(agendaEvent);
+        this.agendaEventService.eventsOfDate = this.agendaEventService.agendaEvents().filter(
           (event) => event.id !== agendaEvent.id
         );
       },
@@ -69,4 +63,25 @@ export class EventsOfDateComponent {
       },
     });
   }
+
+  openEdit(agendaEvent: AgendaEvent): void {
+    this.agendaEventService.isAddingOrUpdating.set(true);
+    this.agendaEventService.agendaEventEditing = agendaEvent;
+  }
+
+  openWithDate(date: Date): void {
+    this.agendaEventService.isAddingOrUpdating.set(true);
+    this.agendaEventService.selectedDate = date;
+  }
+
+  removeAgendaEvent(agendaEvent: AgendaEvent): void {
+      this.agendaEventService.agendaEvents.set(
+        this.agendaEventService.agendaEvents().filter(
+          (event) => event.id !== agendaEvent.id
+        )
+      );
+      this.agendaEventService.eventsOfDate = this.agendaEventService.eventsOfDate.filter(
+        (event) => event.id !== agendaEvent.id
+      );
+    }
 }

@@ -2,13 +2,13 @@
 
     <div class="line">
 
-        <h2>{{ viewDate() | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
-        <p-button label="Ajouter" (onClick)="isCreatingOrUpdating = true" class="button-add"/>
+        <h2>{{ agendaEventService.viewDate() | date: 'LLLL yyyy' : '' : 'fr' }}</h2>
+        <p-button label="Ajouter" (onClick)="agendaEventService.isAddingOrUpdating.set(true)" class="button-add"/>
 
     </div>
 
-    <mwl-calendar-month-view [viewDate]="viewDate()"
-        [events]="calendarEventsSignal()" [weekStartsOn]="1" [locale]="locale"
+    <mwl-calendar-month-view [viewDate]="agendaEventService.viewDate()"
+        [events]="agendaEventService.calendarEventsSignal()" [weekStartsOn]="1" [locale]="locale"
         (dayClicked)="onDayClick($event)">
     </mwl-calendar-month-view>
 
@@ -16,9 +16,9 @@
 
         <div class="buttons-container">
 
-            <p-button label="Précédent" (onClick)="goPreviousMonth()" />
+            <p-button label="Précédent" (onClick)="agendaEventService.goPreviousMonth()" />
             <p-button label="Aujourd'hui" (onClick)="goToday()" />
-            <p-button label="Suivant" (onClick)="goNextMonth()" />
+            <p-button label="Suivant" (onClick)="agendaEventService.goNextMonth()" />
 
         </div>
 
@@ -26,6 +26,6 @@
 
 </div>
 
-<app-create-or-update-event (agendaEventToEditChange)="removeAgendaEventEdit()" [agendaEventToEdit]="agendaEventEditing" [date]="selectedDate" [(isDisplayed)]="isCreatingOrUpdating" (newAgendaEvents)="addAgendaEvents($event)"></app-create-or-update-event>
+<app-create-or-update-event></app-create-or-update-event>
 
-<app-events-of-date (openEditEvent)="openEdit($event)" (openAddEvent)="openWithDate($event)" [agendaEvents]="eventsOfDate" [(selectedDate)]="selectedDate" ngSkipHydration="true" (agendaEventDeleted)="removeAgendaEvent($event)"></app-events-of-date>
+<app-events-of-date ngSkipHydration="true"></app-events-of-date>

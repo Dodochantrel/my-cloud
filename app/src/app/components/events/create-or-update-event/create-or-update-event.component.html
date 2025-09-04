@@ -1,4 +1,4 @@
-<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
+<p-dialog header="Créer un évennement" [modal]="true" [(visible)]="agendaEventService.isAddingOrUpdating" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 
@@ -16,11 +16,11 @@
         </div>
 
         <div class="input-container">
-            <label for="name" class="label">Nom</label>
+            <label for="name" class="label">Catégorie</label>
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
                     styleClass="pi pi-user" />
-                    <p-select [options]="agendaEventTypes" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
+                    <p-select [options]="agendaEventTypes" optionValue="id" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
             </p-iconfield>
         </div>
 
@@ -108,8 +108,8 @@
         }
 
         <div class="buttons-container">
-            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isCreating" />
-            <p-button label="Enregistrer" [loading]="isCreating" (onClick)="valid()" />
+            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isLoading" />
+            <p-button label="Enregistrer" [loading]="isLoading" (onClick)="valid()" />
         </div>
 
     </form>

@@ -18,6 +18,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         migrationsRun: true,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         logging: ['migration', 'error', 'warn', 'schema'],
+        // affciher les requetes sql dans la console
+        logger: 'advanced-console',        
       }),
       inject: [ConfigService],
     }),
