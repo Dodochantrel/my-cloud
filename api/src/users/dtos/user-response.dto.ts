@@ -31,6 +31,12 @@ export class UserResponseDto {
   email: string;
 
   @ApiProperty({
+    description: 'Indicates if the user is authorized',
+    example: true,
+  })
+  isAuthorized: boolean;
+
+  @ApiProperty({
     description: 'Unique identifier of the user',
     example: '123e4567-e89b-12d3-a456-42661417400',
   })
@@ -55,6 +61,7 @@ export const mapFromUserToUserResponseDto = (user: User): UserResponseDto => {
     firstName: user.firstName ? user.firstName : null,
     lastName: user.lastName ? user.lastName : null,
     email: user.email ? user.email : null,
+    isAuthorized: user.isAuthorized,
     roles: user.roles ? mapFromRoleToRoleResponseDto(user.roles) : null,
     createdAt: user.createdAt ? user.createdAt.toISOString() : null,
     updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,

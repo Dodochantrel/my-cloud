@@ -61,6 +61,7 @@ export class AuthenticationsService {
       password: hashedPassword,
       firstName,
       lastName,
+      roles: [],
     });
     user.roles.push(Role.User);
     if (await this.usersService.isFirstUser()) {

@@ -22,10 +22,9 @@ export class RefreshGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
-      request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
     }

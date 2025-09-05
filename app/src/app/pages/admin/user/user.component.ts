@@ -12,10 +12,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { FooterTableComponent } from '../../../components/footer-table/footer-table.component';
 
 @Component({
   selector: 'app-user',
-  imports: [CommonModule, InputTextModule, IconFieldModule, InputIconModule, FormsModule, TableModule, ButtonModule],
+  imports: [CommonModule, InputTextModule, IconFieldModule, InputIconModule, FormsModule, TableModule, ButtonModule, FooterTableComponent],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })

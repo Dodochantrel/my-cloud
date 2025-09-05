@@ -55,7 +55,7 @@ export class CreateGroupComponent {
       [Validators.required, Validators.minLength(3), Validators.maxLength(20)],
     ],
     searchUser: [''],
-    users: [<User[]>[], Validators.required],
+    users: [<User[]>[]],
   });
 
   constructor(

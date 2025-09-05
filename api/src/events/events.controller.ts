@@ -96,8 +96,11 @@ export class EventsController {
     status: 200,
     description: 'Event deleted successfully',
   })
-  async delete(@Param('id') id: string): Promise<void> {
-    await this.eventsService.delete(Number(id));
+  async delete(
+    @Param('id') id: string,
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+  ): Promise<void> {
+    await this.eventsService.delete(Number(id), tokenPayload.id);
   }
 
   @Get('types')

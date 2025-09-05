@@ -14,7 +14,7 @@ export class EventsService {
     @InjectRepository(EventDataType)
     private eventDataTypeRepository: Repository<EventDataType>,
     private recurringProcessor: RecurringEventProcessor,
-    private readonly groupsService: GroupsService
+    private readonly groupsService: GroupsService,
   ) {}
 
   async findAll(
@@ -74,34 +74,47 @@ export class EventsService {
       where: { id: eventData.id },
       relations: ['groups.users', 'user'],
     });
-  
+
     if (!event) {
       throw new Error('Event not found');
     }
-  
+
     // Vérifier si l'utilisateur a les droits :
     const isOwner = event.user?.id === userId;
-    const isInGroup = event.groups?.some(group =>
-      group.users?.some(user => user.id === userId),
+    const isInGroup = event.groups?.some((group) =>
+      group.users?.some((user) => user.id === userId),
     );
-  
+
     if (!isOwner && !isInGroup) {
       throw new UnauthorizedException('You are not allowed to edit this event');
     }
-  
+
     // Mettre à jour l'événement
     return await this.recurringProcessor.process(
       [await this.eventDataRepository.save(eventData)],
       event.startDate,
       event.endDate,
     );
-  }  
+  }
 
-  async delete(id: number): Promise<void> {
-    const event = await this.eventDataRepository.findOneBy({ id });
+  async delete(id: number, userId: number): Promise<void> {
+    const event = await this.eventDataRepository.findOne({
+      where: { id },
+      relations: ['groups', 'user'],
+    });
 
     if (!event) {
       throw new Error('Event not found');
+    }
+
+    // Vérifier si l'utilisateur a les droits :
+    const isOwner = event.user?.id === userId;
+    const isInGroup = event.groups?.some((group) =>
+      group.users?.some((user) => user.id === userId),
+    );
+
+    if (!isOwner && !isInGroup) {
+      throw new UnauthorizedException('You are not allowed to edit this event');
     }
 
     await this.eventDataRepository.remove(event);

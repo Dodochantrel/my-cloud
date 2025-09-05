@@ -36,16 +36,19 @@
                             pButton
                             pRipple
                             type="button"
-                            icon="pi pi-check-circle"
+                            [icon]="user.isAuthorized ? 'pi pi-check-circle' : 'pi pi-times-circle'"
                             (click)="validUser(user)"
                             text
+                            [disabled]="user.isAuthorized"
                             rounded
-                            severity="secondary"
+                            [severity]="user.isAuthorized ? 'success' : 'danger'"
                         ></button>
                     </td>
                 </tr>
             </ng-template>
         </p-table>
+
+        <app-footer-table></app-footer-table>
 
     </div>
 
