@@ -67,7 +67,7 @@ export class UsersController {
     @Body() dto: UserAuthorizeRequestDto,
   ): Promise<UserResponseDto> {
     return mapFromUserToUserResponseDto(
-      await this.usersService.authorize(dto.id),
+      await this.usersService.authorize(dto.id, dto.isAuthorized),
     );
   }
 

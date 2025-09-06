@@ -2,17 +2,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
-::ng-deep .p-selectbutton{
-    height: 35px;
+.container > :first-child {
+    flex: 1;
 }
 
-::ng-deep .p-paginator  {
-    flex-wrap: nowrap;
-    flex: auto;
+::ng-deep .p-select {
+    max-height: 38px;
+    max-width: 200px;
 }
 
-.flex-end {
-    justify-content: flex-end;
+::ng-deep p-paginator {
+    flex: 1;
+}
+::ng-deep .p-paginator {
+    justify-content: end;
 }

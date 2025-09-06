@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { mapFromDtosToUsers, UserDto } from '../dto/user.dto';
 import { map, Observable } from 'rxjs';
@@ -50,17 +50,27 @@ export class UserService {
     return false;
   }
 
-  getAll(page: number, limit: number, search: string = ''): Observable<Paginated<User>> {
+  public search = signal<string>('');
+  public page = signal(1);
+  public limit = signal(20);
+
+  private getMyResource = httpResource<PaginatedDto<UserDto>>(
+    () => `${environment.apiUrl}users?search=${this.search()}&page=${this.page()}&limit=${this.limit()}`
+  );  
+
+  users = computed(() => this.getMyResource.value() ? mapFromDtosToUsers(this.getMyResource.value()!.data) : []);
+  itemCount = computed(() => this.getMyResource.value() ? this.getMyResource.value()!.meta.itemCount : 0);
+  isLoading = computed(() => this.getMyResource.isLoading());
+
+  switchAuthorize(user: User): Observable<User> {
     return this.httpClient
-      .get<PaginatedDto<UserDto>>(
-        `${environment.apiUrl}users?search=${search}&page=${page}&limit=${limit}`
-      )
+      .patch<UserDto>(`${environment.apiUrl}users/authorize`, {
+        id: user.id,
+        isAuthorized: !user.isAuthorized,
+      })
       .pipe(
-        map((response: PaginatedDto<UserDto>) => {
-          return new Paginated<User>(
-            mapFromDtosToUsers(response.data),
-            response.meta
-          );
+        map((response: UserDto) => {
+          return mapFromDtosToUsers([response])[0];
         })
       );
   }

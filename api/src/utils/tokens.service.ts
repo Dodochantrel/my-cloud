@@ -32,6 +32,7 @@ export class TokensService {
     const lifetime = rememberMe
       ? this.configService.get<string>('JWT_REFRESH_LIFETIME_REMEMBER')
       : this.configService.get<string>('JWT_REFRESH_LIFETIME');
+    console.log('Generating refresh token with lifetime (seconds):', lifetime);
     return this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: lifetime,

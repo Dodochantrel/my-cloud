@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
 import { TastingService } from '../../../services/tasting.service';
 import { BrowserService } from '../../../services/browser.service';
@@ -42,21 +42,19 @@ import { FooterTableComponent } from '../../../components/footer-table/footer-ta
 export class TastingComponent implements OnInit {
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly tastingService: TastingService,
+    protected readonly tastingService: TastingService,
     private readonly browserService: BrowserService
-  ) {}
+  ) {
+    effect(() => {
+      // A chaque changement de this.tastings on regarde ceux qui n'ont pas de fileBlobUrl et on les charge
+      this.addFile(this.tastingService.tastings().filter((t) => !t.fileBlobUrl));
+    });
+  }
 
-  public search: string = '';
-  public categoriesSelected: TreeNode<TastingCategory>[] = [];
   public TastingCategoryTree: TreeNode<TastingCategory>[] = [];
   public isAddingOrEditing: boolean = false;
   public tastingToEdit: Tasting | null = null;
   public isLoadingFileMap: Record<number, boolean> = {};
-  public paginatedTasting: Paginated<Tasting> = new Paginated<Tasting>(
-    [],
-    defaultPaginatedMeta
-  );
-  public isLoadingTastings: boolean = false;
 
   getButtonsEdit(tasting: Tasting) {
     return [
@@ -80,30 +78,7 @@ export class TastingComponent implements OnInit {
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
       this.getCategories();
-      this.getAll(this.paginatedTasting.paginatedMeta.page, this.paginatedTasting.paginatedMeta.limit);
     }
-  }
-
-  getAll(page: number, limit: number) {
-    this.isLoadingTastings = true;
-    const categoriesId = this.categoriesSelected.length > 0
-      ? this.categoriesSelected.map((node) => node.data!.id)
-      : null;
-    this.tastingService.getRecipes(categoriesId, this.search, page, limit).subscribe({
-      next: (paginatedTasting: Paginated<Tasting>) => {
-        this.paginatedTasting = paginatedTasting;
-        this.addFile(paginatedTasting.data);
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Erreur',
-          'Erreur lors de la récupération des dégustations'
-        );
-      },
-      complete: () => {
-        this.isLoadingTastings = false;
-      },
-    });
   }
 
   getCategories() {
@@ -121,7 +96,7 @@ export class TastingComponent implements OnInit {
   }
 
   addTasting(tasting: Tasting) {
-    this.paginatedTasting.data.unshift(tasting);
+    this.tastingService.tastings().unshift(tasting);
     this.isAddingOrEditing = false;
   }
 
@@ -137,9 +112,9 @@ export class TastingComponent implements OnInit {
     this.tastingService.getFile(tasting.id, 'small').subscribe({
       next: (blob: Blob) => {
         const url = URL.createObjectURL(blob);
-        const index = this.paginatedTasting.data.findIndex((r) => r.id === tasting.id);
+        const index = this.tastingService.tastings().findIndex((r) => r.id === tasting.id);
         if (index !== -1) {
-          this.paginatedTasting.data[index].fileBlobUrl = url;
+          this.tastingService.tastings()[index].fileBlobUrl = url;
         }
       },
       error: (error) => {
@@ -152,11 +127,11 @@ export class TastingComponent implements OnInit {
   }  
 
   editTasting(tasting: Tasting) {
-    const index = this.paginatedTasting.data.findIndex(
+    const index = this.tastingService.tastings().findIndex(
       (r) => r.id === tasting.id
     );
     if (index !== -1) {
-      this.paginatedTasting.data[index] = tasting;
+      this.tastingService.tastings()[index] = tasting;
       this.tastingToEdit = null;
       this.isAddingOrEditing = false;
     } else {

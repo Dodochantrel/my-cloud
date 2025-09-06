@@ -15,15 +15,12 @@ import { Router } from '@angular/router';
 })
 export class CurrentVideosComponent implements OnInit {
   constructor(
-    private readonly videoService: VideoService,
+    protected readonly videoService: VideoService,
     private readonly browserService: BrowserService,
-    private readonly notificationService: NotificationService,
     private readonly router: Router
   ) {}
 
   @Input() public type: VideoType = 'movie';
-
-  public nowPlaying: Video[] = [];
   public isLoadingData: boolean = false;
 
   ngOnInit(): void {
@@ -38,45 +35,9 @@ export class CurrentVideosComponent implements OnInit {
 
   getData() {
     if(this.type === 'movie') {
-      this.getMovies();
+      this.videoService.type.set('movie');
     } else if(this.type === 'serie') {
-      this.getSeries();
+      this.videoService.type.set('serie');
     }
-  }
-
-  getMovies() {
-    this.isLoadingData = true;
-    this.videoService.getMovies().subscribe({
-      next: (response) => {
-        this.nowPlaying = response;
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Error lors du chargement des films',
-          error.message
-        );
-      },
-      complete: () => {
-        this.isLoadingData = false;
-      },
-    });
-  }
-
-  getSeries() {
-    this.isLoadingData = true;
-    this.videoService.getSeries().subscribe({
-      next: (response) => {
-        this.nowPlaying = response;
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Error lors du chargement des films',
-          error.message
-        );
-      },
-      complete: () => {
-        this.isLoadingData = false;
-      },
-    });
   }
 }

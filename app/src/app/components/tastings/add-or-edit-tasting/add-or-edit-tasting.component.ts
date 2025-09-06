@@ -85,7 +85,15 @@ export class AddOrEditTastingComponent implements OnChanges {
   }
 
   cancel() {
-    this.form.reset();
+    this.form.reset({
+      name: '',
+      category: null,
+      rating: 0,
+      description: '',
+      image: null,
+    });
+    this.previewUrl = null;
+    this.tastingToEdit = null;
     this.isDisplayed = false;
     this.isDisplayedChange.emit(this.isDisplayed);
   }

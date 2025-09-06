@@ -72,7 +72,11 @@ export class AddVideoSeenComponent implements OnChanges {
     this.isLoading = true;
     this.videoService.setSeen(this.video, this.form.value.isSeen!, this.form.value.dateSeen!, this.form.value.rating!).subscribe({
       next: (video) => {
-        this.notificationService.showSuccess('Ajouter aux vue', `${video.title} a été ajouté aux vues`);
+        if(this.form.value.isSeen === false) {
+          this.notificationService.showSuccess('Retirer des vues', `${video.title} a été retiré des vues`);
+        } else {
+          this.notificationService.showInfo('Ajouter aux vue', `${video.title} a été ajouté aux vues`);
+        }
         this.close.emit();
         this.saveVideo.emit(video);
       },

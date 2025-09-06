@@ -1,8 +1,8 @@
-<div class="container" [class.flex-end]="!hasSize">
-    @if (hasSize) {
-    <p-selectbutton [options]="sizes" [multiple]="false" optionLabel="name" optionValue="value"
-        [(ngModel)]="selectedSize" (onChange)="onSizeChange($event)" class="bloc" />
+<div class="container">
+    @if(selectedSize() !== null) {
+        <p-selectbutton [options]="sizes" [(ngModel)]="selectedSize" [multiple]="false" optionLabel="name" optionValue="value" />
+    } @else {
+        <div></div>
     }
-    <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="meta.limit" class="bloc" 
-        [totalRecords]="meta.itemCount" [rowsPerPageOptions]="[10, 20, 30]" [showFirstLastIcon]="false" />
+    <p-paginator [first]="0" [rows]="limit()" [totalRecords]="itemCount()" [rowsPerPageOptions]="[20, 50, 100]" (onPageChange)="onPaginationChange($event)" />
 </div>

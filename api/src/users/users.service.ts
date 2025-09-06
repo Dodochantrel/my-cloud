@@ -83,12 +83,12 @@ export class UsersService {
     });
   }
 
-  async authorize(id: number): Promise<User> {
+  async authorize(id: number, isAuthorized: boolean): Promise<User> {
     const user = await this.getOneById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    user.isAuthorized = true;
+    user.isAuthorized = isAuthorized;
     return this.save(user);
   }
 }

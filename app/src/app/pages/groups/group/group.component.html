@@ -60,8 +60,7 @@
 
         </div>
 
-        <app-footer-table [meta]="paginatedGroups.paginatedMeta"
-            (pageChange)="pageChanged($event.page, $event.limit)"></app-footer-table>
+        <app-footer-table [itemCount]="paginatedGroups.paginatedMeta.itemCount" [selectedSize]="null" [page]="paginatedGroups.paginatedMeta.page" [limit]="paginatedGroups.paginatedMeta.limit"></app-footer-table>
 
     </div>
 

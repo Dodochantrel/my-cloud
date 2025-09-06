@@ -30,43 +30,13 @@ import { Router } from '@angular/router';
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',
 })
-export class MovieComponent implements OnInit {
+export class MovieComponent {
   constructor(
-    private readonly videoService: VideoService,
-    private readonly browserService: BrowserService,
-    private readonly notificationService: NotificationService,
+    protected readonly videoService: VideoService,
     private readonly router: Router,
   ) {}
 
-  public isLoadingSearch: boolean = false;
-  public search: string = '';
-
-  public moviesToSearch: Video[] = [];
-
-  ngOnInit(): void {
-    if (this.browserService.isBrowser) {
-    }
-  }
-
   onMovieSelect(event: any) {
     this.router.navigate([`videos/details/movie/${event.value.id}`]);
-  }
-
-  searchMovies() {
-    this.isLoadingSearch = true;
-    this.videoService.getMovies(this.search).subscribe({
-      next: (response) => {
-        this.moviesToSearch = response;
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Error lors du chargement des films',
-          error.message
-        );
-      },
-      complete: () => {
-        this.isLoadingSearch = false;
-      },
-    });
   }
 }

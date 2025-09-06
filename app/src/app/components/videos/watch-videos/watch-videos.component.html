@@ -1,7 +1,7 @@
 <h2>Mes {{ getTypeToDisplay(type, false, true) }} a voir</h2>
 
 <div class="card-container">
-    @for (movie of watchMoviesWithPagination.data; track $index) {
+    @for (movie of videoService.videosToWatch(); track $index) {
     <div class="card" (click)="goToDetails(movie.id)">
         <img [src]="setImageUrl(movie.fileUrl)" alt="Product Image" class="image" />
         <div class="text">
@@ -15,5 +15,4 @@
     }
 </div>
 
-<app-footer-table [meta]="watchMoviesWithPagination.paginatedMeta"
-    (pageChange)="getWatchMovies($event.page, $event.limit)"></app-footer-table>
+<app-footer-table [itemCount]="videoService.itemCountToWatch()" [selectedSize]="null" [(page)]="videoService.pageSeen" [(limit)]="videoService.limitSeen"></app-footer-table>

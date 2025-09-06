@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { Tasting } from '../class/tasting';
 import { Paginated } from '../class/paginated';
 import { map, Observable } from 'rxjs';
@@ -25,26 +25,18 @@ export class TastingService {
       .pipe(map(mapFromDtosToTastingCategories));
   }  
 
-  getRecipes(
-    categoriesId: number[] | null,
-    search: string,
-    page: number,
-    limit: number
-  ): Observable<Paginated<Tasting>> {
-    const category = categoriesId || '';
-    return this.httpClient
-      .get<PaginatedDto<TastingDto>>(
-        `${environment.apiUrl}tastings?categoryId=${category}&search=${search}&page=${page}&limit=${limit}`
-      )
-      .pipe(
-        map((response: PaginatedDto<TastingDto>) => {
-          return new Paginated<Tasting>(
-            mapFromDtosToTastings(response.data),
-            response.meta
-          );
-        })
-      );
-  }
+  public search = signal<string>('');
+  public categoriesId = signal<number[] | null>(null);
+  public page = signal(1);
+  public limit = signal(20);
+
+  private getMyResource = httpResource<PaginatedDto<TastingDto>>(
+    () => `${environment.apiUrl}tastings?search=${this.search()}&page=${this.page()}&limit=${this.limit()}&categoryId=${this.categoriesId() || ''}`
+  );  
+
+  tastings = computed(() => this.getMyResource.value() ? mapFromDtosToTastings(this.getMyResource.value()!.data) : []);
+  itemCount = computed(() => this.getMyResource.value() ? this.getMyResource.value()!.meta.itemCount : 0);
+  isLoading = computed(() => this.getMyResource.isLoading());
 
   add(name: string, categoryId: number, rating: number, description: string): Observable<Tasting> {
     return this.httpClient

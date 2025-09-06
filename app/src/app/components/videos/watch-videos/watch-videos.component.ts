@@ -1,9 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { getTypeToDisplay, Video, VideoType } from '../../../class/video';
-import { Paginated } from '../../../class/paginated';
-import { defaultPaginatedMeta } from '../../../class/paginated-meta';
-import { NotificationService } from '../../../services/notification.service';
-import { BrowserService } from '../../../services/browser.service';
+import { Component, Input } from '@angular/core';
+import { getTypeToDisplay, VideoType } from '../../../class/video';
 import { VideoService } from '../../../services/video.service';
 import { FooterTableComponent } from '../../footer-table/footer-table.component';
 import { setImageUrl } from '../../../tools/set-image-url';
@@ -18,32 +14,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './watch-videos.component.html',
   styleUrl: './watch-videos.component.css',
 })
-export class WatchVideosComponent implements OnInit {
+export class WatchVideosComponent {
   constructor(
-    private readonly videoService: VideoService,
-    private readonly browserService: BrowserService,
-    private readonly notificationService: NotificationService,
-        private readonly router: Router
-
+    protected readonly videoService: VideoService,
+    private readonly router: Router
   ) {}
 
   @Input() public type: VideoType = 'movie';
-
-  public watchMoviesWithPagination: Paginated<Video> = new Paginated<Video>(
-    [],
-    defaultPaginatedMeta
-  );
-
-  public isLoadingWatchVideo: boolean = false;
-
-  ngOnInit(): void {
-    if (this.browserService.isBrowser) {
-      this.getWatchMovies(
-        this.watchMoviesWithPagination.paginatedMeta.page,
-        this.watchMoviesWithPagination.paginatedMeta.limit
-      );
-    }
-  }
 
   setImageUrl(url: string | null | undefined): string {
     return setImageUrl(url);
@@ -55,24 +32,6 @@ export class WatchVideosComponent implements OnInit {
     isPlural: boolean
   ): string {
     return getTypeToDisplay(type, isFirstUpper, isPlural);
-  }
-
-  getWatchMovies(page: number, limit: number) {
-    this.isLoadingWatchVideo = true;
-    this.videoService.getMyVideoSeen(page, limit, this.type, '').subscribe({
-      next: (response) => {
-        this.watchMoviesWithPagination = response;
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Error lors du chargement des films',
-          error.message
-        );
-      },
-      complete: () => {
-        this.isLoadingWatchVideo = false;
-      },
-    });
   }
 
   goToDetails(id: number) {

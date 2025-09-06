@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import {
   mapFromDtosToVideos,
@@ -36,39 +36,54 @@ import { EpisodeDto, mapFromEpisodeDetailsDtosToEpisodes } from '../dto/episode.
   providedIn: 'root',
 })
 export class VideoService {
-  constructor(private readonly httpClient: HttpClient) {}
-
-  getMovies(search: string = ''): Observable<Video[]> {
-    return this.httpClient
-      .get<VideoDto[]>(`${environment.apiUrl}videos/movies?search=${search}`)
-      .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
+  constructor(private readonly httpClient: HttpClient) {
+    effect(() => {
+      // SI type change alors on reset la page a 1 et search a vide
+      if (this.type()) {
+        this.search.set('');
+        this.pageSeen.set(1);
+        this.pageToWatch.set(1);
+        this.limitSeen.set(20);
+        this.limitToWatch.set(20);
+      }
+    });
   }
 
-  getSeries(search: string = ''): Observable<Video[]> {
-    return this.httpClient
-      .get<VideoDto[]>(`${environment.apiUrl}videos/series?search=${search}`)
-      .pipe(map((response: VideoDto[]) => mapFromDtosToVideos(response)));
-  }
+  public search = signal<string>('');
+  public type = signal<VideoType>('movie');
 
-  getMyVideoSeen(
-    page: number,
-    limit: number,
-    type: VideoType,
-    search: string = ''
-  ): Observable<Paginated<Video>> {
-    return this.httpClient
-      .get<PaginatedDto<VideoDto>>(
-        `${environment.apiUrl}videos/my-seen?search=${search}&page=${page}&limit=${limit}&type=${type}`
-      )
-      .pipe(
-        map((response: PaginatedDto<VideoDto>) => {
-          return new Paginated<Video>(
-            mapFromDtosToVideos(response.data),
-            response.meta
-          );
-        })
-      );
-  }
+  private getMyResource = httpResource<VideoDto[]>(
+    () => `${environment.apiUrl}videos/${this.type()}s?search=${this.search()}&page=1&limit=20`
+  );  
+
+  public videos = computed(() => this.getMyResource.value() ? mapFromDtosToVideos(this.getMyResource.value()!) : []);
+  public isLoading = computed(() => this.getMyResource.isLoading());
+
+  //! Seen
+
+  public pageSeen = signal(1);
+  public limitSeen = signal(20);
+
+  private getMySeen = httpResource<PaginatedDto<VideoDto>>(
+    () => `${environment.apiUrl}videos/my-seen?search=${this.search()}&page=${this.pageSeen()}&limit=${this.limitSeen()}&type=${this.type()}`
+  );  
+
+  public videosSeen = computed(() => this.getMySeen.value() ? mapFromDtosToVideos(this.getMySeen.value()!.data) : []);
+  public itemCountSeen = computed(() => this.getMySeen.value() ? this.getMySeen.value()!.meta.itemCount : 0);
+  public isLoadingSeen = computed(() => this.getMySeen.isLoading());
+
+  //! To Watch
+
+  public pageToWatch = signal(1);
+  public limitToWatch = signal(20);
+
+  private getToWatch = httpResource<PaginatedDto<VideoDto>>(
+    () => `${environment.apiUrl}videos/my-to-watch?search=${this.search()}&page=${this.pageSeen()}&limit=${this.limitSeen()}&type=${this.type()}`
+  );  
+
+  public videosToWatch = computed(() => this.getToWatch.value() ? mapFromDtosToVideos(this.getToWatch.value()!.data) : []);
+  public itemCountToWatch = computed(() => this.getToWatch.value() ? this.getToWatch.value()!.meta.itemCount : 0);
+  public isLoadingToWatch = computed(() => this.getToWatch.isLoading());
 
   edit(video: Video): Observable<Video> {
     return this.httpClient

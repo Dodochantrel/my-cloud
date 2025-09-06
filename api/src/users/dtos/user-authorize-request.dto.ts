@@ -6,4 +6,10 @@ export class UserAuthorizeRequestDto {
     example: 1,
   })
   id: number;
+
+  @ApiProperty({
+    description: 'Whether the user is authorized or not',
+    example: true,
+  })
+  isAuthorized: boolean;
 }

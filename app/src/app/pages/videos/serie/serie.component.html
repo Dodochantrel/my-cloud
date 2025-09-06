@@ -7,8 +7,8 @@
         <div class="input-container">
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-user" />
-                <p-autocomplete [suggestions]="seriesToSearch" [autoZIndex]="false" placeholder="Rechercher un film"
-                    [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="search" (completeMethod)="searchSeries()" (onSelect)="onMovieSelect($event)">
+                <p-autocomplete [suggestions]="videoService.videos()" [autoZIndex]="false" placeholder="Rechercher un film"
+                    [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="videoService.search" (onSelect)="onMovieSelect($event)">
                     <ng-template let-movie #item>
                         <div class="line-movie-search">
                             <img [src]="movie.fileUrl" style="width: 26px" />

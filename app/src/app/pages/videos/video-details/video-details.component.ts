@@ -184,10 +184,17 @@ export class VideoDetailsComponent implements OnInit {
     this.videoService.edit(video).subscribe({
       next: () => {
         this.video.isToWatch = video.isToWatch;
-        this.notificationService.showSuccess(
-          'Ajouté',
+        if(video.isToWatch == true) {
+          this.notificationService.showSuccess(
+            'Ajouté',
           `${video.title} a été ajouté à votre liste à voir`
-        );
+          );
+        } else {
+          this.notificationService.showInfo(
+            'Retiré',
+          `${video.title} a été retiré de votre liste à voir`
+          );
+        }
       },
       error: (error) => {
         this.notificationService.showError(
@@ -207,10 +214,17 @@ export class VideoDetailsComponent implements OnInit {
     this.videoService.edit(video).subscribe({
       next: () => {
         this.video.isFavorite = video.isFavorite;
-        this.notificationService.showSuccess(
-          'Ajouté',
-          `${video.title} a été ajouté à votre liste de favoris`
-        );
+        if(video.isFavorite == false) {
+          this.notificationService.showInfo(
+            'Retiré',
+            `${video.title} a été retiré de votre liste de favoris`
+          );
+        } else {
+          this.notificationService.showSuccess(
+            'Ajouté',
+            `${video.title} a été ajouté à votre liste de favoris`
+          );
+        }
       },
       error: (error) => {
         this.notificationService.showError(

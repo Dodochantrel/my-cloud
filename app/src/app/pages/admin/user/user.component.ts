@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { BrowserService } from '../../../services/browser.service';
+import { Component } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
 import { UserService } from '../../../services/user.service';
-import { defaultPaginatedMeta } from '../../../class/paginated-meta';
-import { Paginated } from '../../../class/paginated';
 import { User } from '../../../class/user';
 import { CommonModule } from '@angular/common';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -12,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { FooterTableComponent } from '../../../components/footer-table/footer-table.component';
+import { FooterTableComponent, SizeType } from '../../../components/footer-table/footer-table.component';
 
 @Component({
   selector: 'app-user',
@@ -20,52 +17,44 @@ import { FooterTableComponent } from '../../../components/footer-table/footer-ta
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })
-export class UserComponent implements OnInit {
+export class UserComponent {
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly userService: UserService,
-    private readonly browserService: BrowserService
+    protected readonly userService: UserService,
   ) {}
 
-  public isLoadingUsers: boolean = false;
-  public paginatedUsers: Paginated<User> = new Paginated<User>(
-    [],
-    defaultPaginatedMeta
-  );
-  public search: string = '';
+  public selectedSize: SizeType = undefined;
 
-  ngOnInit(): void {
-    if (this.browserService.isBrowser) {
-      this.getUsers();
-    }
+  confirmAuthorize(user: User, event: any): void {
+    this.notificationService.confirm(
+      event,
+      'Êtes-vous sûr de vouloir valider cet utilisateur ?',
+      `Souhaitez-vous accepter cet utilisateur afin qu'il puisse accèder a l'application ?`,
+      () => {
+        this.authorize(user);
+      },
+      () => {},
+      'Valider'
+    )
   }
 
-  getUsers(): void {
-    this.isLoadingUsers = true;
-    this.userService
-      .getAll(
-        this.paginatedUsers.paginatedMeta.page,
-        this.paginatedUsers.paginatedMeta.limit,
-        this.search
-      )
-      .subscribe({
-        next: (users) => {
-          this.paginatedUsers = users;
-        },
-        error: (error) => {
-          this.notificationService.showError(
-            'Récupération des utilisateurs',
-            'Une erreur est survenue lors de la récupération des utilisateurs.'
-          );
-          this.isLoadingUsers = false;
-        },
-        complete: () => {
-          this.isLoadingUsers = false;
-        },
-      });
-  }
-
-  validUser(user: User): void {
-    console.log('Validating user:', user);
+  authorize(user: User): void {
+    this.userService.switchAuthorize(user).subscribe({
+      next: (updatedUser) => {
+        this.notificationService.showSuccess(
+          'Utilisateur validé avec succès',
+          `L'utilisateur ${updatedUser.firstName} est désormais autorisé.`
+        );
+        const updatedUsers = [...this.userService.users()];
+        const index = updatedUsers.findIndex(u => u.id === updatedUser.id);
+        if (index !== -1) {
+          updatedUsers[index] = updatedUser;
+        }
+        this.userService.users()[index] = updatedUser;
+      },
+      error: (err) => {
+        this.notificationService.showError('Une erreur est survenue', 'Impossible de valider cet utilisateur.');
+      }
+    });
   }
 }

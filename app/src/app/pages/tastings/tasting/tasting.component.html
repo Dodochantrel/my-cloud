@@ -9,11 +9,11 @@
       <div class="input-container">
         <p-iconfield>
             <p-inputicon styleClass="pi pi-search" />
-            <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="search" (ngModelChange)="getAll(paginatedTasting.paginatedMeta.page, paginatedTasting.paginatedMeta.limit)" />
+            <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="tastingService.search" />
         </p-iconfield>
       </div>
 
-      <p-treeselect class="treeselect-container" [(ngModel)]="categoriesSelected" (ngModelChange)="getAll(paginatedTasting.paginatedMeta.page, paginatedTasting.paginatedMeta.limit)" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
+      <p-treeselect class="treeselect-container" [(ngModel)]="tastingService.categoriesId" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
   
       <p-button icon="pi pi-plus-circle" label="Ajouter" (onClick)="isAddingOrEditing = true" />
 
@@ -21,11 +21,11 @@
 
     <div class="tasting-container">
 
-      @if (isLoadingTastings) {
+      @if (tastingService.isLoading()) {
         <app-loader></app-loader>
       }
 
-        @for (tasting of paginatedTasting.data; track $index) {
+        @for (tasting of tastingService.tastings(); track $index) {
           <div class="tasting-card">
             <p-speeddial [model]="getButtonsEdit(tasting)" direction="down" mask [style]="{ position: 'absolute', right: '.5rem', top: '.5rem' }" />
             @if (isLoadingFileMap[tasting.id]) {
@@ -47,7 +47,7 @@
 
     </div>
 
-    <app-footer-table [meta]="paginatedTasting.paginatedMeta" (pageChange)="getAll($event.page, $event.limit)"></app-footer-table>
+    <app-footer-table [itemCount]="tastingService.itemCount()" [selectedSize]="null" [(page)]="tastingService.page" [(limit)]="tastingService.limit"></app-footer-table>
 
   </div>
 

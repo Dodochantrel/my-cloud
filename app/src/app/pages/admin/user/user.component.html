@@ -9,13 +9,13 @@
             <div class="input-container">
                 <p-iconfield>
                     <p-inputicon styleClass="pi pi-user" />
-                    <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="search" (ngModelChange)="getUsers()" />
+                    <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="userService.search" />
                 </p-iconfield>
             </div>
             
         </div>
 
-        <p-table [value]="paginatedUsers.data" stripedRows editMode="row">
+        <p-table [value]="userService.users()" stripedRows editMode="row" [loading]="userService.isLoading()" [size]="selectedSize === null ? undefined : selectedSize">
             <ng-template #header>
                 <tr>
                     <th>#</th>
@@ -37,7 +37,7 @@
                             pRipple
                             type="button"
                             [icon]="user.isAuthorized ? 'pi pi-check-circle' : 'pi pi-times-circle'"
-                            (click)="validUser(user)"
+                            (click)="confirmAuthorize(user, $event)"
                             text
                             [disabled]="user.isAuthorized"
                             rounded
@@ -48,7 +48,7 @@
             </ng-template>
         </p-table>
 
-        <app-footer-table></app-footer-table>
+        <app-footer-table [itemCount]="userService.itemCount()" [(selectedSize)]="selectedSize" [page]="userService.page()" [limit]="userService.limit()" ></app-footer-table>
 
     </div>
 
