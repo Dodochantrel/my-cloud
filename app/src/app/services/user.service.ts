@@ -1,12 +1,13 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { mapFromDtosToUsers, UserDto } from '../dto/user.dto';
+import { mapFromDtosToUsers, mapFromUserDtoToUser, UserDto } from '../dto/user.dto';
 import { map, Observable } from 'rxjs';
 import { CookieService } from './cookie.service';
 import { User } from '../class/user';
-import { Paginated } from '../class/paginated';
 import { PaginatedDto } from '../dto/paginated-response.dto';
+import { NotificationService } from './notification.service';
+import { findIndexById } from '../tools/update-table';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ import { PaginatedDto } from '../dto/paginated-response.dto';
 export class UserService {
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly cookieService: CookieService
+    private readonly cookieService: CookieService,
+    private readonly notificationService: NotificationService
   ) {}
 
   getMinimalData(): Observable<User[]> {
@@ -62,16 +64,31 @@ export class UserService {
   itemCount = computed(() => this.getMyResource.value() ? this.getMyResource.value()!.meta.itemCount : 0);
   isLoading = computed(() => this.getMyResource.isLoading());
 
-  switchAuthorize(user: User): Observable<User> {
+  switchAuthorize(user: User) {
     return this.httpClient
       .patch<UserDto>(`${environment.apiUrl}users/authorize`, {
         id: user.id,
         isAuthorized: !user.isAuthorized,
       })
-      .pipe(
-        map((response: UserDto) => {
-          return mapFromDtosToUsers([response])[0];
-        })
-      );
+      .pipe(map(mapFromUserDtoToUser)).subscribe({
+        next: (updatedUser) => {
+          if(updatedUser.isAuthorized == true) {
+            this.notificationService.showSuccess(
+              'Utilisateur validé avec succès',
+              `L'utilisateur ${updatedUser.firstName} est désormais autorisé a accèder à l'application.`
+            );
+          } else {
+            this.notificationService.showInfo(
+              'Utilisateur invalidé avec succès',
+              `L'utilisateur ${updatedUser.firstName} n'est désormais plus autorisé a accèder à l'application.`
+            );
+          }
+          const index = findIndexById(this.users(), user.id);
+          this.users()[index] = updatedUser;
+        },
+        error: (err) => {
+          this.notificationService.showError('Une erreur est survenue', 'Impossible de valider cet utilisateur.');
+        }
+      });
   }
 }

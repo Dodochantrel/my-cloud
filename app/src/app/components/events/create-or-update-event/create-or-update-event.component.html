@@ -6,7 +6,7 @@
             <label for="name" class="label">Nom</label>
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
-                    styleClass="pi pi-user" />
+                class="pi pi-user" />
                 <input type="text" pInputText placeholder="Le nom" formControlName="name"
                     [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
             </p-iconfield>

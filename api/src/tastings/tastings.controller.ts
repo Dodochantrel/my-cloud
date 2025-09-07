@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -171,5 +172,13 @@ export class TastingsController {
     return res.sendFile(
       await this.tastingsService.getFile(Number(id), tokenPayload.id, width),
     );
+  }
+
+  @Delete(':id')
+  async delete(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Param('id') id: string,
+  ) {
+    return this.tastingsService.delete(Number(id), tokenPayload.id);
   }
 }

@@ -34,27 +34,11 @@ export class UserComponent {
         this.authorize(user);
       },
       () => {},
-      'Valider'
+      'Confirmer'
     )
   }
 
   authorize(user: User): void {
-    this.userService.switchAuthorize(user).subscribe({
-      next: (updatedUser) => {
-        this.notificationService.showSuccess(
-          'Utilisateur validé avec succès',
-          `L'utilisateur ${updatedUser.firstName} est désormais autorisé.`
-        );
-        const updatedUsers = [...this.userService.users()];
-        const index = updatedUsers.findIndex(u => u.id === updatedUser.id);
-        if (index !== -1) {
-          updatedUsers[index] = updatedUser;
-        }
-        this.userService.users()[index] = updatedUser;
-      },
-      error: (err) => {
-        this.notificationService.showError('Une erreur est survenue', 'Impossible de valider cet utilisateur.');
-      }
-    });
+    this.userService.switchAuthorize(user);
   }
 }

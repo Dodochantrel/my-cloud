@@ -78,12 +78,17 @@ export class TastingsService {
 
   async findOne(id: number, userId: number): Promise<Tasting | null> {
     const tasting = await this.tastingRepository.findOne({
-      where: { id, user: { id: userId } },
+      where: { id },
       relations: ['fileData', 'user'],
     });
     if (!tasting) {
       throw new NotFoundException(
-        `Tasting with ID ${id} not found for user with ID ${userId}`,
+        `Recette avec l'ID ${id} non trouvée pour l'utilisateur avec l'ID ${userId}`,
+      );
+    }
+    if (tasting.user.id !== userId) {
+      throw new NotFoundException(
+        `Vous n'avez pas la permission d'accéder à cette recette.`,
       );
     }
     return tasting;
@@ -112,7 +117,7 @@ export class TastingsService {
   ): Promise<string> {
     const tasting = await this.findOne(id, userId);
     if (!tasting.fileData) {
-      throw new NotFoundException(`File for tasting with ID ${id} not found`);
+      throw new NotFoundException(`Le fichier n'existe pas`);
     }
     return this.filesManager.getFile(tasting.fileData, width);
   }
@@ -131,5 +136,12 @@ export class TastingsService {
       tasting: new Tasting({ id: tastingId }),
       user: new User({ id: userId }),
     });
+  }
+
+  async delete(id: number, userId: number): Promise<void> {
+    const tasting = await this.findOne(id, userId);
+    this.filesManager.deleteFile(tasting.fileData);
+    this.filesManager.delete(tasting.fileData.id)
+    await this.tastingRepository.delete(tasting.id);
   }
 }

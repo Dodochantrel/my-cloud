@@ -52,8 +52,6 @@ export class TastingComponent implements OnInit {
   }
 
   public TastingCategoryTree: TreeNode<TastingCategory>[] = [];
-  public isAddingOrEditing: boolean = false;
-  public tastingToEdit: Tasting | null = null;
   public isLoadingFileMap: Record<number, boolean> = {};
 
   getButtonsEdit(tasting: Tasting) {
@@ -61,15 +59,14 @@ export class TastingComponent implements OnInit {
       {
         icon: 'pi pi-pencil',
         command: () => {
-          this.isAddingOrEditing = true;
-          this.tastingToEdit = tasting;
+          this.tastingService.isDisplayedCreateOrEdit = true;
+          this.tastingService.tastingToEdit.set(tasting);
         },
       },
       {
         icon: 'pi pi-trash',
         command: () => {
           console.log('Delete tasting:', tasting);
-          // ouvrir modal, passer l'objet, etc.
         }
       }
     ];
@@ -93,11 +90,6 @@ export class TastingComponent implements OnInit {
         );
       },
     });
-  }
-
-  addTasting(tasting: Tasting) {
-    this.tastingService.tastings().unshift(tasting);
-    this.isAddingOrEditing = false;
   }
 
   addFile(tastings: Tasting[]) {
@@ -124,22 +116,16 @@ export class TastingComponent implements OnInit {
         this.isLoadingFileMap[tasting.id] = false;
       }
     });
-  }  
-
-  editTasting(tasting: Tasting) {
-    const index = this.tastingService.tastings().findIndex(
-      (r) => r.id === tasting.id
+  }
+  
+  prepareDelete(tasting: Tasting, event: any) {
+    this.notificationService.confirm(
+      event,
+      'Confirmation',
+      'Êtes-vous sûr de vouloir supprimer cette dégustation ?',
+      () => this.tastingService.delete(tasting.id),
+      () => {}
     );
-    if (index !== -1) {
-      this.tastingService.tastings()[index] = tasting;
-      this.tastingToEdit = null;
-      this.isAddingOrEditing = false;
-    } else {
-      this.notificationService.showError(
-        'Erreur',
-        'Erreur lors de la modification de la dégustation'
-      );
-    }
   }
 }
 

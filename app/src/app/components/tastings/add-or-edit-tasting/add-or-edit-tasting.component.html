@@ -1,4 +1,4 @@
-<p-dialog header="Ajouter une découverte" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
+<p-dialog header="Ajouter une découverte" [modal]="true" [(visible)]="tastingService.isDisplayedCreateOrEdit" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 
@@ -6,7 +6,7 @@
             <label for="name" class="label">Nom</label>
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
-                    styleClass="pi pi-user" />
+                    class="pi pi-user" />
                 <input type="text" pInputText placeholder="Le nom" formControlName="name"
                     [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
             </p-iconfield>
@@ -17,7 +17,7 @@
 
         <div class="input-container">
             <label for="category" class="label">Catégorie</label>
-            <p-treeselect containerStyleClass="w-full" formControlName="category" emptyMessage="Catégorie" [options]="categories" placeholder="Catégorie" appendTo="body" />
+            <p-treeselect formControlName="category" emptyMessage="Catégorie" [options]="categories" placeholder="Catégorie" appendTo="body" />
             @if(form.get('category')?.invalid && form.get('category')?.dirty) {
                 <small class="p-error block error-message">La Catégorie est requise</small>
                 }
@@ -41,15 +41,15 @@
             </p-editor>
         </div>
 
-        <img [src]="setImageUrl(previewUrl)" alt="Preview" class="image" />
+        <img [src]="setImageUrl(tastingService.previewUrl)" alt="Preview" class="image" />
 
-        <p-fileUpload #fu mode="basic" [chooseLabel]="previewUrl ? 'Changer image' : 'Choisir une image'"
+        <p-fileUpload #fu mode="basic" [chooseLabel]="tastingService.previewUrl ? 'Changer image' : 'Choisir une image'"
             chooseIcon="pi pi-upload" accept="image/*" maxFileSize="1000000" (onSelect)="onFileSelect($event)"> 
         </p-fileUpload>
 
         <div class="buttons-container">
-            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isLoadingEditOrAdd" />
-            <p-button label="Enregistrer" [loading]="isLoadingEditOrAdd" (onClick)="valid()" />
+            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="tastingService.isLoadingEditOrAdd" />
+            <p-button label="Enregistrer" [loading]="tastingService.isLoadingEditOrAdd" (onClick)="valid()" />
         </div>
 
     </form>

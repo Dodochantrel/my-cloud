@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './footer-table.component.css'
 })
 export class FooterTableComponent implements OnInit {
-  itemCount = input.required<number>();
+  itemCount = model.required<number>();
   // SI null alors on affiche meme pas le selecteur de taille
   selectedSize = model.required<SizeType>();
   page = model.required<number>();

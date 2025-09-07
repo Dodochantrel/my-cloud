@@ -3,7 +3,11 @@ import { computed, effect, Injectable, signal } from '@angular/core';
 import { Tasting } from '../class/tasting';
 import { Paginated } from '../class/paginated';
 import { map, Observable } from 'rxjs';
-import { mapFromDtosToTastings, mapFromDtoToTasting, TastingDto } from '../dto/tasting.dto';
+import {
+  mapFromDtosToTastings,
+  mapFromDtoToTasting,
+  TastingDto,
+} from '../dto/tasting.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { environment } from '../../environments/environment.development';
 import {
@@ -12,18 +16,23 @@ import {
 } from '../dto/tasting-category.dto';
 import { TastingCategory } from '../class/tasting-category';
 import { FileWidth } from '../tools/file-width.type';
+import { NotificationService } from './notification.service';
+import { addOne, findIndexById, removeById } from '../tools/update-table';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TastingService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly notificationService: NotificationService
+  ) {}
 
   getCategories(): Observable<TastingCategory[]> {
     return this.httpClient
       .get<TastingCategoryDto[]>(`${environment.apiUrl}tastings/categories`)
       .pipe(map(mapFromDtosToTastingCategories));
-  }  
+  }
 
   public search = signal<string>('');
   public categoriesId = signal<number[] | null>(null);
@@ -31,14 +40,32 @@ export class TastingService {
   public limit = signal(20);
 
   private getMyResource = httpResource<PaginatedDto<TastingDto>>(
-    () => `${environment.apiUrl}tastings?search=${this.search()}&page=${this.page()}&limit=${this.limit()}&categoryId=${this.categoriesId() || ''}`
-  );  
+    () =>
+      `${
+        environment.apiUrl
+      }tastings?search=${this.search()}&page=${this.page()}&limit=${this.limit()}&categoryId=${
+        this.categoriesId() || ''
+      }`
+  );
 
-  tastings = computed(() => this.getMyResource.value() ? mapFromDtosToTastings(this.getMyResource.value()!.data) : []);
-  itemCount = computed(() => this.getMyResource.value() ? this.getMyResource.value()!.meta.itemCount : 0);
+  tastings = computed(() =>
+    this.getMyResource.value()
+      ? mapFromDtosToTastings(this.getMyResource.value()!.data)
+      : []
+  );
+  itemCount = computed(() =>
+    this.getMyResource.value() ? this.getMyResource.value()!.meta.itemCount : 0
+  );
   isLoading = computed(() => this.getMyResource.isLoading());
 
-  add(name: string, categoryId: number, rating: number, description: string): Observable<Tasting> {
+  add(
+    name: string,
+    categoryId: number,
+    rating: number,
+    description: string,
+    file: File
+  ) {
+    this.isLoadingEditOrAdd = true;
     return this.httpClient
       .post<TastingDto>(`${environment.apiUrl}tastings`, {
         name,
@@ -46,26 +73,61 @@ export class TastingService {
         rating,
         description,
       })
-      .pipe(map(mapFromDtoToTasting));
+      .pipe(map(mapFromDtoToTasting))
+      .subscribe({
+        next: (tasting) => {
+          this.notificationService.showSuccess(
+            'Succès',
+            `La dégustation a été ajoutée avec succès`
+          );
+          this.uploadFile(tasting.id, file);
+          this.isLoadingEditOrAdd = false;
+          addOne(this.tastings(), tasting);
+        },
+        error: (error) => {
+          this.notificationService.showError(
+            'Erreur',
+            `La dégustation n'a pas pu être ajoutée`
+          );
+          this.isLoadingEditOrAdd = false;
+        },
+        complete: () => {
+          this.isLoadingEditOrAdd = false;
+        },
+      });
   }
 
   uploadFile(id: number, file: File) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('id', id.toString());
-    return this.httpClient.post(
-      `${environment.apiUrl}tastings/file`,
-      formData,
+    return this.httpClient
+      .post(`${environment.apiUrl}tastings/file`, formData, {
+        responseType: 'blob',
+      })
+      .subscribe({
+        next: () => {
+          this.notificationService.showSuccess(
+            'Image enregistrée',
+            "L'image a été enregistré avec succès."
+          );
+        },
+        error: (error) => {
+          this.notificationService.showError(
+            "Erreur lors de l'enregistremement de l'image",
+            "Une erreur est survenue lors de l'enregistremement de l'image."
+          );
+        },
+      });
+  }
+
+  getFile(id: number, width: FileWidth): Observable<Blob> {
+    return this.httpClient.get(
+      `${environment.apiUrl}tastings/file/${id}?width=${width}`,
       {
         responseType: 'blob',
       }
     );
-  }
-
-  getFile(id: number, width: FileWidth): Observable<Blob> {
-    return this.httpClient.get(`${environment.apiUrl}tastings/file/${id}?width=${width}`, {
-      responseType: 'blob',
-    });
   }
 
   edit(
@@ -73,8 +135,9 @@ export class TastingService {
     name: string,
     categoryId: number,
     rating: number,
-    description: string
-  ): Observable<Tasting> {
+    description: string,
+    file: File
+  ) {
     return this.httpClient
       .patch<TastingDto>(`${environment.apiUrl}tastings/${id}`, {
         name,
@@ -82,6 +145,53 @@ export class TastingService {
         rating,
         description,
       })
-      .pipe(map(mapFromDtoToTasting));
+      .pipe(map(mapFromDtoToTasting))
+      .subscribe({
+        next: (tasting) => {
+          this.notificationService.showSuccess(
+            'Succès',
+            `La dégustation a été modifiée avec succès`
+          );
+          tasting.fileBlobUrl = this.previewUrl;
+          this.uploadFile(tasting.id, file);
+          const index = findIndexById(this.tastings(), tasting.id);
+          this.tastings()[index] = tasting;
+        },
+        error: (error) => {
+          this.notificationService.showError(
+            'Erreur',
+            `La dégustation n'a pas pu être modifiée`
+          );
+          this.isLoadingEditOrAdd = false;
+        },
+        complete: () => {
+          this.isLoadingEditOrAdd = false;
+        },
+      });
   }
+
+  delete(id: number) {
+    return this.httpClient
+      .delete<void>(`${environment.apiUrl}tastings/${id}`)
+      .subscribe({
+        next: () => {
+          removeById(this.tastings(), id);
+          this.notificationService.showSuccess(
+            'Succès',
+            'Dégustation supprimée avec succès'
+          );
+        },
+        error: (error) => {
+          this.notificationService.showError(
+            'Erreur',
+            'Erreur lors de la suppression de la dégustation'
+          );
+        },
+      });
+  }
+
+  public isDisplayedCreateOrEdit: boolean = false;
+  public isLoadingEditOrAdd: boolean = false;
+  public previewUrl: string | null = null;
+  public tastingToEdit = signal<Tasting | null>(null);
 }

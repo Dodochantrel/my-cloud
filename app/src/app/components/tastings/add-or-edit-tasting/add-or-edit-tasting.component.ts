@@ -1,5 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  effect,
+  EventEmitter,
+  inject,
+  input,
+  Input,
+  model,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -38,26 +49,29 @@ import { setImageUrl } from '../../../tools/set-image-url';
   templateUrl: './add-or-edit-tasting.component.html',
   styleUrl: './add-or-edit-tasting.component.css',
 })
-export class AddOrEditTastingComponent implements OnChanges {
-  @Input() isDisplayed: boolean = false;
-  @Output() isDisplayedChange = new EventEmitter<boolean>();
+export class AddOrEditTastingComponent {
   @Input() categories: TreeNode<TastingCategory>[] = [];
-  @Output() newTasting = new EventEmitter<Tasting>();
-  @Input() tastingToEdit: Tasting | null = null;
-  @Output() tastingToEditChange = new EventEmitter<Tasting | null>();
 
   private readonly formBuilder = inject(FormBuilder);
 
-  public isLoadingEditOrAdd: boolean = false;
-  public previewUrl: string | null = null;
-
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly tastingService: TastingService
-  ) {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.patchForm();
+    protected readonly tastingService: TastingService
+  ) {
+    effect(() => {
+      if (this.tastingService.tastingToEdit() !== null) {
+        this.patchForm();
+      } else {
+        this.form.reset({
+          name: '',
+          category: null,
+          rating: 0,
+          description: '',
+          image: null,
+        });
+        this.tastingService.previewUrl = null;
+      }
+    });
   }
 
   form = this.formBuilder.group({
@@ -69,19 +83,39 @@ export class AddOrEditTastingComponent implements OnChanges {
   });
 
   patchForm() {
-    if(this.tastingToEdit) {
-      //Trouver dans categories le bon TastingCategory
-      const categoryNode = this.categories.find(
-        (node) => node.data!.id === this.tastingToEdit!.category?.id
+    if (this.tastingService.tastingToEdit() !== null) {
+      const categoryNode = this.findCategoryNode(
+        this.categories,
+        this.tastingService.tastingToEdit()!.category?.id!
       );
+
       this.form.patchValue({
-        name: this.tastingToEdit.name,
+        name: this.tastingService.tastingToEdit()!.name,
         category: categoryNode,
-        rating: this.tastingToEdit.rating,
-        description: this.tastingToEdit.description,
+        rating: this.tastingService.tastingToEdit()!.rating,
+        description: this.tastingService.tastingToEdit()!.description,
       });
-      this.previewUrl = this.tastingToEdit.fileBlobUrl || null;
+
+      this.tastingService.previewUrl = this.tastingService.tastingToEdit()!.fileBlobUrl || null;
     }
+  }
+
+  private findCategoryNode(
+    nodes: TreeNode<TastingCategory>[],
+    id: number
+  ): TreeNode<TastingCategory> | null {
+    for (const node of nodes) {
+      if (node.data && node.data.id === id) {
+        return node;
+      }
+      if (node.children && node.children.length > 0) {
+        const childResult = this.findCategoryNode(node.children, id);
+        if (childResult) {
+          return childResult;
+        }
+      }
+    }
+    return null;
   }
 
   cancel() {
@@ -92,15 +126,14 @@ export class AddOrEditTastingComponent implements OnChanges {
       description: '',
       image: null,
     });
-    this.previewUrl = null;
-    this.tastingToEdit = null;
-    this.isDisplayed = false;
-    this.isDisplayedChange.emit(this.isDisplayed);
+    this.tastingService.previewUrl = null;
+    this.tastingService.tastingToEdit.set(null);
+    this.tastingService.isDisplayedCreateOrEdit = false;
   }
 
   valid() {
     if (this.form.valid) {
-      if(this.tastingToEdit) {
+      if (this.tastingService.tastingToEdit() !== null) {
         this.edit();
       } else {
         this.save();
@@ -115,75 +148,24 @@ export class AddOrEditTastingComponent implements OnChanges {
   }
 
   edit() {
-    this.isLoadingEditOrAdd = true;
-    this.tastingService
-      .edit(
-        this.tastingToEdit!.id,
-        this.form.value.name!,
-        this.form.value.category!.data!.id!,
-        this.form.value.rating!,
-        this.form.value.description!
-      )
-      .subscribe({
-        next: (tasting) => {
-          this.notificationService.showSuccess(
-            'Succès',
-            `La dégustation a été modifiée avec succès`
-          );
-          tasting.fileBlobUrl = this.previewUrl; // Update the fileBlobUrl with the preview URL
-          this.uploadFile(tasting.id);
-          this.isDisplayedChange.emit(false);
-          this.form.reset();
-          this.isLoadingEditOrAdd = false;
-          this.tastingToEditChange.emit(tasting);
-          this.previewUrl = null;
-        },
-        error: (error) => {
-          this.notificationService.showError(
-            'Erreur',
-            `La dégustation n'a pas pu être modifiée`
-          );
-          this.isLoadingEditOrAdd = false;
-        },
-        complete: () => {
-          this.isLoadingEditOrAdd = false;
-        },
-      });
+    this.tastingService.edit(
+      this.tastingService.tastingToEdit()!.id,
+      this.form.value.name!,
+      this.form.value.category!.data!.id!,
+      this.form.value.rating!,
+      this.form.value.description!,
+      this.form.value.image!
+    );
   }
 
   save() {
-    this.isLoadingEditOrAdd = true;
-    this.tastingService
-      .add(
-        this.form.value.name!,
-        this.form.value.category!.data!.id!,
-        this.form.value.rating!,
-        this.form.value.description!
-      )
-      .subscribe({
-        next: (tasting) => {
-          this.notificationService.showSuccess(
-            'Succès',
-            `La dégustation a été ajoutée avec succès`
-          );
-          this.uploadFile(tasting.id);
-          this.isDisplayedChange.emit(false);
-          this.form.reset();
-          this.isLoadingEditOrAdd = false;
-          this.newTasting.emit(tasting);
-          this.previewUrl = null; // Reset preview URL after saving
-        },
-        error: (error) => {
-          this.notificationService.showError(
-            'Erreur',
-            `La dégustation n'a pas pu être ajoutée`
-          );
-          this.isLoadingEditOrAdd = false;
-        },
-        complete: () => {
-          this.isLoadingEditOrAdd = false;
-        },
-      });
+    this.tastingService.add(
+      this.form.value.name!,
+      this.form.value.category!.data!.id!,
+      this.form.value.rating!,
+      this.form.value.description!,
+      this.form.value.image!
+    );
   }
 
   onFileSelect(event: any): void {
@@ -191,30 +173,10 @@ export class AddOrEditTastingComponent implements OnChanges {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.previewUrl = reader.result as string;
+        this.tastingService.previewUrl = reader.result as string;
         this.form.get('image')?.setValue(file);
       };
       reader.readAsDataURL(file);
-    }
-  }
-
-  uploadFile(id: number) {
-    const file = this.form.get('image')?.value;
-    if (file) {
-      this.tastingService.uploadFile(id, file).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Image enregistrée',
-            'L\'image a été enregistré avec succès.'
-          );
-        },
-        error: (error) => {
-          this.notificationService.showError(
-            'Erreur lors de l\'enregistremement de l\'image',
-            'Une erreur est survenue lors de l\'enregistremement de l\'image.'
-          );
-        },
-      });
     }
   }
 }

@@ -15,7 +15,7 @@
 
       <p-treeselect class="treeselect-container" [(ngModel)]="tastingService.categoriesId" [options]="TastingCategoryTree" display="chip" [metaKeySelection]="false" selectionMode="checkbox" placeholder="Catégories" />
   
-      <p-button icon="pi pi-plus-circle" label="Ajouter" (onClick)="isAddingOrEditing = true" />
+      <p-button icon="pi pi-plus-circle" label="Ajouter" (onClick)="tastingService.isDisplayedCreateOrEdit = true" />
 
     </div>
 
@@ -53,4 +53,4 @@
 
 </div>
 
-<app-add-or-edit-tasting [(isDisplayed)]="isAddingOrEditing" [categories]="TastingCategoryTree" (newTasting)="addTasting($event)" [tastingToEdit]="tastingToEdit" (tastingToEditChange)="editTasting($event!)"></app-add-or-edit-tasting>
+<app-add-or-edit-tasting [categories]="TastingCategoryTree"></app-add-or-edit-tasting>

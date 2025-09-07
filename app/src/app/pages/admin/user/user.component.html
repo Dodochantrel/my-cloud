@@ -39,7 +39,6 @@
                             [icon]="user.isAuthorized ? 'pi pi-check-circle' : 'pi pi-times-circle'"
                             (click)="confirmAuthorize(user, $event)"
                             text
-                            [disabled]="user.isAuthorized"
                             rounded
                             [severity]="user.isAuthorized ? 'success' : 'danger'"
                         ></button>
