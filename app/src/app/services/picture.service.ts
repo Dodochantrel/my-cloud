@@ -13,10 +13,9 @@ import { PicturesByCategoryDto } from '../dto/pictures-by-category.dto';
 import { FileWidth } from '../tools/file-width.type';
 import {
   addOne,
-  findIndexById,
-  removeById,
   removeByIdWithRecurtion,
 } from '../tools/update-table';
+import { TreeNode } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',

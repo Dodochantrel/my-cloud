@@ -31,11 +31,14 @@ export class GalleryComponent {
     private readonly notificationService: NotificationService,
   ) {
     effect(() => {
-      this.treeCategories = this.mapForTree(this.pictureService.categories());
+      this.treeCategories = this.mapForTree(
+        this.pictureService.categories(),
+        this.treeCategories
+      );
     });
   }
 
-  public treeCategories: any[] = [];
+  public treeCategories: TreeNode<PictureCategory>[] = [];
   public isLoadingDate: boolean = true;
 
   public menuItems: MenuItem[] = [
@@ -58,13 +61,17 @@ export class GalleryComponent {
   ];
   public currentNode: TreeNode | null = null;
 
-  mapForTree(categories: PictureCategory[]): TreeNode[] {
-    return categories.map((category) => ({
-      label: category.name,
-      data: category,
-      children: this.mapForTree(category.childrens),
-    }));
-  }
+  mapForTree(categories: PictureCategory[], oldNodes: TreeNode[] = []): TreeNode[] {
+    return categories.map((category) => {
+      const oldNode = oldNodes.find(n => n.data.id === category.id);
+      return {
+        label: category.name,
+        data: category,
+        expanded: oldNode?.expanded ?? false,
+        children: this.mapForTree(category.childrens, oldNode?.children ?? [])
+      };
+    });
+  }  
 
   onAdd() {
     this.pictureService.isAddingOrEditingCategory.set(true);

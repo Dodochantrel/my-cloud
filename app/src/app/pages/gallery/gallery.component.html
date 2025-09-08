@@ -6,7 +6,7 @@
 
       <ng-template #panel>
 
-        <p-tree class="tree" [value]="treeCategories" [filter]="true" filterMode="strict" (onNodeSelect)="this.currentNode = $event.node"
+        <p-tree class="tree" [value]="treeCategories" [filter]="true" filterMode="strict" (onNodeSelect)="this.currentNode = $event.node" (onNodeUnselect)="this.currentNode = null"
           filterPlaceholder="Rechercher par nom" selectionMode="single" [draggableNodes]="true" [droppableNodes]="true" (onNodeDrop)="onNodeDrop($event)"
           draggableScope="self" droppableScope="self">
 
