@@ -6,5 +6,5 @@ export class PicturesCategoryParentRequestDto {
     example: 1,
     required: false,
   })
-  parentId: number | null;
+  parentId: string | null;
 }

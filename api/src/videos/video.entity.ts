@@ -11,9 +11,8 @@ import { SerieDetails } from './interfaces/serie-details.interface';
 
 @Entity()
 export class Video {
-  // Id de the movie db
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   tmdbId: number;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { TreeModule } from 'primeng/tree';
 import { PictureService } from '../../services/picture.service';
 import { PictureCategory } from '../../class/picture-category';
@@ -25,18 +25,18 @@ import { PhotoComponent } from '../../components/galleries/photo/photo.component
   styleUrl: './gallery.component.css',
   providers: [TreeDragDropService],
 })
-export class GalleryComponent implements OnInit {
+export class GalleryComponent {
   constructor(
     private readonly pictureService: PictureService,
     private readonly notificationService: NotificationService,
-    private readonly browserService: BrowserService
-  ) {}
+  ) {
+    effect(() => {
+      this.treeCategories = this.mapForTree(this.pictureService.categories());
+    });
+  }
 
-  public categories: PictureCategory[] = [];
   public treeCategories: any[] = [];
   public isLoadingDate: boolean = true;
-  public isAddingOrEditingCategory: boolean = false;
-  public isEditingCategory: boolean = false;
 
   public menuItems: MenuItem[] = [
     {
@@ -58,31 +58,6 @@ export class GalleryComponent implements OnInit {
   ];
   public currentNode: TreeNode | null = null;
 
-  ngOnInit(): void {
-    if (this.browserService.isBrowser) {
-      this.getCategories();
-    }
-  }
-
-  getCategories() {
-    this.isLoadingDate = true;
-    this.pictureService.getAllPictureCategory().subscribe({
-      next: (categories) => {
-        this.categories = categories;
-        this.treeCategories = this.mapForTree(categories);
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Erreur récupération des catégories',
-          error
-        );
-      },
-      complete: () => {
-        this.isLoadingDate = false;
-      },
-    });
-  }
-
   mapForTree(categories: PictureCategory[]): TreeNode[] {
     return categories.map((category) => ({
       label: category.name,
@@ -92,13 +67,12 @@ export class GalleryComponent implements OnInit {
   }
 
   onAdd() {
-    this.isEditingCategory = false;
-    this.isAddingOrEditingCategory = true;
+    this.pictureService.isAddingOrEditingCategory.set(true);
   }
 
   onEdit() {
-    this.isAddingOrEditingCategory = true;
-    this.isEditingCategory = true;
+    this.pictureService.isAddingOrEditingCategory.set(true);
+    this.pictureService.selectedCategory.set(this.currentNode?.data ?? null);
   }
 
   onDelete(event: Event) {
@@ -111,24 +85,19 @@ export class GalleryComponent implements OnInit {
     );
   }
 
+  prepareAdd() {
+    this.pictureService.isAddingOrEditingCategory.set(true);
+    this.pictureService.selectedCategory.set(null);
+  }
+
   openMenu(event: MouseEvent, menu: any, node: TreeNode) {
     this.currentNode = node;
     menu.toggle(event);
   }
 
   addNew(pictureCategory: PictureCategory) {
-    this.categories.push(pictureCategory);
+    this.pictureService.categories().push(pictureCategory);
     this.treeCategories.push(this.mapForTree([pictureCategory])[0]);
-  }
-
-  editOne(pictureCategory: PictureCategory) {
-    const index = this.categories.findIndex(
-      (cat) => cat.id === pictureCategory.id
-    );
-    if (index !== -1) {
-      this.categories[index] = pictureCategory;
-      this.treeCategories[index] = this.mapForTree([pictureCategory])[0];
-    }
   }
 
   onNodeDrop(event: any) {
@@ -140,11 +109,11 @@ export class GalleryComponent implements OnInit {
         this.notificationService.showSuccess(
           'Succès', message
         );
-        const index = this.categories.findIndex(
+        const index = this.pictureService.categories().findIndex(
           (cat) => cat.id === updatedCategory.id
         );
         if (index !== -1) {
-          this.categories[index] = updatedCategory;
+          this.pictureService.categories()[index] = updatedCategory;
           this.treeCategories[index] = this.mapForTree([updatedCategory])[0];
         }
       },

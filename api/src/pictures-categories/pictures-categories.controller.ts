@@ -66,7 +66,7 @@ export class PicturesCategoriesController {
   ): Promise<PicturesCategoryResponseDto> {
     return mapFromPicturesCategoryToResponseDto(
       await this.picturesCategoriesService.update(
-        Number(id),
+        id,
         dto.name,
         dto.groupsId ? dto.groupsId : [],
       ),
@@ -103,7 +103,7 @@ export class PicturesCategoriesController {
   ): Promise<PicturesCategoryResponseDto> {
     return mapFromPicturesCategoryToResponseDto(
       await this.picturesCategoriesService.changeParent(
-        Number(id),
+        id,
         tokenPayload.id,
         dto.parentId,
       ),

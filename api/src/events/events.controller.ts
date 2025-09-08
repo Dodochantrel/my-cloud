@@ -100,7 +100,7 @@ export class EventsController {
     @Param('id') id: string,
     @TokenPayload() tokenPayload: AccessTokenPayload,
   ): Promise<void> {
-    await this.eventsService.delete(Number(id), tokenPayload.id);
+    await this.eventsService.delete(id, tokenPayload.id);
   }
 
   @Get('types')
@@ -134,7 +134,7 @@ export class EventsController {
       await this.eventsService.update(
         tokenPayload.id,
         new EventData({
-          id: Number(id),
+          id: id,
           name: dto.name,
           startDate: new Date(dto.startDate),
           endDate: new Date(dto.endDate),

@@ -15,8 +15,8 @@ import { User } from 'src/users/user.entity';
 
 @Entity()
 export class EventData {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

@@ -15,8 +15,8 @@ import { TastingCategory } from './tasting-category.entity';
 
 @Entity()
 export class Tasting {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

@@ -19,8 +19,8 @@ import {
 @Entity()
 @Tree('closure-table')
 export class PicturesCategory {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

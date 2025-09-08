@@ -19,8 +19,8 @@ export class PicturesCategoriesService {
   }
 
   public async findMy(
-    userId: number,
-    groupsId: number[],
+    userId: string,
+    groupsId: string[],
   ): Promise<PicturesCategory[]> {
     const qb = this.picturesCategoryRepository.createQueryBuilder('category');
     qb.leftJoin('category.user', 'user');
@@ -50,14 +50,14 @@ export class PicturesCategoriesService {
     return trees;
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.picturesCategoryRepository.delete(id);
   }
 
   public async update(
-    id: number,
+    id: string,
     name: string,
-    groupsId: number[],
+    groupsId: string[],
   ): Promise<PicturesCategory> {
     const category = await this.picturesCategoryRepository.findOne({
       where: { id },
@@ -77,9 +77,9 @@ export class PicturesCategoriesService {
   }
 
   public async changeParent(
-    id: number,
-    userId: number,
-    parentId: number | null,
+    id: string,
+    userId: string,
+    parentId: string | null,
   ): Promise<PicturesCategory> {
     const category = await this.picturesCategoryRepository.findOne({
       where: { id },
@@ -113,17 +113,17 @@ export class PicturesCategoriesService {
   }
 
   private async canAccess(
-    userId: number,
-    groupsId: number[],
+    userId: string,
+    groupsId: string[],
     picturesCategory: PicturesCategory,
   ) {
+    console.log(picturesCategory.user);
+    console.log(userId);
     if (
-      picturesCategory.user.id === userId &&
+      picturesCategory.user.id !== userId &&
       !picturesCategory.groups.some((group) => groupsId.includes(group.id))
     ) {
-      throw new UnauthorizedException('User cannot access their own category');
-    }
-    if (picturesCategory.groups.length === 0) {
+      console.log(picturesCategory.user.id);
       throw new UnauthorizedException('User cannot access their own category');
     }
   }

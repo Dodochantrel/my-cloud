@@ -16,8 +16,8 @@ import {
 
 @Entity()
 export class Recipe {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

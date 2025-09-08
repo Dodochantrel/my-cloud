@@ -11,7 +11,7 @@ export class TastingResponseDto {
     example: 1,
     required: true,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'The name of the tasting',

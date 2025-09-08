@@ -22,7 +22,7 @@ export class FilesManager {
     return this.fileDataRepository.save(fileData);
   }
 
-  async getOne(id: number): Promise<FileData> {
+  async getOne(id: string): Promise<FileData> {
     const fileData = await this.fileDataRepository.findOne({
       where: { id },
     });
@@ -33,7 +33,7 @@ export class FilesManager {
     return fileData;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const fileData = await this.getOne(id);
     if (!fileData) {
       this.logger.error(`FileData with id ${id} not found`);

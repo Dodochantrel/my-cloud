@@ -19,7 +19,7 @@ export class UsersService {
     });
   }
 
-  getMe(id: number): Promise<User> {
+  getMe(id: string): Promise<User> {
     const user = this.userRepository.findOne({
       where: { id },
     });
@@ -33,7 +33,7 @@ export class UsersService {
     return this.userRepository.count().then((count) => count === 0);
   }
 
-  getOneById(id: number, relations: string[] = []): Promise<User | null> {
+  getOneById(id: string, relations: string[] = []): Promise<User | null> {
     return this.userRepository.findOne({
       where: { id },
       relations,
@@ -55,7 +55,7 @@ export class UsersService {
   }
 
   async getUsersByGroupId(
-    groupId: number,
+    groupId: string,
     pageQuery: PageQuery,
     relations: string[] = [],
   ): Promise<PaginatedResponse<User>> {
@@ -76,14 +76,14 @@ export class UsersService {
     await this.userRepository.delete(id);
   }
 
-  async getMinimalUsers(id: number): Promise<User[]> {
+  async getMinimalUsers(id: string): Promise<User[]> {
     return this.userRepository.find({
       select: ['id', 'email', 'firstName', 'lastName'],
       where: { id: Not(id) },
     });
   }
 
-  async authorize(id: number, isAuthorized: boolean): Promise<User> {
+  async authorize(id: string, isAuthorized: boolean): Promise<User> {
     const user = await this.getOneById(id);
     if (!user) {
       throw new NotFoundException('User not found');

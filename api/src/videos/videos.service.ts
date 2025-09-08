@@ -27,7 +27,7 @@ export class VideosService {
   }
 
   async getMyVideosSeen(
-    userId: number,
+    userId: string,
     pageQuery: PageQuery,
     search: string,
     type: VideoType,
@@ -49,7 +49,7 @@ export class VideosService {
   }
 
   async getMyVideosToSeen(
-    userId: number,
+    userId: string,
     pageQuery: PageQuery,
     search: string,
     type: VideoType,
@@ -70,7 +70,7 @@ export class VideosService {
     return new PaginatedResponse<Video>(data, pageQuery, count);
   }
 
-  async getMovieFromDbOrTmdb(userId: number, videoId: number): Promise<Video> {
+  async getMovieFromDbOrTmdb(userId: string, videoId: number): Promise<Video> {
     const video = await this.videoRepository.findOneBy({
       tmdbId: videoId,
       user: { id: userId },
@@ -91,7 +91,7 @@ export class VideosService {
     }
   }
 
-  async getSerieFromDbOrTmdb(userId: number, videoId: number): Promise<Video> {
+  async getSerieFromDbOrTmdb(userId: string, videoId: number): Promise<Video> {
     const video = await this.videoRepository.findOneBy({
       tmdbId: videoId,
       user: { id: userId },

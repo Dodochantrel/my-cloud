@@ -4,9 +4,9 @@ import { User } from '../user.entity';
 export class UserMinimalResponseDto {
   @ApiProperty({
     description: 'Id of the user',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'First name of the user',

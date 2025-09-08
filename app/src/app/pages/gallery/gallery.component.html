@@ -22,6 +22,10 @@
             </div>
           </ng-template>
 
+          <ng-template pTemplate="footer">
+            <p-button label="Ajouter une catégorie" icon="pi pi-plus-circle" (onClick)="prepareAdd()" />
+          </ng-template>
+
         </p-tree>
 
       </ng-template>
@@ -42,6 +46,4 @@
 
 </div>
 
-<app-add-or-edit-picture-category [(isDisplayed)]="isAddingOrEditingCategory" [pictureCategory]="currentNode?.data"
-  [isEditMode]="isEditingCategory" (newCategoryCreated)="addNew($event)"
-  (categoryEdited)="editOne($event)"></app-add-or-edit-picture-category>
+<app-add-or-edit-picture-category (newCategoryCreated)="addNew($event)"></app-add-or-edit-picture-category>

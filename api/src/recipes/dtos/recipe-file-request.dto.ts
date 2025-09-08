@@ -4,7 +4,7 @@ export class RecipeFileResponseDto {
   @ApiProperty({
     type: 'number',
     description: 'The unique identifier for the recipe',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 }

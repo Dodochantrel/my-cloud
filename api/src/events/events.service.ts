@@ -69,7 +69,7 @@ export class EventsService {
     );
   }
 
-  async update(userId: number, eventData: EventData): Promise<EventData[]> {
+  async update(userId: string, eventData: EventData): Promise<EventData[]> {
     const event = await this.eventDataRepository.findOne({
       where: { id: eventData.id },
       relations: ['groups.users', 'user'],
@@ -97,7 +97,7 @@ export class EventsService {
     );
   }
 
-  async delete(id: number, userId: number): Promise<void> {
+  async delete(id: string, userId: string): Promise<void> {
     const event = await this.eventDataRepository.findOne({
       where: { id },
       relations: ['groups', 'user'],

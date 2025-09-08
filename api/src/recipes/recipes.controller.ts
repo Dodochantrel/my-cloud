@@ -108,9 +108,7 @@ export class RecipesController {
     @Param('id') id: string,
     @Res() res: Response,
   ) {
-    return res.sendFile(
-      await this.recipesService.getFile(Number(id), tokenPayload.id),
-    );
+    return res.sendFile(await this.recipesService.getFile(id, tokenPayload.id));
   }
 
   @Get(':id')
@@ -124,7 +122,7 @@ export class RecipesController {
     @Param('id') id: string,
   ): Promise<RecipeResponseDto> {
     return mapFromRecipeToRecipeResponseDto(
-      await this.recipesService.getById(Number(id), tokenPayload.id),
+      await this.recipesService.getById(id, tokenPayload.id),
     );
   }
 
@@ -146,7 +144,7 @@ export class RecipesController {
     return mapFromRecipeToRecipeResponseDto(
       await this.recipesService.update(
         new Recipe({
-          id: Number(id),
+          id: id,
           user: new User({ id: tokenPayload.id }),
           name: dto.name,
           description: dto.description,

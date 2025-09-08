@@ -8,9 +8,9 @@ import { Group } from '../group.entity';
 export class GroupResponseDto {
   @ApiProperty({
     description: 'Id of the group',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'Name of the group',

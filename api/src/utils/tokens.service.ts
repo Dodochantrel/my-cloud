@@ -13,9 +13,9 @@ export class TokensService {
   ) {}
 
   async generateAccessToken(
-    id: number,
+    id: string,
     email: string,
-    groupsId: number[],
+    groupsId: string[],
     roles: string[],
   ): Promise<string> {
     const payload: AccessTokenPayload = { id, email, groupsId, roles };
@@ -27,7 +27,7 @@ export class TokensService {
     });
   }
 
-  async generateRefreshToken(id: number, rememberMe: boolean): Promise<string> {
+  async generateRefreshToken(id: string, rememberMe: boolean): Promise<string> {
     const payload: RefreshTokenPayload = { id };
     const lifetime = rememberMe
       ? this.configService.get<string>('JWT_REFRESH_LIFETIME_REMEMBER')
@@ -40,14 +40,14 @@ export class TokensService {
 }
 
 export interface AccessTokenPayload {
-  id: number;
+  id: string;
   email: string;
   roles: string[];
-  groupsId: number[];
+  groupsId: string[];
 }
 
 export interface RefreshTokenPayload {
-  id: number;
+  id: string;
 }
 
 export const TokenPayload = createParamDecorator(

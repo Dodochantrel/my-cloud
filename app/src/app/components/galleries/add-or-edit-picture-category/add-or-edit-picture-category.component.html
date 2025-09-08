@@ -1,4 +1,4 @@
-<p-dialog header="Créer une catégorie" [modal]="true" [(visible)]="isDisplayed" (onHide)="cancel()">
+<p-dialog header="Créer une catégorie" [modal]="true" [visible]="pictureService.isAddingOrEditingCategory()" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 
@@ -25,8 +25,8 @@
         </div>
 
         <div class="buttons-container">
-            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isLoading" />
-            <p-button label="Enregistrer" [loading]="isLoading" (onClick)="valid()" />
+            <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="pictureService.isLoadingCreateOrEdit" />
+            <p-button label="Enregistrer" [loading]="pictureService.isLoadingCreateOrEdit" (onClick)="valid()" />
         </div>
 
     </form>

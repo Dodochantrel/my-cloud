@@ -98,7 +98,7 @@ export class GroupsController {
       await this.groupsService.update(
         tokenPayload.id,
         new Group({
-          id: Number(id),
+          id: id,
           name: dto.name,
         }),
         dto.usersId,
@@ -122,7 +122,7 @@ export class GroupsController {
     @Body() dto: AddOrRemoveUserGroupRequestDto,
   ): Promise<GroupResponseDto> {
     return mapFromGroupToGroupResponseDto(
-      await this.groupsService.addUser(tokenPayload.id, Number(id), dto.userId),
+      await this.groupsService.addUser(tokenPayload.id, id, dto.userId),
     );
   }
 
@@ -142,11 +142,7 @@ export class GroupsController {
     @Body() dto: AddOrRemoveUserGroupRequestDto,
   ): Promise<GroupResponseDto> {
     return mapFromGroupToGroupResponseDto(
-      await this.groupsService.removeUser(
-        tokenPayload.id,
-        Number(id),
-        dto.userId,
-      ),
+      await this.groupsService.removeUser(tokenPayload.id, id, dto.userId),
     );
   }
 
@@ -159,6 +155,6 @@ export class GroupsController {
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,
   ): Promise<void> {
-    return this.groupsService.delete(tokenPayload.id, Number(id));
+    return this.groupsService.delete(tokenPayload.id, id);
   }
 }

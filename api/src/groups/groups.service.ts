@@ -19,14 +19,14 @@ export class GroupsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async save(userId: number, group: Group, usersId: number[]): Promise<Group> {
+  async save(userId: string, group: Group, usersId: string[]): Promise<Group> {
     group.users = usersId.map((userId) => new User({ id: userId }));
     group.users.push(new User({ id: userId }));
     return this.userRepository.save(group);
   }
 
   async getMy(
-    userId: number,
+    userId: string,
     pageQuery: PageQuery,
     search: string,
   ): Promise<PaginatedResponse<Group>> {
@@ -43,7 +43,7 @@ export class GroupsService {
     return new PaginatedResponse<Group>(data, pageQuery, count);
   }
 
-  async getMyMinimalData(userId: number): Promise<Group[]> {
+  async getMyMinimalData(userId: string): Promise<Group[]> {
     return this.userRepository.find({
       where: { users: { id: userId } },
       select: ['id', 'name'],
@@ -52,9 +52,9 @@ export class GroupsService {
   }
 
   async update(
-    userId: number,
+    userId: string,
     group: Group,
-    usersId: number[],
+    usersId: string[],
   ): Promise<Group> {
     const groupInDb = await this.userRepository.findOne({
       where: { id: group.id, users: { id: userId } },
@@ -67,9 +67,9 @@ export class GroupsService {
   }
 
   async addUser(
-    userId: number,
-    groupId: number,
-    newUserId: number,
+    userId: string,
+    groupId: string,
+    newUserId: string,
   ): Promise<Group> {
     const group = await this.userRepository.findOne({
       where: { id: groupId, users: { id: userId } },
@@ -89,9 +89,9 @@ export class GroupsService {
   }
 
   async removeUser(
-    userId: number,
-    groupId: number,
-    userToRemoveId: number,
+    userId: string,
+    groupId: string,
+    userToRemoveId: string,
   ): Promise<Group> {
     const groupInDb = await this.userRepository.findOne({
       where: { id: groupId },
@@ -107,7 +107,7 @@ export class GroupsService {
     return this.userRepository.save(groupInDb);
   }
 
-  async delete(userId: number, groupId: number): Promise<void> {
+  async delete(userId: string, groupId: string): Promise<void> {
     const group = await this.userRepository.findOne({
       where: { id: groupId, users: { id: userId } },
       relations: ['users'],
@@ -121,7 +121,7 @@ export class GroupsService {
     await this.userRepository.delete(group.id);
   }
 
-  checkIfCanEdit(group: Group, userId: number): void {
+  checkIfCanEdit(group: Group, userId: string): void {
     if (!group) {
       throw new NotFoundException('Group not found');
     }
@@ -130,12 +130,12 @@ export class GroupsService {
     }
   }
 
-  async hasUserInGroup(groupId: number, userId: number): Promise<boolean> {
+  async hasUserInGroup(groupId: string, userId: string): Promise<boolean> {
     const group = await this.userRepository.findOne({
       where: { id: groupId, users: { id: userId } },
       relations: ['users'],
     });
-    if(!group) {
+    if (!group) {
       throw new UnauthorizedException('You are not member of this group');
     }
     return true;

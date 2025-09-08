@@ -9,7 +9,7 @@ export class GroupRequestDto {
 
   @ApiProperty({
     description: 'Users id of the group',
-    example: [1, 2, 3],
+    example: ['1', '2', '3'],
   })
-  usersId: number[];
+  usersId: string[];
 }

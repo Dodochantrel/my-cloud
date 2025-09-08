@@ -10,8 +10,8 @@ import { EventData } from './event-data.entity';
 
 @Entity()
 export class EventDataType {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

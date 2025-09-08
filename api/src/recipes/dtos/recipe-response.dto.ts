@@ -11,42 +11,36 @@ import {
 
 export class RecipeResponseDto {
   @ApiProperty({
-    type: 'number',
     description: 'The unique identifier for the recipe',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
-    type: 'string',
     description: 'The name of the recipe',
     example: 'Spaghetti Bolognese',
   })
   name: string;
 
   @ApiProperty({
-    type: 'string',
     description: 'The description of the recipe',
     example: 'A classic Italian pasta dish with a rich meat sauce.',
   })
   description: string;
 
   @ApiProperty({
-    type: 'string',
     description: 'The type of the recipe',
     example: 'main',
   })
   type: RecipeType;
 
   @ApiProperty({
-    type: 'string',
     description: 'The date when the recipe was created',
     example: '2023-10-01T12:00:00Z',
   })
   createdAt: string;
 
   @ApiProperty({
-    type: 'string',
     description: 'The date when the recipe was last updated',
     example: '2023-10-01T12:00:00Z',
   })
@@ -59,7 +53,6 @@ export class RecipeResponseDto {
   user: UserResponseDto;
 
   @ApiProperty({
-    type: 'array',
     description: 'The groups associated with the recipe',
   })
   groups: GroupResponseDto[];

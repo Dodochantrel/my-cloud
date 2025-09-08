@@ -4,9 +4,9 @@ import { EventDataType } from '../event-data-type.entity';
 export class EventDataTypeResponseDto {
   @ApiProperty({
     description: 'Unique identifier for the event data type',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'Name of the event data type',

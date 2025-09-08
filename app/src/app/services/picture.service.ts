@@ -1,25 +1,26 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { NotificationService } from './notification.service';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { mapFromPictureCategoriesDto, mapFromPictureCategoryDto, PictureCategoryDto } from '../dto/picture-category.dto';
 import { map, Observable } from 'rxjs';
 import { PictureCategory } from '../class/picture-category';
 import { PicturesByCategoryDto } from '../dto/pictures-by-category.dto';
 import { FileWidth } from '../tools/file-width.type';
+import { addOne, findIndexById } from '../tools/update-table';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PictureService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: HttpClient, private readonly notificationService: NotificationService) {}
 
-  getAllPictureCategory(): Observable<PictureCategory[]> {
-    return this.httpClient.get<PictureCategoryDto[]>(
-      `${environment.apiUrl}pictures-categories`
-    ).pipe(map(mapFromPictureCategoriesDto));
-  }
+  private getMyResource = httpResource<PictureCategoryDto[]>( () => `${environment.apiUrl}pictures-categories` );  
 
-  createPictureCategory(name: string, groupsId: number[], parentId: number | null = null): Observable<PictureCategory> {
+  categories = computed(() => this.getMyResource.value() ? mapFromPictureCategoriesDto(this.getMyResource.value()!) : []);
+  isLoading = computed(() => this.getMyResource.isLoading());
+
+  createPictureCategory(name: string, groupsId: number[], parentId: number | null = null) {
     const body = {
       name,
       groupsId,
@@ -28,10 +29,32 @@ export class PictureService {
     return this.httpClient.post<PictureCategoryDto>(
       `${environment.apiUrl}pictures-categories`,
       body
-    ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
+    ).pipe(map(dto => mapFromPictureCategoryDto(dto))).subscribe({
+      next: (pictureCategory: PictureCategory) => {
+        this.notificationService.showSuccess(
+          'Succès',
+          `La catégorie ${pictureCategory.name!} a été créée avec succès.`
+        );
+        this.isAddingOrEditingCategory.set(false);
+        addOne(this.categories(), pictureCategory);
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          'Erreur',
+          `Erreur lors de la création de la catégorie : ${error.message}`
+        );
+      },
+      complete: () => {
+        this.isLoadingCreateOrEdit = false;
+      }
+    });
   }
 
-  editPictureCategory(id: number, name: string, groupsId: number[]): Observable<PictureCategory> {
+  public isAddingOrEditingCategory = signal(false);
+  public selectedCategory = signal<PictureCategory | null>(null);
+  public isLoadingCreateOrEdit: boolean = false;
+
+  editPictureCategory(id: number, name: string, groupsId: number[]) {
     const body = {
       name,
       groupsId
@@ -39,7 +62,26 @@ export class PictureService {
     return this.httpClient.patch<PictureCategoryDto>(
       `${environment.apiUrl}pictures-categories/${id}`,
       body
-    ).pipe(map(dto => mapFromPictureCategoryDto(dto)));
+    ).pipe(map(dto => mapFromPictureCategoryDto(dto))).subscribe({
+      next: (pictureCategory: PictureCategory) => {
+        this.notificationService.showSuccess(
+          'Succès',
+          `La catégorie ${pictureCategory.name!} a été modifiée avec succès.`
+        );
+        this.isAddingOrEditingCategory.set(false);
+        const index = findIndexById(this.categories(), pictureCategory.id);
+        this.categories()[index] = pictureCategory;
+      },
+      error: (error) => {
+        this.notificationService.showError(
+          'Erreur',
+          `Erreur lors de la modification de la catégorie : ${error.message}`
+        );
+      },
+      complete: () => {
+        this.isLoadingCreateOrEdit = false;
+      }
+    });
   }
 
   changeParentPictureCategory(

@@ -205,7 +205,7 @@ export class VideosController {
   ): Promise<VideoResponseDto> {
     return mapFromVideoToVideoResponseDto(
       await this.videosService.getMovieFromDbOrTmdb(
-        Number(tokenPayload.id),
+        tokenPayload.id,
         Number(id),
       ),
     );
@@ -218,7 +218,7 @@ export class VideosController {
   ): Promise<VideoResponseDto> {
     return mapFromVideoToVideoResponseDto(
       await this.videosService.getSerieFromDbOrTmdb(
-        Number(tokenPayload.id),
+        tokenPayload.id,
         Number(id),
       ),
     );

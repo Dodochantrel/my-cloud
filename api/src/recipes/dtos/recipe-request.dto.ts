@@ -25,7 +25,7 @@ export class RecipeRequestDto {
 
   @ApiProperty({
     description: 'Groups id of the group',
-    example: [1, 2, 3],
+    example: ['1', '2', '3'],
   })
-  groupsId: number[];
+  groupsId: string[];
 }

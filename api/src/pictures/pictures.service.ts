@@ -21,8 +21,8 @@ export class PicturesService {
 
   public async uploadPictures(
     files: Array<Express.Multer.File>,
-    userId: number,
-    categoryId: number,
+    userId: string,
+    categoryId: string,
   ) {
     const uploadPromises = files.map(async (file) => {
       const picture = await this.save(
@@ -39,9 +39,9 @@ export class PicturesService {
 
   private createOrEditFileData(
     file: Express.Multer.File,
-    pictureId: number,
-    userId: number,
-    id: number = null,
+    pictureId: string,
+    userId: string,
+    id: string = null,
   ): FileData {
     return new FileData({
       id: id ? id : undefined,
@@ -55,7 +55,7 @@ export class PicturesService {
 
   public async getPicturesByCategory(
     categoryId,
-  ): Promise<{ ids: number[]; count: number }> {
+  ): Promise<{ ids: string[]; count: number }> {
     const [data, count] = await this.pictureRepository.findAndCount({
       where: {
         pictureCategory: { id: categoryId },
@@ -69,8 +69,8 @@ export class PicturesService {
   }
 
   public async getFileById(
-    groupsId: number[],
-    id: number,
+    groupsId: string[],
+    id: string,
     width?: WidthOptions,
   ): Promise<string> {
     const picture = await this.pictureRepository.findOne({
@@ -91,7 +91,7 @@ export class PicturesService {
     return this.filesManager.getFile(picture.fileData, width);
   }
 
-  private canAccess(picture: Picture, groupsId: number[]) {
+  private canAccess(picture: Picture, groupsId: string[]) {
     if (!picture) {
       throw new Error('Picture not found');
     }

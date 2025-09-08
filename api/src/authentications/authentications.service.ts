@@ -71,7 +71,7 @@ export class AuthenticationsService {
     return await this.usersService.save(user);
   }
 
-  async refreshTokens(userId: number) {
+  async refreshTokens(userId: string) {
     const user = await this.usersService.getOneById(userId, ['groups']);
     if (!user) {
       throw new NotFoundException('User not found');

@@ -8,9 +8,9 @@ import {
 export class PicturesCategoryResponseDto {
   @ApiProperty({
     description: 'The unique identifier of the pictures category',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'The name of the pictures category',

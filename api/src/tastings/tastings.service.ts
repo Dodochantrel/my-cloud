@@ -31,14 +31,14 @@ export class TastingsService {
     return this.tastingRepository.save(tasting);
   }
 
-  public async findById(id: number, userId: number): Promise<Tasting | null> {
+  public async findById(id: string, userId: string): Promise<Tasting | null> {
     return this.tastingRepository.findOne({
       where: { id, user: { id: userId } },
     });
   }
 
   public async findMy(
-    userId: number,
+    userId: string,
     pageQuery: PageQuery,
     categoriesId: number[],
     search: string | null = null,
@@ -63,7 +63,7 @@ export class TastingsService {
     );
   }
 
-  async update(userId: number, tasting: Tasting): Promise<Tasting> {
+  async update(userId: string, tasting: Tasting): Promise<Tasting> {
     const existingTasting = this.tastingRepository.findOne({
       where: { id: tasting.id, user: { id: userId } },
     });
@@ -76,7 +76,7 @@ export class TastingsService {
     return this.tastingRepository.save(tasting);
   }
 
-  async findOne(id: number, userId: number): Promise<Tasting | null> {
+  async findOne(id: string, userId: string): Promise<Tasting | null> {
     const tasting = await this.tastingRepository.findOne({
       where: { id },
       relations: ['fileData', 'user'],
@@ -94,7 +94,7 @@ export class TastingsService {
     return tasting;
   }
 
-  async uploadFile(id: number, file: Express.Multer.File, userId: number) {
+  async uploadFile(id: string, file: Express.Multer.File, userId: string) {
     const tasting = await this.tastingRepository.findOne({
       where: { id, user: { id: userId } },
       relations: ['fileData', 'user'],
@@ -111,8 +111,8 @@ export class TastingsService {
   }
 
   async getFile(
-    id: number,
-    userId: number,
+    id: string,
+    userId: string,
     width?: WidthOptions,
   ): Promise<string> {
     const tasting = await this.findOne(id, userId);
@@ -124,9 +124,9 @@ export class TastingsService {
 
   private createOrEditFileData(
     file: Express.Multer.File,
-    tastingId: number,
-    userId: number,
-    id: number = null,
+    tastingId: string,
+    userId: string,
+    id: string = null,
   ): FileData {
     return new FileData({
       id: id,
@@ -138,10 +138,10 @@ export class TastingsService {
     });
   }
 
-  async delete(id: number, userId: number): Promise<void> {
+  async delete(id: string, userId: string): Promise<void> {
     const tasting = await this.findOne(id, userId);
     this.filesManager.deleteFile(tasting.fileData);
-    this.filesManager.delete(tasting.fileData.id)
+    this.filesManager.delete(tasting.fileData.id);
     await this.tastingRepository.delete(tasting.id);
   }
 }

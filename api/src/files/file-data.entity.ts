@@ -13,8 +13,8 @@ import {
 
 @Entity()
 export class FileData {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

@@ -26,7 +26,7 @@ export class PicturesController {
   async uploadPicture(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Body() { categoryId }: { categoryId: number },
+    @Body() { categoryId }: { categoryId: string },
   ) {
     return this.picturesService.uploadPictures(
       files,
@@ -53,7 +53,7 @@ export class PicturesController {
   @Get(':id')
   async getPictureById(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Res() res: Response,
     @Query('width') width?: WidthOptions,
   ) {

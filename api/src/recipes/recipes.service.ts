@@ -21,8 +21,8 @@ export class RecipesService {
   ) {}
 
   async getMy(
-    userId: number,
-    groupsId: number[],
+    userId: string,
+    groupsId: string[],
     pageQuery: PageQuery,
     type: string,
     search: string,
@@ -54,7 +54,7 @@ export class RecipesService {
     return this.recipeRepository.save(recipe);
   }
 
-  async getById(id: number, userId: number): Promise<Recipe> {
+  async getById(id: string, userId: string): Promise<Recipe> {
     const recipe = await this.recipeRepository.findOne({
       where: { id },
       relations: ['fileData', 'user', 'groups'],
@@ -67,12 +67,12 @@ export class RecipesService {
     return this.recipeRepository.delete(id);
   }
 
-  async getFile(id: number, userId: number): Promise<string> {
+  async getFile(id: string, userId: string): Promise<string> {
     const fileData = await this.getById(id, userId);
     return this.filesManager.getFile(fileData.fileData);
   }
 
-  async update(recipe: Recipe, userId: number): Promise<Recipe> {
+  async update(recipe: Recipe, userId: string): Promise<Recipe> {
     const recipeInDb = await this.recipeRepository.findOne({
       where: { id: recipe.id },
       relations: ['fileData', 'user', 'groups'],
@@ -81,7 +81,7 @@ export class RecipesService {
     return this.recipeRepository.save(recipe);
   }
 
-  async uploadFile(file: Express.Multer.File, id: number, userId: number) {
+  async uploadFile(file: Express.Multer.File, id: string, userId: string) {
     const recipe = await this.recipeRepository.findOne({
       where: { id },
       relations: ['fileData', 'user', 'groups'],
@@ -96,9 +96,9 @@ export class RecipesService {
 
   createOrEditFileData(
     file: Express.Multer.File,
-    recipeId: number,
-    userId: number,
-    id: number = null,
+    recipeId: string,
+    userId: string,
+    id: string = null,
   ): FileData {
     return new FileData({
       id: id,
@@ -110,7 +110,7 @@ export class RecipesService {
     });
   }
 
-  private canAccess(recipe: Recipe, userId: number) {
+  private canAccess(recipe: Recipe, userId: string) {
     if (!recipe) {
       throw new NotFoundException('Recipe not found');
     }

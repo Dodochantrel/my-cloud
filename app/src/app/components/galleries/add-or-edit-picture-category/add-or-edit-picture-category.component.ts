@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -30,36 +30,29 @@ import { updateFailedInputs } from '../../../tools/update-failed-inputs';
   templateUrl: './add-or-edit-picture-category.component.html',
   styleUrl: './add-or-edit-picture-category.component.css',
 })
-export class AddOrEditPictureCategoryComponent implements OnChanges, OnInit {
-  @Input() isDisplayed: boolean = false;
-  @Output() isDisplayedChange = new EventEmitter<boolean>();
-  @Input() pictureCategory: PictureCategory | null = null;
-  @Input() isEditMode: boolean = false;
+export class AddOrEditPictureCategoryComponent implements OnInit {
   @Output() newCategoryCreated = new EventEmitter<PictureCategory>();
-  @Output() categoryEdited = new EventEmitter<PictureCategory>(); 
 
   public myGroups: Group[] = [];
 
   private readonly formBuilder = inject(FormBuilder);
 
-  public isLoading: boolean = false;
-
   constructor(
     private readonly notificationService: NotificationService,
     private readonly browserService: BrowserService,
     private readonly groupService: GroupService,
-    private readonly pictureService: PictureService
-  ) {}
-
-  ngOnChanges(): void {
-    if(this.browserService.isBrowser){
-      if(this.pictureCategory && this.isEditMode) {
+    protected readonly pictureService: PictureService
+  ) {
+    effect(() => {
+      if(this.pictureService.selectedCategory()) {
         this.form.patchValue({
-          name: this.pictureCategory.name,
-          groups: this.pictureCategory.groupsId || [],
+          name: this.pictureService.selectedCategory()!.name,
+          groups: this.pictureService.selectedCategory()!.groupsId,
         });
+      } else {
+        this.form.reset();
       }
-    }
+    });
   }
 
   ngOnInit(): void {
@@ -75,7 +68,7 @@ export class AddOrEditPictureCategoryComponent implements OnChanges, OnInit {
 
   cancel() {
     this.form.reset();
-    this.isDisplayedChange.emit(false);
+    this.pictureService.isAddingOrEditingCategory.set(false);
   }
 
   getGroups() {
@@ -94,8 +87,8 @@ export class AddOrEditPictureCategoryComponent implements OnChanges, OnInit {
 
   valid() {
     if(this.form.valid) {
-      this.isLoading = true;
-      if(this.isEditMode) {
+      this.pictureService.isLoadingCreateOrEdit = true;
+      if(this.pictureService.selectedCategory()) {
         this.edit();
       } else {
         this.create();
@@ -111,55 +104,17 @@ export class AddOrEditPictureCategoryComponent implements OnChanges, OnInit {
 
   edit() {
     this.pictureService.editPictureCategory(
-      this.pictureCategory!.id,
+      this.pictureService.selectedCategory()!.id,
       this.form.value.name!,
       this.form.value.groups!,
-    ).subscribe({
-      next: (pictureCategory: PictureCategory) => {
-        this.notificationService.showSuccess(
-          'Succès',
-          `La catégorie ${pictureCategory.name!} a été modifiée avec succès.`
-        );
-        this.isDisplayedChange.emit(false);
-        this.categoryEdited.emit(pictureCategory);
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Erreur',
-          `Erreur lors de la modification de la catégorie : ${error.message}`
-        );
-      },
-      complete: () => {
-        this.isLoading = false;
-        this.form.reset();
-      }
-    });
+    );
   }
 
   create() {
     this.pictureService.createPictureCategory(
       this.form.value.name!,
       this.form.value.groups!,
-      this.pictureCategory?.id
-    ).subscribe({
-      next: (pictureCategory: PictureCategory) => {
-        this.notificationService.showSuccess(
-          'Succès',
-          `La catégorie ${pictureCategory.name!} a été créée avec succès.`
-        );
-        this.isDisplayedChange.emit(false);
-        this.newCategoryCreated.emit(pictureCategory);
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Erreur',
-          `Erreur lors de la création de la catégorie : ${error.message}`
-        );
-      },
-      complete: () => {
-        this.isLoading = false;
-        this.form.reset();
-      }
-    });
+      this.pictureService.selectedCategory()!.id,
+    );
   }
 }

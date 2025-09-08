@@ -114,7 +114,7 @@ export class TastingsController {
   })
   async findById(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Query('id') id: number,
+    @Query('id') id: string,
   ): Promise<TastingResponseDto | null> {
     const tasting = await this.tastingsService.findById(id, tokenPayload.id);
     return tasting ? mapFromTastingToDto(tasting) : null;
@@ -136,7 +136,7 @@ export class TastingsController {
     @Body() dto: TastingRequestDto,
   ): Promise<TastingResponseDto | null> {
     const tasting = new Tasting({
-      id: Number(id),
+      id: id,
       name: dto.name,
       description: dto.description,
       rating: dto.rating,
@@ -151,10 +151,10 @@ export class TastingsController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Body() { id }: { id: number },
+    @Body() { id }: { id: string },
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.tastingsService.uploadFile(Number(id), file, tokenPayload.id);
+    return this.tastingsService.uploadFile(id, file, tokenPayload.id);
   }
 
   @Get('file/:id')
@@ -165,12 +165,12 @@ export class TastingsController {
   })
   async getFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Res() res: Response,
     @Query('width') width?: WidthOptions,
   ) {
     return res.sendFile(
-      await this.tastingsService.getFile(Number(id), tokenPayload.id, width),
+      await this.tastingsService.getFile(id, tokenPayload.id, width),
     );
   }
 
@@ -179,6 +179,6 @@ export class TastingsController {
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,
   ) {
-    return this.tastingsService.delete(Number(id), tokenPayload.id);
+    return this.tastingsService.delete(id, tokenPayload.id);
   }
 }

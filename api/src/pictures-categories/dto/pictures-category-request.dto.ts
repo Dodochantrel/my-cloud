@@ -12,12 +12,12 @@ export class PicturesCategoryRequestDto {
     example: 1,
     required: false,
   })
-  parentId: number | null;
+  parentId: string | null;
 
   @ApiProperty({
     description: 'An array of group IDs associated with this category',
     example: [1, 2, 3],
     required: false,
   })
-  groupsId?: number[];
+  groupsId?: string[];
 }

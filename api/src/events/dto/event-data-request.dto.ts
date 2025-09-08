@@ -45,13 +45,13 @@ export class EventDataRequestDto {
 
   @ApiProperty({
     description: 'ID of the event type',
-    example: 1,
+    example: '1',
   })
-  eventDataTypeId: number;
+  eventDataTypeId: string;
 
   @ApiProperty({
     description: 'Array of group IDs associated with the event',
-    example: [1, 2, 3],
+    example: ['1', '2', '3'],
   })
-  groupsId: number[];
+  groupsId: string[];
 }

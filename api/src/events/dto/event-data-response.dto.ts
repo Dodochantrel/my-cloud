@@ -8,9 +8,9 @@ import {
 export class EventDataResponseDto {
   @ApiProperty({
     description: 'Unique identifier for the event',
-    example: 1,
+    example: '1',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     description: 'Name of the event',
