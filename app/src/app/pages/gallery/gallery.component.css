@@ -1,4 +1,4 @@
-::ng-deep .p-tree-selectable, .tree {
+::ng-deep .p-tree-selectable {
     width: 100%;
 }
 
@@ -16,4 +16,15 @@
 .div {
     width: 100%;
     padding: 1rem 1rem;
+}
+
+::ng-deep .p-tree {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.3rem;
+  }
+
+.footer-tree {
+    margin-top: auto;
 }

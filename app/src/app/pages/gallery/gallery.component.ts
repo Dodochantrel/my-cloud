@@ -68,10 +68,13 @@ export class GalleryComponent {
 
   onAdd() {
     this.pictureService.isAddingOrEditingCategory.set(true);
+    this.pictureService.isCreatingNewCategory = true;
+    this.pictureService.selectedCategory.set(this.currentNode?.data ?? null);
   }
 
   onEdit() {
     this.pictureService.isAddingOrEditingCategory.set(true);
+    this.pictureService.isCreatingNewCategory = false;
     this.pictureService.selectedCategory.set(this.currentNode?.data ?? null);
   }
 
@@ -80,7 +83,9 @@ export class GalleryComponent {
       event,
       'Voulez-vous vraiment supprimer cet élément ?',
       'Cela supprimera également toutes les sous-catégories et les images associées.',
-      () => {},
+      () => {
+        this.pictureService.deleteCategoy(this.currentNode?.data.id);
+      },
       () => {}
     );
   }
@@ -93,11 +98,6 @@ export class GalleryComponent {
   openMenu(event: MouseEvent, menu: any, node: TreeNode) {
     this.currentNode = node;
     menu.toggle(event);
-  }
-
-  addNew(pictureCategory: PictureCategory) {
-    this.pictureService.categories().push(pictureCategory);
-    this.treeCategories.push(this.mapForTree([pictureCategory])[0]);
   }
 
   onNodeDrop(event: any) {

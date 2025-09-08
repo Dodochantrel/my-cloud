@@ -117,13 +117,10 @@ export class PicturesCategoriesService {
     groupsId: string[],
     picturesCategory: PicturesCategory,
   ) {
-    console.log(picturesCategory.user);
-    console.log(userId);
     if (
       picturesCategory.user.id !== userId &&
       !picturesCategory.groups.some((group) => groupsId.includes(group.id))
     ) {
-      console.log(picturesCategory.user.id);
       throw new UnauthorizedException('User cannot access their own category');
     }
   }

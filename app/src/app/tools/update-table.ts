@@ -13,6 +13,20 @@ export function removeById<T extends { id: number }>(
   return array.filter((item) => item.id !== id);
 }
 
+export function removeByIdWithRecurtion<T extends { id: number }>(
+  array: T[],
+  id: number
+): T[] {
+  return array
+    .filter((item) => item.id !== id)
+    .map((item: any) => ({
+      ...item,
+      childrens: item.childrens
+        ? removeByIdWithRecurtion(item.childrens, id)
+        : [],
+    }));
+}
+
 export function addOne<T>(array: T[], item: T): T[] {
   return [item, ...array];
 }

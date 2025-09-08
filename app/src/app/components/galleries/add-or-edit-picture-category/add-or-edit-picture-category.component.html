@@ -1,4 +1,4 @@
-<p-dialog header="Créer une catégorie" [modal]="true" [visible]="pictureService.isAddingOrEditingCategory()" (onHide)="cancel()">
+<p-dialog header="Créer une catégorie" [modal]="true" [(visible)]="pictureService.isAddingOrEditingCategory" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 

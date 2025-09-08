@@ -31,8 +31,6 @@ import { updateFailedInputs } from '../../../tools/update-failed-inputs';
   styleUrl: './add-or-edit-picture-category.component.css',
 })
 export class AddOrEditPictureCategoryComponent implements OnInit {
-  @Output() newCategoryCreated = new EventEmitter<PictureCategory>();
-
   public myGroups: Group[] = [];
 
   private readonly formBuilder = inject(FormBuilder);
@@ -44,7 +42,7 @@ export class AddOrEditPictureCategoryComponent implements OnInit {
     protected readonly pictureService: PictureService
   ) {
     effect(() => {
-      if(this.pictureService.selectedCategory()) {
+      if(this.pictureService.selectedCategory() && !this.pictureService.isCreatingNewCategory) {
         this.form.patchValue({
           name: this.pictureService.selectedCategory()!.name,
           groups: this.pictureService.selectedCategory()!.groupsId,
@@ -88,7 +86,7 @@ export class AddOrEditPictureCategoryComponent implements OnInit {
   valid() {
     if(this.form.valid) {
       this.pictureService.isLoadingCreateOrEdit = true;
-      if(this.pictureService.selectedCategory()) {
+      if(this.pictureService.selectedCategory() && !this.pictureService.isCreatingNewCategory) {
         this.edit();
       } else {
         this.create();
@@ -114,7 +112,7 @@ export class AddOrEditPictureCategoryComponent implements OnInit {
     this.pictureService.createPictureCategory(
       this.form.value.name!,
       this.form.value.groups!,
-      this.pictureService.selectedCategory()!.id,
+      this.pictureService.selectedCategory() ? this.pictureService.selectedCategory()!.id : null,
     );
   }
 }

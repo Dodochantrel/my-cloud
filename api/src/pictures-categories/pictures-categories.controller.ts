@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { PicturesCategoriesService } from './pictures-categories.service';
 import {
   mapFromPicturesCategoriesToResponseDtos,
@@ -108,5 +108,16 @@ export class PicturesCategoriesController {
         dto.parentId,
       ),
     );
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'The pictures category has been successfully deleted.',
+  })
+  async delete(
+    @Param('id') id: string,
+  ): Promise<void> {
+    return this.picturesCategoriesService.delete(id);
   }
 }
