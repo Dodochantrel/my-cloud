@@ -1,5 +1,5 @@
-export class AgendaEventType {
-  id: number;
+export class AgendaEventCategory {
+  id: string;
   name: string;
   color: string;
   isAutomaticallyEveryWeek: boolean;
@@ -7,7 +7,7 @@ export class AgendaEventType {
   isAutomaticallyEveryYear: boolean;
 
   constructor(
-    id: number,
+    id: string,
     name: string,
     color: string,
     isAutomaticallyEveryWeek: boolean,

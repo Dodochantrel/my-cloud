@@ -13,7 +13,6 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { AgendaEventService } from '../../../services/agenda-event.service';
 import { NotificationService } from '../../../services/notification.service';
-import { AgendaEventType } from '../../../class/agenda-event-type';
 import { BrowserService } from '../../../services/browser.service';
 import { GroupService } from '../../../services/group.service';
 import { Group } from '../../../class/group';
@@ -25,6 +24,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { updateFailedInputs } from '../../../tools/update-failed-inputs';
+import { AgendaEventCategoryService } from '../../../services/agenda-event-category.service';
+import { AgendaEventCategory } from '../../../class/agenda-event-category';
 
 @Component({
   selector: 'app-create-or-update-event',
@@ -46,8 +47,6 @@ import { updateFailedInputs } from '../../../tools/update-failed-inputs';
 })
 export class CreateOrUpdateEventComponent {
   public isLoading: boolean = false;
-
-  public agendaEventTypes: AgendaEventType[] = [];
   public myGroups: Group[] = [];
 
   private readonly formBuilder = inject(FormBuilder);
@@ -56,7 +55,8 @@ export class CreateOrUpdateEventComponent {
     protected readonly agendaEventService: AgendaEventService,
     private readonly notificationService: NotificationService,
     private readonly browserService: BrowserService,
-    private readonly groupService: GroupService
+    private readonly groupService: GroupService,
+    protected readonly agendaEventCategoryService: AgendaEventCategoryService,
   ) {
     effect(() => {
       if (this.agendaEventService.isAddingOrUpdating()) {
@@ -67,7 +67,7 @@ export class CreateOrUpdateEventComponent {
   
   form = this.formBuilder.group({
     name: ['', Validators.required],
-    typeId: [null as number | null],
+    typeId: [null as string | null],
     groups: [null],
     isEveryWeek: [false],
     isEveryMonth: [false],
@@ -81,7 +81,6 @@ export class CreateOrUpdateEventComponent {
 
   displayChange(): void {
     if (this.browserService.isBrowser) {
-      this.getTypes();
       this.getGroups();
     }
 
@@ -92,10 +91,10 @@ export class CreateOrUpdateEventComponent {
     if(this.agendaEventService.agendaEventEditing) {
       this.form.patchValue({
         name: this.agendaEventService.agendaEventEditing.name,
-        typeId: this.agendaEventService.agendaEventEditing.type?.id ?? null,
-        isEveryWeek: this.agendaEventService.agendaEventEditing.type ? this.agendaEventService.agendaEventEditing.type.isAutomaticallyEveryWeek : false,
-        isEveryMonth: this.agendaEventService.agendaEventEditing.type ? this.agendaEventService.agendaEventEditing.type.isAutomaticallyEveryMonth : false,
-        isEveryYear: this.agendaEventService.agendaEventEditing.type ? this.agendaEventService.agendaEventEditing.type.isAutomaticallyEveryYear : false,
+        typeId: this.agendaEventService.agendaEventEditing.category?.id ?? null,
+        isEveryWeek: this.agendaEventService.agendaEventEditing.category ? this.agendaEventService.agendaEventEditing.category.isAutomaticallyEveryWeek : false,
+        isEveryMonth: this.agendaEventService.agendaEventEditing.category ? this.agendaEventService.agendaEventEditing.category.isAutomaticallyEveryMonth : false,
+        isEveryYear: this.agendaEventService.agendaEventEditing.category ? this.agendaEventService.agendaEventEditing.category.isAutomaticallyEveryYear : false,
         startDate: this.agendaEventService.agendaEventEditing.startDatetime,
         endDate: this.agendaEventService.agendaEventEditing.endDatetime,
         startTime: this.agendaEventService.agendaEventEditing.startDatetime,
@@ -121,27 +120,13 @@ export class CreateOrUpdateEventComponent {
     });
   }
 
-  patchBooleanValue(agendaEventType: AgendaEventType | null) {
-    if (!agendaEventType) return;
+  patchBooleanValue(agendaEventCategory: AgendaEventCategory | null) {
+    if (!agendaEventCategory) return;
 
     this.form.patchValue({
-      isEveryWeek: agendaEventType.isAutomaticallyEveryWeek,
-      isEveryMonth: agendaEventType.isAutomaticallyEveryMonth,
-      isEveryYear: agendaEventType.isAutomaticallyEveryYear,
-    });
-  }
-
-  getTypes() {
-    this.agendaEventService.getAllTypes().subscribe({
-      next: (types) => {
-        this.agendaEventTypes = types;
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Erreur',
-          "Errur lors de la récupération des types d'événements"
-        );
-      },
+      isEveryWeek: agendaEventCategory.isAutomaticallyEveryWeek,
+      isEveryMonth: agendaEventCategory.isAutomaticallyEveryMonth,
+      isEveryYear: agendaEventCategory.isAutomaticallyEveryYear,
     });
   }
 

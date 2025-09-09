@@ -1,1 +1,41 @@
-<p>event-category works!</p>
+<div class="container">
+
+    <div class="bloc-default">
+
+        <h2>Gérer les catégories d'évènnement</h2>
+
+        <div class="header">
+            
+            <div class="input-container">
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-user" />
+                    <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="agendaEventCategoryService.search" />
+                </p-iconfield>
+            </div>
+            
+        </div>
+
+        <p-table [value]="agendaEventCategoryService.categories()" stripedRows editMode="row" [loading]="agendaEventCategoryService.isLoading()" [size]="selectedSize === null ? undefined : selectedSize">
+            <ng-template #header>
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Couleur</th>
+                    <th>Date création</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-category>
+                <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>{{ category.color }}</td>
+                    <td>{{ category.createdAt | date: 'dd/MM/yyyy' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <app-footer-table [itemCount]="agendaEventCategoryService.itemCount()" [(selectedSize)]="selectedSize" [page]="agendaEventCategoryService.page()" [limit]="agendaEventCategoryService.limit()" ></app-footer-table>
+
+    </div>
+
+</div>

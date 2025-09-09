@@ -1,5 +1,5 @@
 import { AgendaEvent } from '../class/agenda-event';
-import { AgendaEventTypeDto, mapFromAgendaEventTypeToAgendaEventTypeDto } from './agenda-event-type.dto';
+import { AgendaEventCategoryDto, mapFromAgendaEventCategoryToAgendaEventCategoryDto } from './agenda-event-category.dto';
 
 export interface AgendaEventDto {
   id: number;
@@ -7,7 +7,7 @@ export interface AgendaEventDto {
   description: string;
   startDate: Date;
   endDate: Date;
-  type: AgendaEventTypeDto | null;
+  type: AgendaEventCategoryDto | null;
 }
 
 export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
@@ -17,7 +17,7 @@ export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
     dto.description,
     new Date(dto.startDate),
     new Date(dto.endDate),
-    dto.type ? mapFromAgendaEventTypeToAgendaEventTypeDto(dto.type) : null
+    dto.type ? mapFromAgendaEventCategoryToAgendaEventCategoryDto(dto.type) : null
   );
 };
 

@@ -8,11 +8,7 @@ import {
   mapFromDtosToAgendaEvents,
 } from '../dto/agenda-event.dto';
 import { environment } from '../../environments/environment.development';
-import { AgendaEventType } from '../class/agenda-event-type';
-import {
-  AgendaEventTypeDto,
-  mapFromAgendaEventTypeToAgendaEventTypeDtos,
-} from '../dto/agenda-event-type.dto';
+import { AgendaEventCategory } from '../class/agenda-event-category';
 
 @Injectable({
   providedIn: 'root',
@@ -60,12 +56,6 @@ export class AgendaEventService {
     return this.httpClient.delete<void>(`${environment.apiUrl}events/${id}`);
   }
 
-  getAllTypes(): Observable<AgendaEventType[]> {
-    return this.httpClient
-      .get<AgendaEventTypeDto[]>(`${environment.apiUrl}events/types`)
-      .pipe(map(mapFromAgendaEventTypeToAgendaEventTypeDtos));
-  }
-
   mapFromAgendaEventsToEvents(agendaEvents: AgendaEvent[]): CalendarEvent[] {
     return agendaEvents.map((agendaEvent) => {
       return {
@@ -79,7 +69,7 @@ export class AgendaEventService {
 
   create(
     name: string,
-    type: AgendaEventTypeDto | null,
+    type: AgendaEventCategory | null,
     isEveryWeek: boolean,
     isEveryMonth: boolean,
     isEveryYear: boolean,
@@ -106,7 +96,7 @@ export class AgendaEventService {
   edit(
     id: number,
     name: string,
-    type: AgendaEventTypeDto | null,
+    type: AgendaEventCategory | null,
     isEveryWeek: boolean,
     isEveryMonth: boolean,
     isEveryYear: boolean,

@@ -16,7 +16,6 @@ import {
   VideoProvider,
   VideoType,
 } from '../class/video';
-import { Paginated } from '../class/paginated';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import {
   mapFromVideoDirectorDtoToVideoDirector,
@@ -33,7 +32,7 @@ import {
 import { EpisodeDto, mapFromEpisodeDetailsDtosToEpisodes } from '../dto/episode.dto';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class VideoService {
   constructor(private readonly httpClient: HttpClient) {

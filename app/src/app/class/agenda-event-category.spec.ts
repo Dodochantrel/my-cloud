@@ -1,4 +1,4 @@
-import { AgendaEventType } from './agenda-event-type';
+import { AgendaEventType } from './agenda-event-category';
 
 describe('AgendaEventType', () => {
   it('should create an instance', () => {

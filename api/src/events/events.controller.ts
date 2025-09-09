@@ -17,14 +17,10 @@ import {
 import { EventDataQueryDto } from './dto/event-data-query.dto';
 import { EventDataRequestDto } from './dto/event-data-request.dto';
 import { EventData } from './event-data.entity';
-import { EventDataType } from './event-data-type.entity';
 import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { User } from 'src/users/user.entity';
 import { Group } from 'src/groups/group.entity';
-import {
-  EventDataTypeResponseDto,
-  mapFromEventDataTypeToEventDataTypeResponseDtos,
-} from './dto/event-data-type-response.dto';
+import { EventsDataCategory } from 'src/events-categories/events-data-category.entity';
 
 @Controller('events')
 export class EventsController {
@@ -72,7 +68,7 @@ export class EventsController {
           isEveryWeek: dto.isEveryWeek,
           isEveryMonth: dto.isEveryMonth,
           isEveryYear: dto.isEveryYear,
-          eventDataType: new EventDataType({
+          eventsDataCategory: new EventsDataCategory({
             id: dto.eventDataTypeId,
           }),
           user: new User({
@@ -103,18 +99,6 @@ export class EventsController {
     await this.eventsService.delete(id, tokenPayload.id);
   }
 
-  @Get('types')
-  @ApiResponse({
-    status: 200,
-    description: 'List of event types',
-    type: [EventDataType],
-  })
-  async findAllTypes(): Promise<EventDataTypeResponseDto[]> {
-    return mapFromEventDataTypeToEventDataTypeResponseDtos(
-      await this.eventsService.findAllTypes(),
-    );
-  }
-
   @Put(':id')
   @ApiResponse({
     status: 200,
@@ -142,7 +126,7 @@ export class EventsController {
           isEveryWeek: dto.isEveryWeek,
           isEveryMonth: dto.isEveryMonth,
           isEveryYear: dto.isEveryYear,
-          eventDataType: new EventDataType({
+          eventsDataCategory: new EventsDataCategory({
             id: dto.eventDataTypeId,
           }),
           user: new User({

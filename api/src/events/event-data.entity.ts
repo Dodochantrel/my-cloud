@@ -9,9 +9,9 @@ import {
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import { EventDataType } from './event-data-type.entity';
 import { Group } from 'src/groups/group.entity';
 import { User } from 'src/users/user.entity';
+import { EventsDataCategory } from 'src/events-categories/events-data-category.entity';
 
 @Entity()
 export class EventData {
@@ -39,8 +39,11 @@ export class EventData {
   @Column({ default: false })
   isEveryWeek: boolean;
 
-  @ManyToOne(() => EventDataType, (eventDataType) => eventDataType.eventData)
-  eventDataType: Relation<EventDataType>;
+  @ManyToOne(
+    () => EventsDataCategory,
+    (eventsDataCategory) => eventsDataCategory.eventData,
+  )
+  eventsDataCategory: Relation<EventsDataCategory>;
 
   @ManyToMany(() => Group, (group) => group.eventsData)
   @JoinTable()

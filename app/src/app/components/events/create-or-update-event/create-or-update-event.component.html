@@ -20,7 +20,7 @@
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
                     styleClass="pi pi-user" />
-                    <p-select [options]="agendaEventTypes" optionValue="id" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
+                    <p-select [options]="agendaEventCategoryService.categories()" optionValue="id" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
             </p-iconfield>
         </div>
 

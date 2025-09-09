@@ -1,4 +1,4 @@
-import { AgendaEventType } from "./agenda-event-type";
+import { AgendaEventCategory } from "./agenda-event-category";
 
 export class AgendaEvent {
   id: number;
@@ -6,7 +6,7 @@ export class AgendaEvent {
   description: string;
   startDatetime: Date;
   endDatetime: Date;
-  type: AgendaEventType | null;
+  category: AgendaEventCategory | null;
 
   constructor(
     id: number,
@@ -14,14 +14,14 @@ export class AgendaEvent {
     description: string,
     startDatetime: Date,
     endDatetime: Date,
-    type: AgendaEventType | null
+    category: AgendaEventCategory | null
   ) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.startDatetime = startDatetime;
     this.endDatetime = endDatetime;
-    this.type = type;
+    this.category = category;
   }
 }
 

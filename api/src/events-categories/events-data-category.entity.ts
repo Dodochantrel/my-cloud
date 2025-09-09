@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { EventData } from './event-data.entity';
+import { EventData } from '../events/event-data.entity';
 
 @Entity()
-export class EventDataType {
+export class EventsDataCategory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -28,7 +28,7 @@ export class EventDataType {
   @Column({ default: false })
   isAutomaticallyEveryWeek: boolean;
 
-  @OneToMany(() => EventData, (eventData) => eventData.eventDataType)
+  @OneToMany(() => EventData, (eventData) => eventData.eventsDataCategory)
   eventData: EventData[];
 
   @UpdateDateColumn({
@@ -44,7 +44,7 @@ export class EventDataType {
   })
   public createdAt: Date;
 
-  constructor(partial: Partial<EventDataType>) {
+  constructor(partial: Partial<EventsDataCategory>) {
     Object.assign(this, partial);
   }
 }

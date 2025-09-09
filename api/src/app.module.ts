@@ -25,7 +25,7 @@ import { Video } from './videos/video.entity';
 import { EventsController } from './events/events.controller';
 import { EventsService } from './events/events.service';
 import { EventData } from './events/event-data.entity';
-import { EventDataType } from './events/event-data-type.entity';
+import { EventsDataCategory } from './events-categories/events-data-category.entity';
 import { UsersController } from './users/users.controller';
 import { RecurringEventProcessor } from './events/recurring/recurring-event-processor.service';
 import { WeeklyRecurringEventStrategy } from './events/recurring/weekly-recurring-event.strategy';
@@ -43,6 +43,8 @@ import { Tasting } from './tastings/tasting.entity';
 import { TastingCategory } from './tastings/tasting-category.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles/roles.guard';
+import { EventsCategoriesController } from './events-categories/events-categories.controller';
+import { EventsCategoriesService } from './events-categories/events-categories.service';
 
 @Module({
   imports: [
@@ -56,7 +58,7 @@ import { RolesGuard } from './roles/roles.guard';
       FileData,
       Video,
       EventData,
-      EventDataType,
+      EventsDataCategory,
       PicturesCategory,
       Picture,
       Tasting,
@@ -84,6 +86,7 @@ import { RolesGuard } from './roles/roles.guard';
     PicturesController,
     PicturesCategoriesController,
     TastingsController,
+    EventsCategoriesController,
   ],
   providers: [
     TokensService,
@@ -107,6 +110,7 @@ import { RolesGuard } from './roles/roles.guard';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    EventsCategoriesService,
   ],
 })
 export class AppModule {}

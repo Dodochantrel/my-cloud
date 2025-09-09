@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventData } from './event-data.entity';
 import { RecurringEventProcessor } from './recurring/recurring-event-processor.service';
-import { EventDataType } from './event-data-type.entity';
 import { GroupsService } from 'src/groups/groups.service';
 
 @Injectable()
@@ -11,8 +10,6 @@ export class EventsService {
   constructor(
     @InjectRepository(EventData)
     private eventDataRepository: Repository<EventData>,
-    @InjectRepository(EventDataType)
-    private eventDataTypeRepository: Repository<EventDataType>,
     private recurringProcessor: RecurringEventProcessor,
     private readonly groupsService: GroupsService,
   ) {}
@@ -118,9 +115,5 @@ export class EventsService {
     }
 
     await this.eventDataRepository.remove(event);
-  }
-
-  async findAllTypes(): Promise<EventDataType[]> {
-    return await this.eventDataTypeRepository.find();
   }
 }
