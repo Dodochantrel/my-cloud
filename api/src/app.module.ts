@@ -40,11 +40,13 @@ import { PicturesCategory } from './pictures-categories/pictures-category.entity
 import { TastingsController } from './tastings/tastings.controller';
 import { TastingsService } from './tastings/tastings.service';
 import { Tasting } from './tastings/tasting.entity';
-import { TastingCategory } from './tastings/tasting-category.entity';
+import { TastingCategory } from './tasting-categories/tasting-category.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles/roles.guard';
 import { EventsCategoriesController } from './events-categories/events-categories.controller';
 import { EventsCategoriesService } from './events-categories/events-categories.service';
+import { TastingCategoriesController } from './tasting-categories/tasting-categories.controller';
+import { TastingCategoriesService } from './tasting-categories/tasting-categories.service';
 
 @Module({
   imports: [
@@ -87,6 +89,7 @@ import { EventsCategoriesService } from './events-categories/events-categories.s
     PicturesCategoriesController,
     TastingsController,
     EventsCategoriesController,
+    TastingCategoriesController,
   ],
   providers: [
     TokensService,
@@ -111,6 +114,7 @@ import { EventsCategoriesService } from './events-categories/events-categories.s
       useClass: RolesGuard,
     },
     EventsCategoriesService,
+    TastingCategoriesService,
   ],
 })
 export class AppModule {}

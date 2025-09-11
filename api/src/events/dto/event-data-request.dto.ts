@@ -47,7 +47,7 @@ export class EventDataRequestDto {
     description: 'ID of the event type',
     example: '1',
   })
-  eventDataTypeId: string;
+  eventsDataCategoryId: string;
 
   @ApiProperty({
     description: 'Array of group IDs associated with the event',

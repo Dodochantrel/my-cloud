@@ -69,7 +69,7 @@ export class EventsController {
           isEveryMonth: dto.isEveryMonth,
           isEveryYear: dto.isEveryYear,
           eventsDataCategory: new EventsDataCategory({
-            id: dto.eventDataTypeId,
+            id: dto.eventsDataCategoryId,
           }),
           user: new User({
             id: tokenPayload.id,
@@ -127,7 +127,7 @@ export class EventsController {
           isEveryMonth: dto.isEveryMonth,
           isEveryYear: dto.isEveryYear,
           eventsDataCategory: new EventsDataCategory({
-            id: dto.eventDataTypeId,
+            id: dto.eventsDataCategoryId,
           }),
           user: new User({
             id: tokenPayload.id,

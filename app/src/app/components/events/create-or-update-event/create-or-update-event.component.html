@@ -19,8 +19,8 @@
             <label for="name" class="label">Catégorie</label>
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
-                    styleClass="pi pi-user" />
-                    <p-select [options]="agendaEventCategoryService.categories()" optionValue="id" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
+                    class="pi pi-user" />
+                    <p-select [options]="agendaEventCategoryService.categories()" formControlName="type" optionLabel="name" placeholder="Choissir une catégorie"/>
             </p-iconfield>
         </div>
 
@@ -42,7 +42,7 @@
         <div class="input-container">
             <label for="groups" class="label">Associer a des groupes</label>
             <p-iconfield [ngClass]="{'p-error': form.get('groups')?.invalid && form.get('groups')?.dirty}">
-                <p-inputicon styleClass="pi pi-user" />
+                <p-inputicon class="pi pi-user" />
                 <p-multiselect [options]="myGroups" optionLabel="name" optionValue="id"
                     placeholder="Associer a des groupes" formControlName="groups" appendTo="body" />
             </p-iconfield>
@@ -51,8 +51,8 @@
         <div class="input-container">
             <label for="startDate" class="label">Date de début</label>
             <p-iconfield [ngClass]="{'p-error': form.get('startDate')?.invalid && form.get('startDate')?.dirty}">
-                <p-inputicon styleClass="pi pi-list" />
-                <p-datepicker formControlName="startDate" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="19/05/2002" />
+                <p-inputicon class="pi pi-list" />
+                <p-datepicker appendTo="body" formControlName="startDate" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="19/05/2002" />
             </p-iconfield>
             @if(form.get('startDate')?.invalid && form.get('startDate')?.dirty) {
                 @if(form.get('startDate')?.errors?.['required']) {
@@ -70,7 +70,7 @@
             <div class="input-container">
                 <label for="startTime" class="label">heure de début</label>
                 <p-iconfield [ngClass]="{'p-error': form.get('endDate')?.invalid && form.get('startTime')?.dirty}">
-                    <p-inputicon styleClass="pi pi-list" />
+                    <p-inputicon class="pi pi-list" />
                     <p-datepicker [showTime]="true" hourFormat="24" [timeOnly]="true" formControlName="startTime" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="12:00" />
                 </p-iconfield>
                 @if(form.get('startTime')?.invalid && form.get('startTime')?.dirty) {
@@ -83,7 +83,7 @@
             <div class="input-container">
                 <label for="endDate" class="label">Date de fin</label>
                 <p-iconfield [ngClass]="{'p-error': form.get('endDate')?.invalid && form.get('endDate')?.dirty}">
-                    <p-inputicon styleClass="pi pi-list" />
+                    <p-inputicon class="pi pi-list" />
                     <p-datepicker formControlName="endDate" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="19/05/2002" />
                 </p-iconfield>
                 @if(form.get('endDate')?.invalid && form.get('endDate')?.dirty) {
@@ -96,7 +96,7 @@
             <div class="input-container">
                 <label for="endTime" class="label">Heure de fin</label>
                 <p-iconfield [ngClass]="{'p-error': form.get('endTime')?.invalid && form.get('endTime')?.dirty}">
-                    <p-inputicon styleClass="pi pi-list" />
+                    <p-inputicon class="pi pi-list" />
                     <p-datepicker [timeOnly]="true" [showTime]="true" hourFormat="24" formControlName="endTime" [iconDisplay]="'input'" [showIcon]="false" inputId="icondisplay" placeholder="12:00" appendTo="body" />
                 </p-iconfield>
                 @if(form.get('endTime')?.invalid && form.get('endTime')?.dirty) {

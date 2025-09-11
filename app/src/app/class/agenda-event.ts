@@ -6,6 +6,9 @@ export class AgendaEvent {
   description: string;
   startDatetime: Date;
   endDatetime: Date;
+  isEveryYear: boolean = false;
+  isEveryMonth: boolean = false
+  isEveryWeek: boolean = false;
   category: AgendaEventCategory | null;
 
   constructor(
@@ -33,5 +36,4 @@ export const defaultAgendaEvent = new AgendaEvent(
   new Date(),
   null
 );
-//         this.endDate.getMonth(),
 

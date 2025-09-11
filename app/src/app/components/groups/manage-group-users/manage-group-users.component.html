@@ -1,11 +1,11 @@
-<p-dialog header="Manager les utilisateurs" [modal]="true" [(visible)]="isManaging" (onHide)="close.emit()">
-    @if(group) {
-    <p class="sub-title">Ajouter ou supprimer des utilisateurs du groupe {{ group.name }}</p>
+<p-dialog header="Manager les utilisateurs" [modal]="true" [(visible)]="groupService.isManagingGroupUsers" (onHide)="cancelAddUserToGroup()">
+    @if(groupService.managingUsersGroup()) {
+    <p class="sub-title">Ajouter ou supprimer des utilisateurs du groupe {{ groupService.managingUsersGroup()!.name }}</p>
 
     <div class="users">
         <p class="bold">Membres acutel</p>
         <div class="users-container">
-            @for (user of group.users; track $index) {
+            @for (user of groupService.managingUsersGroup()!.users; track $index) {
             <div class="line-user">
                 <p class="initials">{{ user.findInitials() }}</p>
                 <div class="user-data">

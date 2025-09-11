@@ -11,7 +11,7 @@ import {
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import { TastingCategory } from './tasting-category.entity';
+import { TastingCategory } from '../tasting-categories/tasting-category.entity';
 
 @Entity()
 export class Tasting {

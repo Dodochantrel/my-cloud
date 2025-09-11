@@ -40,8 +40,8 @@ export class EventsService {
       );
     }
 
-    // Ajouter la relation avec EventDataType
-    query.leftJoinAndSelect('event.eventDataType', 'eventDataType');
+    // Ajouter la relation avec eventsDataCategory
+    query.leftJoinAndSelect('event.eventsDataCategory', 'eventsDataCategory');
 
     const events = await query.getMany();
 

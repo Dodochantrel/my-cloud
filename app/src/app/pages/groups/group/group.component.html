@@ -6,10 +6,10 @@
             
             <div class="input-container">
                 <p-iconfield>
-                    <p-inputicon styleClass="pi pi-user" />
+                    <p-inputicon class="pi pi-user" />
                     <p-autocomplete [suggestions]="groupsToSearch" [autoZIndex]="false" placeholder="Rechercher un groupe"
                         [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="search"
-                        (completeMethod)="getGroups()">
+                        (completeMethod)="groupService.groups()">
                         <ng-template let-movie #item>
                             <div class="line-movie-search">
                                 <div>{{ movie.title }}</div>
@@ -19,13 +19,13 @@
                 </p-iconfield>
             </div>
     
-            <p-button icon="pi pi-add" class="button-add" label="Créer un groupe" (onClick)="isCreatingGroup = true" />
+            <p-button icon="pi pi-add" class="button-add" label="Créer un groupe" (onClick)="groupService.isCreating = true" />
             
         </div>
 
         <div class="groups-container">
 
-            @for (group of paginatedGroups.data; track $index) {
+            @for (group of groupService.groups(); track $index) {
             <div class="group">
                 <div class="group-header">
                     <p class="group-name">{{ group.name }}</p>
@@ -54,18 +54,18 @@
                     }
                 </div>
                 }
-                <p-button icon="pi pi-users" label="Gérer les membres" variant="outlined" severity="secondary" (onClick)="manageGroupUsers(group)" />
+                <p-button icon="pi pi-users" label="Gérer les membres" variant="outlined" severity="secondary" (onClick)="prepareToManageUsers(group)" />
             </div>
             }
 
         </div>
 
-        <app-footer-table [itemCount]="paginatedGroups.paginatedMeta.itemCount" [selectedSize]="null" [page]="paginatedGroups.paginatedMeta.page" [limit]="paginatedGroups.paginatedMeta.limit"></app-footer-table>
+        <app-footer-table [itemCount]="groupService.itemCount()" [selectedSize]="null" [(page)]="groupService.page" [(limit)]="groupService.limit"></app-footer-table>
 
     </div>
 
 </div>
 
-<app-manage-group-users [group]="groupBeingManaged" [isManaging]="isManagingGroupUsers" (groupUpdated)="updatedGroupUsers($event)" (close)="closeManageGroupUsers()"></app-manage-group-users>
+<app-manage-group-users></app-manage-group-users>
 
-<app-create-group [isVisible]="isCreatingGroup" (close)="isCreatingGroup = false" (newGroup)="pushNewGroup($event)"></app-create-group>
+<app-create-group></app-create-group>

@@ -30,11 +30,16 @@ import { Router } from '@angular/router';
   templateUrl: './movie.component.html',
   styleUrl: './movie.component.css',
 })
-export class MovieComponent {
+export class MovieComponent implements OnInit {
   constructor(
     protected readonly videoService: VideoService,
     private readonly router: Router,
   ) {}
+
+  ngOnInit(): void {
+    this.videoService.refresh();
+    this.videoService.refreshSeen();
+  }
 
   onMovieSelect(event: any) {
     this.router.navigate([`videos/details/movie/${event.value.id}`]);

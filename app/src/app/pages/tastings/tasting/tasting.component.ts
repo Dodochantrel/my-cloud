@@ -75,6 +75,7 @@ export class TastingComponent implements OnInit {
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
       this.getCategories();
+      this.tastingService.refresh();
     }
   }
 

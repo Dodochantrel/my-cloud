@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -25,11 +25,16 @@ import { Router } from '@angular/router';
   templateUrl: './serie.component.html',
   styleUrl: './serie.component.css',
 })
-export class SerieComponent {
+export class SerieComponent implements OnInit {
   constructor(
     protected readonly videoService: VideoService,
     private readonly router: Router
   ) {}
+
+  ngOnInit(): void {
+    this.videoService.refresh();
+    this.videoService.refreshSeen();
+  }
 
   onMovieSelect(event: any) {
     this.router.navigate([`videos/details/serie/${event.value.id}`]);

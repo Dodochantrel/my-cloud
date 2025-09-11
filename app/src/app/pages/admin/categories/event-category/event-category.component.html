@@ -2,16 +2,21 @@
 
     <div class="bloc-default">
 
-        <h2>Gérer les catégories d'évènnement</h2>
+        <h2>Gérer les catégories d'évennement</h2>
 
         <div class="header">
             
             <div class="input-container">
                 <p-iconfield>
-                    <p-inputicon styleClass="pi pi-user" />
+                    <p-inputicon class="pi pi-user" />
                     <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="agendaEventCategoryService.search" />
                 </p-iconfield>
             </div>
+
+            <button pButton (click)="agendaEventCategoryService.isAddingOrEditing.set(true)">
+                <i class="pi pi-plus-circle" pButtonIcon></i>
+                <span pButtonLabel>Ajouter</span>
+            </button>
             
         </div>
 
@@ -21,15 +26,42 @@
                     <th>#</th>
                     <th>Nom</th>
                     <th>Couleur</th>
-                    <th>Date création</th>
+                    <th>Années</th>
+                    <th>Mois</th>
+                    <th>Semaines</th>
+                    <th>Actions</th>
                 </tr>
             </ng-template>
             <ng-template #body let-category>
                 <tr>
                     <td>{{ category.id }}</td>
                     <td>{{ category.name }}</td>
-                    <td>{{ category.color }}</td>
-                    <td>{{ category.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    <td><p-colorpicker [(ngModel)]="category.color" [disabled]="true" /></td>
+                    <td><p-checkbox [(ngModel)]="category.isAutomaticallyEveryYear" [binary]="true" readonly="true" /></td>
+                    <td><p-checkbox [(ngModel)]="category.isAutomaticallyEveryMonth" [binary]="true" readonly="true" /></td>
+                    <td><p-checkbox [(ngModel)]="category.isAutomaticallyEveryWeek" [binary]="true" readonly="true" /></td>
+                    <td>
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-pen-to-square"
+                            (click)="prepareEdit(category)"
+                            text
+                            rounded
+                        ></button>
+
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-trash"
+                            (click)="prepareDelete(category, $event)"
+                            text
+                            rounded
+                            severity="danger"
+                        ></button>
+                    </td>
                 </tr>
             </ng-template>
         </p-table>
@@ -39,3 +71,5 @@
     </div>
 
 </div>
+
+<app-add-or-edit-event-category></app-add-or-edit-event-category>

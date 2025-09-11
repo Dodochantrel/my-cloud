@@ -37,6 +37,24 @@ export class EventDataResponseDto {
   endDate: Date;
 
   @ApiProperty({
+    description: 'Indicates if the event recurs every year',
+    example: false,
+  })
+  isEveryYear: boolean;
+
+  @ApiProperty({
+    description: 'Indicates if the event recurs every month',
+    example: false,
+  })
+  isEveryMonth: boolean;  
+
+  @ApiProperty({
+    description: 'Indicates if the event recurs every week',
+    example: false,
+  })
+  isEveryWeek: boolean;
+
+  @ApiProperty({
     description: 'Type of the event',
     example: 'EventsDataCategoryResponseDto',
   })
@@ -56,6 +74,9 @@ export const mapFromEventDataToEventDataResponseDto = (
     description: eventData.description,
     startDate: eventData.startDate,
     endDate: eventData.endDate,
+    isEveryYear: eventData.isEveryYear,
+    isEveryMonth: eventData.isEveryMonth,
+    isEveryWeek: eventData.isEveryWeek,
     type: eventData.eventsDataCategory
       ? mapFromEventsDataCategoryToEventsDataCategoryResponseDto(
           eventData.eventsDataCategory,

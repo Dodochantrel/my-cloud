@@ -1,5 +1,5 @@
 import { AgendaEvent } from '../class/agenda-event';
-import { AgendaEventCategoryDto, mapFromAgendaEventCategoryToAgendaEventCategoryDto } from './agenda-event-category.dto';
+import { AgendaEventCategoryDto, mapFromAgendaEventCategoryDtoToAgendaEventCategory,  } from './agenda-event-category.dto';
 
 export interface AgendaEventDto {
   id: number;
@@ -7,18 +7,25 @@ export interface AgendaEventDto {
   description: string;
   startDate: Date;
   endDate: Date;
+  isEveryYear: boolean;
+  isEveryMonth: boolean;
+  isEveryWeek: boolean;
   type: AgendaEventCategoryDto | null;
 }
 
 export const mapFromDtoToAgendaEvent = (dto: AgendaEventDto): AgendaEvent => {
-  return new AgendaEvent(
+  const event = new AgendaEvent(
     dto.id,
     dto.name,
     dto.description,
     new Date(dto.startDate),
     new Date(dto.endDate),
-    dto.type ? mapFromAgendaEventCategoryToAgendaEventCategoryDto(dto.type) : null
+    dto.type ? mapFromAgendaEventCategoryDtoToAgendaEventCategory(dto.type) : null
   );
+  event.isEveryYear = dto.isEveryYear;
+  event.isEveryMonth = dto.isEveryMonth;
+  event.isEveryWeek = dto.isEveryWeek;
+  return event;
 };
 
 export const mapFromDtosToAgendaEvents = (

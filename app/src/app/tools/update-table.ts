@@ -39,9 +39,9 @@ export function clear<T>(): T[] {
   return [];
 }
 
-export function findOneById<T extends { id: number }>(
+export function findOneById<T extends { id: number | string }>(
   array: T[],
-  id: number
+  id: number | string
 ): T | undefined {
   return array.find((item) => item.id === id);
 }

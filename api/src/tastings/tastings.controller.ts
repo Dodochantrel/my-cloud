@@ -13,10 +13,6 @@ import {
 } from '@nestjs/common';
 import { TastingsService } from './tastings.service';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import {
-  mapFromTastingCategories,
-  TastingCategoryResponseDto,
-} from './dto/tasting-category-response.dto';
 import { TastingRequestDto } from './dto/tasting-request.dto';
 import {
   mapFromTastingsToDtos,
@@ -33,23 +29,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { WidthOptions } from 'src/files/files.manager';
 import { User } from 'src/users/user.entity';
-import { TastingCategory } from './tasting-category.entity';
+import { TastingCategory } from '../tasting-categories/tasting-category.entity';
 
 @Controller('tastings')
 export class TastingsController {
   constructor(private readonly tastingsService: TastingsService) {}
-
-  @Get('categories')
-  @ApiResponse({
-    status: 200,
-    description: 'Returns all tasting categories.',
-    type: [TastingCategoryResponseDto],
-  })
-  async getCategories(): Promise<TastingCategoryResponseDto[]> {
-    return mapFromTastingCategories(
-      await this.tastingsService.findCategories(),
-    );
-  }
 
   @Post('')
   @ApiBody({

@@ -10,19 +10,22 @@ import {
   TreeParent,
   UpdateDateColumn,
 } from 'typeorm';
-import { Tasting } from './tasting.entity';
+import { Tasting } from '../tastings/tasting.entity';
 
 @Entity()
 @Tree('closure-table')
 export class TastingCategory {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;
 
   @Column()
   icon: string;
+
+  @Column()
+  color: string;
 
   @OneToMany(() => Tasting, (tasting) => tasting.category)
   tastings: Tasting[];

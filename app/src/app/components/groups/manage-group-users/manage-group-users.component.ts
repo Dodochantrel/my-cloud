@@ -1,9 +1,9 @@
 import {
   Component,
+  effect,
   EventEmitter,
   inject,
   Input,
-  input,
   OnChanges,
   Output,
   SimpleChanges,
@@ -39,28 +39,22 @@ import { updateFailedInputs } from '../../../tools/update-failed-inputs';
   templateUrl: './manage-group-users.component.html',
   styleUrl: './manage-group-users.component.css',
 })
-export class ManageGroupUsersComponent implements OnChanges {
+export class ManageGroupUsersComponent {
   private formBuilder = inject(FormBuilder);
-
-  @Input() group: Group | null = null;
-  @Input() isManaging: boolean = false;
-  @Output() groupUpdated: EventEmitter<Group> = new EventEmitter<Group>();
-  @Output() close: EventEmitter<void> = new EventEmitter<void>();
 
   public users: User[] = [];
   public usersToDisplay: User[] = [];
 
   constructor(
-    private readonly recipeService: GroupService,
-    private readonly browserService: BrowserService,
+    protected readonly groupService: GroupService,
     private readonly notificationService: NotificationService,
     private readonly userService: UserService
-  ) {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.browserService.isBrowser) {
-      this.getUsers(changes);
-    }
+  ) {
+    effect(() => {
+      if (!this.groupService.isManagingGroupUsers()) {
+        this.getUsers();
+      }
+    });
   }
 
   public form = this.formBuilder.group<{
@@ -69,7 +63,7 @@ export class ManageGroupUsersComponent implements OnChanges {
     user: new FormControl<User | null>(null, Validators.required),
   });
 
-  getUsers(event: any) {
+  getUsers() {
     this.userService.getMinimalData().subscribe({
       next: (response) => {
         this.users = response;
@@ -87,8 +81,8 @@ export class ManageGroupUsersComponent implements OnChanges {
   searchAutocompleteUser(event: any) {
     this.usersToDisplay = this.users.filter((user) => {
       // Filtrer également les utilisateurs déjà présents dans le groupe
-      if (this.group && this.group.users) {
-        const userAlreadyInGroup = this.group.users.find(
+      if (this.groupService.managingUsersGroup() && this.groupService.managingUsersGroup()!.users) {
+        const userAlreadyInGroup = this.groupService.managingUsersGroup()!.users.find(
           (groupUser) => groupUser.id === user.id
         );
         if (userAlreadyInGroup) {
@@ -100,24 +94,8 @@ export class ManageGroupUsersComponent implements OnChanges {
   }
 
   addUserToGroup() {
-    if (this.form.valid && this.group) {
-      this.recipeService.addUser(this.group.id, this.form.value.user!.id).subscribe({
-        next: (response) => {
-          this.notificationService.showSuccess(
-            'Utilisateur ajouté au groupe',
-            `L'utilisateur a été ajouté au groupe ${this.group?.name}`
-          );
-          this.groupUpdated.emit(response);
-          this.close.emit();
-          this.form.reset();
-        },
-        error: (error) => {
-          this.notificationService.showError(
-            "Erreur lors de l'ajout de l'utilisateur au groupe",
-            error.message
-          );
-        },
-      });
+    if (this.form.valid && this.groupService.managingUsersGroup()) {
+      this.groupService.addUser(this.groupService.managingUsersGroup()!.id, this.form.value.user!.id);
     } else {
       updateFailedInputs(this.form);
       this.notificationService.showError(
@@ -128,28 +106,13 @@ export class ManageGroupUsersComponent implements OnChanges {
   }
 
   removeUserFromGroup(user: User) {
-    if (this.group) {
-      this.recipeService.removeUser(this.group.id, user.id).subscribe({
-        next: (response) => {
-          this.notificationService.showSuccess(
-            'Utilisateur supprimé du groupe',
-            `L'utilisateur a été supprimé du groupe ${this.group?.name}`
-          );
-          this.groupUpdated.emit(response);
-          this.close.emit();
-        },
-        error: (error) => {
-          this.notificationService.showError(
-            "Erreur lors de la suppression de l'utilisateur du groupe",
-            error.message
-          );
-        },
-      });
+    if (this.groupService.managingUsersGroup()) {
+      this.groupService.removeUser(this.groupService.managingUsersGroup()!.id, user.id)
     }
   }
 
   cancelAddUserToGroup() {
-    this.close.emit();
+    this.groupService.isManagingGroupUsers.set(false);
     this.form.reset();
   }
 }

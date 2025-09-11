@@ -1,4 +1,4 @@
-<p-dialog header="Créer un groupe" [modal]="true" [(visible)]="isVisible" (onHide)="close.emit()">
+<p-dialog header="Créer un groupe" [modal]="true" [(visible)]="groupService.isCreating" (onHide)="cancel()">
 
     <form class="form" [formGroup]="form">
 
@@ -40,8 +40,8 @@
     </form>
 
     <div class="buttons-container">
-        <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="isCreating" />
-        <p-button label="Enregistrer" (onClick)="save()" [loading]="isCreating" />
+        <p-button label="Annuler" severity="secondary" (onClick)="cancel()" [loading]="groupService.isLoadingCreate" />
+        <p-button label="Enregistrer" (onClick)="save()" [loading]="groupService.isLoadingCreate" />
     </div>
 
 </p-dialog>

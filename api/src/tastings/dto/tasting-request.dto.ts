@@ -20,7 +20,7 @@ export class TastingRequestDto {
     example: 1,
     required: true,
   })
-  categoryId: number;
+  categoryId: string;
 
   @ApiProperty({
     description: 'The rating of the tasting',

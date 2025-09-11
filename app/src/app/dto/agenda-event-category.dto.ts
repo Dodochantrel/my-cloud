@@ -9,7 +9,7 @@ export interface AgendaEventCategoryDto {
   isAutomaticallyEveryYear: boolean;
 }
 
-export const mapFromAgendaEventCategoryToAgendaEventCategoryDto = (
+export const mapFromAgendaEventCategoryDtoToAgendaEventCategory = (
   agendaEventType: AgendaEventCategoryDto
 ): AgendaEventCategory => {
   return new AgendaEventCategory(
@@ -22,10 +22,10 @@ export const mapFromAgendaEventCategoryToAgendaEventCategoryDto = (
   );
 };
 
-export const mapFromAgendaEventCategoryToAgendaEventCategoryDtos = (
+export const mapFromAgendaEventCategoriesDtosToAgendaEventCategories = (
   agendaEventCategories: AgendaEventCategory[]
 ): AgendaEventCategoryDto[] => {
   return agendaEventCategories.map((agendaEventCategory) =>
-    mapFromAgendaEventCategoryToAgendaEventCategoryDto(agendaEventCategory)
+    mapFromAgendaEventCategoryDtoToAgendaEventCategory(agendaEventCategory)
   );
 };

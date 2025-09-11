@@ -2,30 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Tasting } from './tasting.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TastingCategory } from './tasting-category.entity';
-import { DataSource, In, Like } from 'typeorm';
+import { In, Like } from 'typeorm';
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
 import { FileData } from 'src/files/file-data.entity';
 import { User } from 'src/users/user.entity';
 import { FilesManager, WidthOptions } from 'src/files/files.manager';
+import { TastingCategoriesService } from 'src/tasting-categories/tasting-categories.service';
 
 @Injectable()
 export class TastingsService {
   constructor(
     @InjectRepository(Tasting)
     private tastingRepository: Repository<Tasting>,
-    @InjectRepository(TastingCategory)
-    private tastingCategoryRepository: Repository<TastingCategory>,
-    private readonly dataSource: DataSource,
     private readonly filesManager: FilesManager,
+    private readonly tastingCategoriesService: TastingCategoriesService,
   ) {}
-
-  findCategories(): Promise<TastingCategory[]> {
-    return this.dataSource.manager
-      .getTreeRepository(TastingCategory)
-      .findTrees();
-  }
 
   public async save(tasting: Tasting): Promise<Tasting> {
     return this.tastingRepository.save(tasting);
@@ -70,9 +62,7 @@ export class TastingsService {
     if (!existingTasting) {
       throw new Error('Tasting not found or does not belong to user');
     }
-    tasting.category = await this.tastingCategoryRepository.findOne({
-      where: { id: tasting.category.id },
-    });
+    tasting.category = await this.tastingCategoriesService.findOne(tasting.category.id);
     return this.tastingRepository.save(tasting);
   }
 

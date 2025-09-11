@@ -3,7 +3,7 @@ import { Tasting } from '../tasting.entity';
 import {
   mapFromTastingCategory,
   TastingCategoryResponseDto,
-} from './tasting-category-response.dto';
+} from '../../tasting-categories/dto/tasting-category-response.dto';
 
 export class TastingResponseDto {
   @ApiProperty({

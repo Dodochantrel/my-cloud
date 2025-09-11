@@ -150,3 +150,9 @@ p-datepicker {
     height: 1px;
     background-color: var(--border-color); 
   }
+
+
+.p-dialog {
+    width: auto !important;
+    max-width: auto !important;
+  }

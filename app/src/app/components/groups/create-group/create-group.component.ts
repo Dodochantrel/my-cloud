@@ -1,10 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
   inject,
-  Input,
-  Output,
   SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,12 +11,10 @@ import { DialogModule } from 'primeng/dialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { Group } from '../../../class/group';
 import { User } from '../../../class/user';
 import { NotificationService } from '../../../services/notification.service';
 import { UserService } from '../../../services/user.service';
 import { GroupService } from '../../../services/group.service';
-import { BrowserService } from '../../../services/browser.service';
 import { updateFailedInputs } from '../../../tools/update-failed-inputs';
 
 @Component({
@@ -38,16 +33,10 @@ import { updateFailedInputs } from '../../../tools/update-failed-inputs';
   styleUrl: './create-group.component.css',
 })
 export class CreateGroupComponent {
-  @Input() isVisible: boolean = false;
-  @Output() newGroup: EventEmitter<Group> = new EventEmitter<Group>();
-  @Output() close: EventEmitter<void> = new EventEmitter<void>();
-
   private readonly formBuilder = inject(FormBuilder);
 
   public users: User[] = [];
   public usersToDisplay: User[] = [];
-
-  public isCreating: boolean = false;
 
   form = this.formBuilder.group({
     name: [
@@ -59,16 +48,13 @@ export class CreateGroupComponent {
   });
 
   constructor(
-    private readonly groupService: GroupService,
-    private readonly browserService: BrowserService,
+    protected readonly groupService: GroupService,
     private readonly notificationService: NotificationService,
     private readonly userService: UserService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.browserService.isBrowser) {
-      this.getUsers(changes);
-    }
+    this.getUsers(changes);
   }
 
   getUsers(event: any) {
@@ -110,33 +96,12 @@ export class CreateGroupComponent {
 
   save() {
     if (this.form.valid) {
-      this.isCreating = true;
       this.groupService
         .create(
           this.form.get('name')!.value!,
           this.form.get('users')!.value!.map((user: User) => user.id)
-        )
-        .subscribe({
-          next: (response) => {
-            this.notificationService.showSuccess(
-              'Groupe créé avec succès',
-              'Le groupe a été créé avec succès'
-            );
-            this.newGroup.emit(response);
-            this.form.reset();
-            this.close.emit();
-          },
-          error: (error) => {
-            this.isCreating = false;
-            this.notificationService.showError(
-              'Erreur lors de la création du groupe',
-              error.message
-            );
-          },
-          complete: () => {
-            this.isCreating = false;
-          },
-        });
+        );
+        this.cancel();
     } else {
       this.notificationService.showError(
         'Erreur lors de la création du groupe',
@@ -147,15 +112,11 @@ export class CreateGroupComponent {
   }
 
   removeUser(user: User) {
-    const currentUsers = this.form.get('users')!.value as User[];
-    const updatedUsers = currentUsers.filter((u: User) => u.id !== user.id);
-    // add user from the list
-    this.users.push(user);
-    this.form.get('users')!.setValue(updatedUsers);
+    console.log('remove' + user);
   }
 
   cancel() {
     this.form.reset();
-    this.close.emit();
+    this.groupService.isCreating = false;
   }
 }

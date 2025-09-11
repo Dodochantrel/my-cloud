@@ -1,0 +1,62 @@
+<p-dialog [header]="agendaEventCategoryService.categoryToEdit() ? 'Modifier une catégories' : 'Ajouter une catégorie'" [modal]="true" [(visible)]="agendaEventCategoryService.isAddingOrEditing"
+    (onHide)="cancel()">
+
+    <form class="form" [formGroup]="form">
+
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    class="pi pi-user" />
+                <input type="text" pInputText placeholder="Le nom" formControlName="name"
+                    [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+            <small class="p-error block error-message">Le nom est requis</small>
+            }
+        </div>
+
+        <div class="input-container">
+            <div class="toggle">
+                <label for="color" class="label toggle-label">Couleur</label>
+                <p-colorPicker formControlName="color" appendTo="body" (onChange)="onColorChange($event.value)">
+                </p-colorPicker>
+                <p-inputgroup>
+                    <p-inputgroup-addon>#</p-inputgroup-addon>
+                    <input type="text" pInputText placeholder="Hexadecimal" [value]="form.get('color')?.value"
+                        (input)="onColorChange($event.target.value)"
+                        [ngClass]="{'p-invalid': form.get('color')?.invalid && form.get('color')?.dirty}" />
+                </p-inputgroup>
+            </div>
+            @if(form.get('color')?.invalid && form.get('color')?.dirty) {
+            <small class="p-error block error-message">
+                Renseigner un code valide (6 caractères, uniquement composé de chiffres et de lettres)
+            </small>
+            }
+        </div>
+
+        <h3>Valeurs par défaut</h3>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Toute les semaine ?</label>
+            <p-toggleswitch formControlName="isEveryWeek" inputId="cp-hex" />
+        </div>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Toute les mois ?</label>
+            <p-toggleswitch formControlName="isEveryMonth" />
+        </div>
+
+        <div class="input-container toggle">
+            <label for="name" class="label toggle-label">Toute les ans ?</label>
+            <p-toggleswitch formControlName="isEveryYear" />
+        </div>
+
+        <div class="buttons-container">
+            <p-button label="Annuler" severity="secondary" [loading]="isLoadingAddingOrEditing" (onClick)="cancel()" />
+            <p-button label="Enregistrer" [loading]="isLoadingAddingOrEditing" (onClick)="save()" />
+        </div>
+
+    </form>
+
+</p-dialog>

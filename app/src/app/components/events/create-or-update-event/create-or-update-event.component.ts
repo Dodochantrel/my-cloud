@@ -67,7 +67,7 @@ export class CreateOrUpdateEventComponent {
   
   form = this.formBuilder.group({
     name: ['', Validators.required],
-    typeId: [null as string | null],
+    type: [null as AgendaEventCategory | null],
     groups: [null],
     isEveryWeek: [false],
     isEveryMonth: [false],
@@ -89,12 +89,13 @@ export class CreateOrUpdateEventComponent {
     }
 
     if(this.agendaEventService.agendaEventEditing) {
+      console.log(this.agendaEventService.agendaEventEditing);
       this.form.patchValue({
         name: this.agendaEventService.agendaEventEditing.name,
-        typeId: this.agendaEventService.agendaEventEditing.category?.id ?? null,
-        isEveryWeek: this.agendaEventService.agendaEventEditing.category ? this.agendaEventService.agendaEventEditing.category.isAutomaticallyEveryWeek : false,
-        isEveryMonth: this.agendaEventService.agendaEventEditing.category ? this.agendaEventService.agendaEventEditing.category.isAutomaticallyEveryMonth : false,
-        isEveryYear: this.agendaEventService.agendaEventEditing.category ? this.agendaEventService.agendaEventEditing.category.isAutomaticallyEveryYear : false,
+        type: this.agendaEventService.agendaEventEditing.category ?? null,
+        isEveryWeek: this.agendaEventService.agendaEventEditing.isEveryWeek,
+        isEveryMonth: this.agendaEventService.agendaEventEditing.isEveryMonth,
+        isEveryYear: this.agendaEventService.agendaEventEditing.isEveryYear,
         startDate: this.agendaEventService.agendaEventEditing.startDatetime,
         endDate: this.agendaEventService.agendaEventEditing.endDatetime,
         startTime: this.agendaEventService.agendaEventEditing.startDatetime,
@@ -147,7 +148,7 @@ export class CreateOrUpdateEventComponent {
   cancel() {
     this.form.reset({
       name: '',
-      typeId: null,
+      type: null,
       groups: null,
       isEveryWeek: false,
       isEveryMonth: false,

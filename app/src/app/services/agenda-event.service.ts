@@ -77,9 +77,10 @@ export class AgendaEventService {
     endDatetime: Date,
     groupsId: number
   ): Observable<AgendaEvent[]> {
+    console.log(type);
     const body = {
       name: name,
-      typeId: type ? type.id : null,
+      eventsDataCategoryId: type ? type.id : null,
       isEveryWeek: isEveryWeek,
       isEveryMonth: isEveryMonth,
       isEveryYear: isEveryYear,

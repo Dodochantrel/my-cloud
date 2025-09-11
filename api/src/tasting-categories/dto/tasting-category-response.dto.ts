@@ -3,10 +3,10 @@ import { TastingCategory } from '../tasting-category.entity';
 
 export class TastingCategoryResponseDto {
   @ApiProperty({
-    type: Number,
+    type: String,
     description: 'The unique identifier of the tasting category.',
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     type: String,

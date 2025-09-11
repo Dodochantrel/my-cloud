@@ -1,1 +1,51 @@
-<p>tasting-category works!</p>
+<div class="container">
+
+    <div class="bloc-default">
+
+        <h2>Gérer les catégories d'évennement</h2>
+
+        <div class="header">
+            
+            <div class="input-container">
+                <p-iconfield>
+                    <p-inputicon class="pi pi-user" />
+                    <input type="text" pInputText placeholder="Rechercher" [(ngModel)]="tastingCategoryService.search" />
+                </p-iconfield>
+            </div>
+
+            <button pButton>
+                <i class="pi pi-plus-circle" pButtonIcon></i>
+                <span pButtonLabel>Ajouter</span>
+            </button>
+            
+        </div>
+
+        <p-treetable [value]="treeTable" [scrollable]="true" [tableStyle]="{'min-width':'50rem'}" [class]="mapSizeToClass(selectedSize)">
+            <ng-template #header>
+                <tr>
+                    <th>Nom</th>
+                    <th>Icone</th>
+                    <th>Couleur</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode">
+                    <td>
+                        <p-treetable-toggler [rowNode]="rowNode" />
+                        {{ rowData.name }}
+                    </td>
+                    <td>
+                        {{ rowData.icon }}
+                    </td>
+                    <td>
+                        {{ rowData.color }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-treetable>
+
+        <app-footer-table [itemCount]="tastingCategoryService.itemCount()" [(selectedSize)]="selectedSize" [page]="tastingCategoryService.page()" [limit]="tastingCategoryService.limit()" ></app-footer-table>
+
+    </div>
+
+</div>

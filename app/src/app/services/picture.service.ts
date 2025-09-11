@@ -1,6 +1,6 @@
 import { NotificationService } from './notification.service';
 import { HttpClient, httpResource } from '@angular/common/http';
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import {
   mapFromPictureCategoriesDto,
@@ -15,7 +15,6 @@ import {
   addOne,
   removeByIdWithRecurtion,
 } from '../tools/update-table';
-import { TreeNode } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',
@@ -24,17 +23,21 @@ export class PictureService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly notificationService: NotificationService
-  ) {}
+  ) {
+    effect(() => {
+      const resource = this.getMyResource.value();
+      if (resource) {
+        this._categories.set(mapFromPictureCategoriesDto(resource));
+      }
+    });
+  }
 
   private getMyResource = httpResource<PictureCategoryDto[]>(
     () => `${environment.apiUrl}pictures-categories`
   );
 
-  categories = computed(() =>
-    this.getMyResource.value()
-      ? mapFromPictureCategoriesDto(this.getMyResource.value()!)
-      : []
-  );
+  private readonly _categories = signal<PictureCategory[]>([]);
+  categories = computed(() => this._categories());
   isLoading = computed(() => this.getMyResource.isLoading());
 
   createPictureCategory(
@@ -60,16 +63,20 @@ export class PictureService {
             `La catégorie ${pictureCategory.name!} a été créée avec succès.`
           );
           this.isAddingOrEditingCategory.set(false);
+        
+          const current = this.categories(); // lecture de la computed
+          let updated: PictureCategory[];
+        
           if (parentId) {
-            const updated = this.insertCategoryRecursive(
-              this.categories(),
-              parentId,
-              pictureCategory
-            );
-            this.getMyResource.set(updated);
+            updated = this.insertCategoryRecursive(current, parentId, pictureCategory);
           } else {
-            this.getMyResource.set(addOne(this.categories(), pictureCategory));
+            updated = addOne(current, pictureCategory);
           }
+        
+          // Mise à jour via la ressource (source)
+          this.getMyResource.set(
+            updated.map(c => mapFromPictureCategoryDto(c))
+          );
         },
         error: (error) => {
           this.notificationService.showError(
@@ -129,10 +136,9 @@ export class PictureService {
             `La catégorie ${pictureCategory.name!} a été modifiée avec succès.`
           );
           this.isAddingOrEditingCategory.set(false);
-          const updatedCategories = this.updateCategoryInTree(
-            this.categories(),
-            pictureCategory
-          );
+        
+          const updatedCategories = this.updateCategoryInTree(this.categories(), pictureCategory);
+        
           this.getMyResource.set(updatedCategories);
         },
         error: (error) => {
@@ -219,11 +225,11 @@ export class PictureService {
         next: () => {
           this.notificationService.showSuccess(
             'Succès',
-            `L'image a été supprimée avec succès.`
+            `La catégorie a été supprimée avec succès.`
           );
-          this.getMyResource.set(
-            removeByIdWithRecurtion(this.categories(), id)
-          );
+        
+          const updated = removeByIdWithRecurtion(this.categories(), id);
+          this.getMyResource.set(updated);
         },
         error: (error) => {
           this.notificationService.showError(

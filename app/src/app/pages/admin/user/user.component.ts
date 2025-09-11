@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../../services/notification.service';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../class/user';
@@ -17,11 +17,15 @@ import { FooterTableComponent, SizeType } from '../../../components/footer-table
   templateUrl: './user.component.html',
   styleUrl: './user.component.css',
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
   constructor(
     private readonly notificationService: NotificationService,
     protected readonly userService: UserService,
   ) {}
+
+  ngOnInit(): void {
+    this.userService.refresh();
+  }
 
   public selectedSize: SizeType = undefined;
 
