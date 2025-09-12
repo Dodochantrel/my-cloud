@@ -1,0 +1,21 @@
+<p-dialog [header]="tastingCategoryService.categories() ? 'Modifier une catégories' : 'Ajouter une catégorie'" [modal]="true" [(visible)]="tastingCategoryService.isCreatingOrUpdating"
+    (onHide)="cancel()">
+
+    <form class="form" [formGroup]="form">
+
+        <div class="input-container">
+            <label for="name" class="label">Nom</label>
+            <p-iconfield>
+                <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
+                    class="pi pi-user" />
+                <input type="text" pInputText placeholder="Le nom" formControlName="name"
+                    [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
+            </p-iconfield>
+            @if(form.get('name')?.invalid && form.get('name')?.dirty) {
+            <small class="p-error block error-message">Le nom est requis</small>
+            }
+        </div>
+
+    </form>
+
+</p-dialog>

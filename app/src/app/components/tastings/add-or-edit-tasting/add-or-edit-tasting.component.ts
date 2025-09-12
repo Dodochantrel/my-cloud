@@ -55,7 +55,6 @@ export class AddOrEditTastingComponent {
   private readonly formBuilder = inject(FormBuilder);
 
   constructor(
-    private readonly notificationService: NotificationService,
     protected readonly tastingService: TastingService
   ) {
     effect(() => {
@@ -102,7 +101,7 @@ export class AddOrEditTastingComponent {
 
   private findCategoryNode(
     nodes: TreeNode<TastingCategory>[],
-    id: number
+    id: string
   ): TreeNode<TastingCategory> | null {
     for (const node of nodes) {
       if (node.data && node.data.id === id) {

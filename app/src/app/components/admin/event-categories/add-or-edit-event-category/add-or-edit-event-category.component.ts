@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { AgendaEventCategoryService } from '../../../services/agenda-event-category.service';
+import { AgendaEventCategoryService } from '../../../../services/agenda-event-category.service';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,7 +11,7 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { updateFailedInputs } from '../../../tools/update-failed-inputs';
+import { updateFailedInputs } from '../../../../tools/update-failed-inputs';
 
 @Component({
   selector: 'app-add-or-edit-event-category',

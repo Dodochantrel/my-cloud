@@ -1,7 +1,7 @@
 import { TastingCategory } from '../class/tasting-category';
 
 export interface TastingCategoryDto {
-  id: number;
+  id: string;
   name: string;
   icon: string | null;
   color: string;

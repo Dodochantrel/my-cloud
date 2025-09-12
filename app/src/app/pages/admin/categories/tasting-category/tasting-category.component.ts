@@ -10,6 +10,8 @@ import { TreeTableModule } from 'primeng/treetable';
 import { FooterTableComponent, SizeType } from '../../../../components/footer-table/footer-table.component';
 import { TreeNode } from 'primeng/api';
 import { TastingCategory } from '../../../../class/tasting-category';
+import { AddOrEditTastingCategoryComponent } from '../../../../components/admin/tasting-categories/add-or-edit-tasting-category/add-or-edit-tasting-category.component';
+import { AddOrEditEventCategoryComponent } from "../../../../components/admin/event-categories/add-or-edit-event-category/add-or-edit-event-category.component";
 
 @Component({
   selector: 'app-tasting-category',
@@ -22,7 +24,8 @@ import { TastingCategory } from '../../../../class/tasting-category';
     ButtonModule,
     FooterTableComponent,
     FormsModule,
-  ],
+    AddOrEditTastingCategoryComponent,
+],
   templateUrl: './tasting-category.component.html',
   styleUrl: './tasting-category.component.css'
 })
@@ -33,6 +36,10 @@ export class TastingCategoryComponent implements OnInit {
     effect(() => {
       this.treeTable = this.toTreeTable(this.tastingCategoryService.categories());
     });
+  }
+
+  ngOnInit(): void {
+    this.tastingCategoryService.refresh();
   }
 
   private toTreeTable(categories: TastingCategory[]): TreeNode[] {
@@ -62,9 +69,16 @@ export class TastingCategoryComponent implements OnInit {
         return '';
     }
   }
-  
-  ngOnInit(): void {
-    this.tastingCategoryService.refresh();
+
+  prepareCreate() {
+    this.tastingCategoryService.isCreatingOrUpdating.set(true);
+    this.tastingCategoryService.isCreatingParentId.set(null);
+    this.tastingCategoryService.tastingCategoryEditing.set(null);
   }
 
+  prepareCreateChild(category: TastingCategory) {
+    this.tastingCategoryService.isCreatingOrUpdating.set(true);
+    this.tastingCategoryService.isCreatingParentId.set(category.id);
+    this.tastingCategoryService.tastingCategoryEditing.set(null);
+  }
 }

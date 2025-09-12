@@ -1,6 +1,6 @@
 <div class="container">
     @if(selectedSize() !== null) {
-        <p-selectbutton [options]="sizes" [(ngModel)]="selectedSize" [multiple]="false" optionLabel="name" optionValue="value" />
+        <p-selectbutton [options]="sizes" [unselectable]="true" [(ngModel)]="selectedSize" [multiple]="false" optionLabel="name" optionValue="value" />
     } @else {
         <div></div>
     }

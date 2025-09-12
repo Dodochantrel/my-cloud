@@ -13,9 +13,9 @@
                 </p-iconfield>
             </div>
 
-            <button pButton>
+            <button pButton (click)="prepareCreate()">
                 <i class="pi pi-plus-circle" pButtonIcon></i>
-                <span pButtonLabel>Ajouter</span>
+                <span pButtonLabel>Ajouter une catégorie</span>
             </button>
             
         </div>
@@ -26,6 +26,7 @@
                     <th>Nom</th>
                     <th>Icone</th>
                     <th>Couleur</th>
+                    <th>Actions</th>
                 </tr>
             </ng-template>
             <ng-template #body let-rowNode let-rowData="rowData">
@@ -49,3 +50,5 @@
     </div>
 
 </div>
+
+<app-add-or-edit-tasting-category></app-add-or-edit-tasting-category>

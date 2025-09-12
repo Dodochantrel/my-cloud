@@ -45,4 +45,8 @@ export class TastingCategoryService {
     this.getMyResource.value() ? this.getMyResource.value()!.meta.itemCount : 0
   );
   isLoading = computed(() => this.getMyResource.isLoading());
+
+  public isCreatingOrUpdating = signal(false);
+  isCreatingParentId = signal<string | null>(null);
+  public tastingCategoryEditing = signal<TastingCategory | null>(null);
 }
