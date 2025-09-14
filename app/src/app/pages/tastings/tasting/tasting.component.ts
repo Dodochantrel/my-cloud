@@ -19,6 +19,7 @@ import { RatingModule } from 'primeng/rating';
 import { LoaderComponent } from '../../../components/loader/loader.component';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { FooterTableComponent } from '../../../components/footer-table/footer-table.component';
+import { TastingCategoryService } from '../../../services/tasting-category.service';
 
 @Component({
   selector: 'app-tasting',
@@ -43,11 +44,15 @@ export class TastingComponent implements OnInit {
   constructor(
     private readonly notificationService: NotificationService,
     protected readonly tastingService: TastingService,
+    protected readonly tastingCategoryService: TastingCategoryService,
     private readonly browserService: BrowserService
   ) {
     effect(() => {
       // A chaque changement de this.tastings on regarde ceux qui n'ont pas de fileBlobUrl et on les charge
       this.addFile(this.tastingService.tastings().filter((t) => !t.fileBlobUrl));
+      if(this.tastingCategoryService.categories()) {
+        this.TastingCategoryTree = mapFromCategoriesToTreeNode(this.tastingCategoryService.categories()!);
+      }
     });
   }
 
@@ -74,23 +79,8 @@ export class TastingComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.browserService.isBrowser) {
-      this.getCategories();
-      this.tastingService.refresh();
+      this.tastingService.search.set('');
     }
-  }
-
-  getCategories() {
-    this.tastingService.getCategories().subscribe({
-      next: (categories: TastingCategory[]) => {
-        this.TastingCategoryTree = mapFromCategoriesToTreeNode(categories);
-      },
-      error: (error) => {
-        this.notificationService.showError(
-          'Erreur',
-          'Erreur lors de la récupération des catégories de dégustation'
-        );
-      },
-    });
   }
 
   addFile(tastings: Tasting[]) {
@@ -137,7 +127,7 @@ export const mapFromCategoriesToTreeNode = (
     return {
       label: category.name,
       data: category,
-      key: category.id.toString(),
+      key: category.id,
       children: category.childrens
         ? mapFromCategoriesToTreeNode(category.childrens)
         : [],

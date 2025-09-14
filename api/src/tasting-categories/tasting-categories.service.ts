@@ -15,6 +15,7 @@ export class TastingCategoriesService {
   ) {}
 
   async getAll(
+    search: string,
     pageQuery: PageQuery,
   ): Promise<PaginatedResponse<TastingCategory>> {
     const repo = this.dataSource.manager.getTreeRepository(TastingCategory);
@@ -46,12 +47,25 @@ export class TastingCategoriesService {
   }
 
   async create(category: TastingCategory): Promise<TastingCategory> {
+    if (category.parent) {
+      const parent = await this.tastingCategoryRepository.findOne({
+        where: { id: category.parent.id },
+      });
+      if (!parent) {
+        throw new NotFoundException('Parent tasting category not found');
+      }
+      category.parent = parent;
+    }
+    // Si on trouve le parent alors met les icons et couleur du parent
+    category.color = category.parent.color;
+    category.icon = category.parent.icon;
     return this.tastingCategoryRepository.save(category);
   }
 
   async update(category: TastingCategory): Promise<TastingCategory> {
     const existingCategory = await this.tastingCategoryRepository.findOne({
       where: { id: category.id },
+      relations: ['parent'],
     });
     if (!existingCategory) {
       throw new NotFoundException('Tasting category not found');

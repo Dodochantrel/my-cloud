@@ -16,6 +16,51 @@
             }
         </div>
 
+        @if (canDisplayColorAndIconFields()) {
+            <div class="input-container">
+                <div class="toggle">
+                    <label for="color" class="label toggle-label">Couleur</label>
+                    <p-colorPicker formControlName="color" appendTo="body" (onChange)="onColorChange($event.value)">
+                    </p-colorPicker>
+                    <p-inputgroup>
+                        <p-inputgroup-addon>#</p-inputgroup-addon>
+                        <input type="text" pInputText placeholder="Hexadecimal" [value]="form.get('color')?.value"
+                            (input)="onColorChange($event.target.value)" [ngClass]="{'p-invalid': form.get('color')?.invalid && form.get('color')?.dirty}" />
+                    </p-inputgroup>
+                </div>
+                @if(form.get('color')?.invalid && form.get('color')?.dirty) {
+                <small class="p-error block error-message">
+                    Renseigner un code valide (6 caractères, uniquement composé de chiffres et de lettres)
+                </small>
+                }
+            </div>
+
+            <div class="input-container">
+                <label for="icon" class="label">Icone</label>
+                <p-iconfield [ngClass]="{'p-error': form.get('icon')?.invalid && form.get('icon')?.dirty}">
+                    <p-inputicon class="pi pi-user" />
+                    <p-select fluid [options]="tastingCategoryService.icons()" placeholder="Choisissez une icone" formControlName="icon" appendTo="body">
+                        <ng-template let-icon #item>
+                            <div class="icon-line">
+                                <span class="material-icons-outlined">{{ icon }}</span>
+                                <div>{{ icon }}</div>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                </p-iconfield>
+                @if(form.get('icon')?.invalid && form.get('icon')?.dirty) {
+                @if(form.get('icon')?.errors?.['required']) {
+                <small class="p-error block error-message">L'icone est requis</small>
+                }
+                }
+            </div>
+        }
+
+        <div class="buttons-container">
+            <p-button label="Annuler" severity="secondary" [loading]="isLoadingAddingOrEditing" (onClick)="cancel()" />
+            <p-button label="Enregistrer" [loading]="isLoadingAddingOrEditing" (onClick)="save()" />
+        </div>
+
     </form>
 
 </p-dialog>

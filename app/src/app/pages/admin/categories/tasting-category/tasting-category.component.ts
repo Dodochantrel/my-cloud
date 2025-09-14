@@ -12,6 +12,7 @@ import { TreeNode } from 'primeng/api';
 import { TastingCategory } from '../../../../class/tasting-category';
 import { AddOrEditTastingCategoryComponent } from '../../../../components/admin/tasting-categories/add-or-edit-tasting-category/add-or-edit-tasting-category.component';
 import { AddOrEditEventCategoryComponent } from "../../../../components/admin/event-categories/add-or-edit-event-category/add-or-edit-event-category.component";
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-tasting-category',
@@ -31,7 +32,8 @@ import { AddOrEditEventCategoryComponent } from "../../../../components/admin/ev
 })
 export class TastingCategoryComponent implements OnInit {
   constructor(
-    protected readonly tastingCategoryService: TastingCategoryService
+    protected readonly tastingCategoryService: TastingCategoryService,
+    private readonly notificationService: NotificationService,
   ) {
     effect(() => {
       this.treeTable = this.toTreeTable(this.tastingCategoryService.categories());
@@ -44,12 +46,7 @@ export class TastingCategoryComponent implements OnInit {
 
   private toTreeTable(categories: TastingCategory[]): TreeNode[] {
     return categories.map(category => ({
-      data: {
-        id: category.id,
-        name: category.name,
-        color: category.color,
-        icon: category.icon,
-      },
+      data: category,
       icon: 'pi pi-fw pi-inbox',
       children: this.toTreeTable(category.childrens || []),
     }));
@@ -70,15 +67,33 @@ export class TastingCategoryComponent implements OnInit {
     }
   }
 
-  prepareCreate() {
+  prepareCreate(id: string | null = null) {
     this.tastingCategoryService.isCreatingOrUpdating.set(true);
-    this.tastingCategoryService.isCreatingParentId.set(null);
+    this.tastingCategoryService.isCreatingParentId.set(id);
     this.tastingCategoryService.tastingCategoryEditing.set(null);
   }
 
-  prepareCreateChild(category: TastingCategory) {
+  prepareEdit(category: TastingCategory) {
     this.tastingCategoryService.isCreatingOrUpdating.set(true);
-    this.tastingCategoryService.isCreatingParentId.set(category.id);
-    this.tastingCategoryService.tastingCategoryEditing.set(null);
+    this.tastingCategoryService.isCreatingParentId.set(null);
+    this.tastingCategoryService.tastingCategoryEditing.set(category);
   }
+
+  prepareDelete(tastingCategory: TastingCategory, event: Event) {
+      this.notificationService.confirm(
+        event,
+        'Confirmation',
+        `Êtes-vous sûr de vouloir supprimer la catégorie de dégustation ${tastingCategory.name} ?`,
+        () => {
+          this.tastingCategoryService.delete(tastingCategory);
+        },
+        () => {
+          this.notificationService.showInfo(
+            'Suppression annulée',
+            `La catégorie d'évennement n'a pas été supprimée`
+          );
+        }
+      );                                                                                                                                                                                                                                                                               
+
+    }
 }

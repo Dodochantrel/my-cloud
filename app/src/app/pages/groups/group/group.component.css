@@ -38,18 +38,8 @@
     font-size: 1.3rem;
 }
 
-.icon-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
 .pi {
     cursor: pointer;
-}
-
-.red {
-    color: var(--red-dark);
 }
 
 .group-member {

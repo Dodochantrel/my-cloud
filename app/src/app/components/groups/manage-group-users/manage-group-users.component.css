@@ -5,7 +5,7 @@
 
 ::ng-deep .p-dialog {
     width: 100vw;
-    max-width: 500px;
+    max-width: 600px;
 }
 
 ::ng-deep .p-dialog-content {

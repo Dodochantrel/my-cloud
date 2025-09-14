@@ -4,7 +4,12 @@
     gap: 1rem;
 }
 
-::ng-deep .p-datatable .p-button, ng-deep .p-datatable .p-button-icon-only.p-button-rounded {
+.input-container {
+    flex: 1;
+}
+
+::ng-deep .p-datatable .p-button,
+ng-deep .p-datatable .p-button-icon-only.p-button-rounded {
     padding: 0 !important;
     height: auto !important;
 }

@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { computed, Injectable, linkedSignal, signal } from '@angular/core';
 import { Tasting } from '../class/tasting';
 import { map, Observable } from 'rxjs';
 import {
@@ -9,11 +9,6 @@ import {
 } from '../dto/tasting.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { environment } from '../../environments/environment.development';
-import {
-  mapFromDtosToTastingCategories,
-  TastingCategoryDto,
-} from '../dto/tasting-category.dto';
-import { TastingCategory } from '../class/tasting-category';
 import { FileWidth } from '../tools/file-width.type';
 import { NotificationService } from './notification.service';
 
@@ -24,21 +19,7 @@ export class TastingService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly notificationService: NotificationService
-  ) {
-    effect(() => {
-      const resource = this.getMyResource.value();
-      if (resource) {
-        this._tastings.set(mapFromDtosToTastings(resource.data));
-      }
-    });
-  }
-
-  //! --- Categories ---
-  getCategories(): Observable<TastingCategory[]> {
-    return this.httpClient
-      .get<TastingCategoryDto[]>(`${environment.apiUrl}tastings/categories`)
-      .pipe(map(mapFromDtosToTastingCategories));
-  }
+  ) {}
 
   //! --- Filtrage / Pagination ---
   public search = signal<string>('');
@@ -53,8 +34,12 @@ export class TastingService {
       }`
   );
 
-  private readonly _tastings = signal<Tasting[]>([]);
-  tastings = computed(() => this._tastings());
+  tastings = linkedSignal(() => {
+    const resource = this.getMyResource.value();
+    return resource
+      ? mapFromDtosToTastings(resource.data)
+      : [];
+  });
   itemCount = computed(() => this.getMyResource.value()?.meta.itemCount ?? 0);
   isLoading = computed(() => this.getMyResource.isLoading());
 
@@ -86,7 +71,7 @@ export class TastingService {
             `La dégustation a été ajoutée avec succès`
           );
           this.uploadFile(tasting.id, file);
-          this._tastings.update((current) => [...current, tasting]);
+          this.tastings.update((current) => [...current, tasting]);
           this.isLoadingEditOrAdd = false;
         },
         error: () => {
@@ -121,7 +106,7 @@ export class TastingService {
           tasting.fileBlobUrl = this.previewUrl;
           this.uploadFile(tasting.id, file);
 
-          this._tastings.update((current) =>
+          this.tastings.update((current) =>
             current.map((t) => (t.id === tasting.id ? tasting : t))
           );
 
@@ -146,7 +131,7 @@ export class TastingService {
       .delete<void>(`${environment.apiUrl}tastings/${id}`)
       .subscribe({
         next: () => {
-          this._tastings.update((current) =>
+          this.tastings.update((current) =>
             current.filter((t) => t.id !== id)
           );
           this.notificationService.showSuccess(

@@ -40,6 +40,7 @@ export class TastingCategoriesController {
     @Query() params: QueryGetWithParamsDto,
   ): Promise<PaginatedResponse<TastingCategoryResponseDto>> {
     const paginatedResponse = await this.tastingCategoriesService.getAll(
+      params.search,
       new PageQuery(params.page, params.limit),
     );
     return new PaginatedResponse<TastingCategoryResponseDto>(
@@ -80,7 +81,7 @@ export class TastingCategoriesController {
     category.id = id;
     return mapFromTastingCategory(
       await this.tastingCategoriesService.update(
-        mapFromRequestDtoToTastingCategory(body),
+        category,
       ),
     );
   }

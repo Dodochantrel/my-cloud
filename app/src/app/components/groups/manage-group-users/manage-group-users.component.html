@@ -25,7 +25,7 @@
             <label for="email" class="label">Adresse email</label>
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
-                    styleClass="pi pi-user" />
+                    class="pi pi-user" />
                 <p-autocomplete name="customerSearch" [suggestions]="usersToDisplay" formControlName="user"
                     [autoZIndex]="false" placeholder="Rechercher un utilisateur" [delay]="500"
                     (completeMethod)="searchAutocompleteUser($event)" optionLabel="email" [completeOnFocus]="true" appendTo="body"/>

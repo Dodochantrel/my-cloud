@@ -21,6 +21,12 @@ export class TastingCategoryResponseDto {
   icon: string;
 
   @ApiProperty({
+    type: String,
+    description: 'The color associated with the tasting category.',
+  })
+  color: string;
+
+  @ApiProperty({
     type: TastingCategoryResponseDto,
     description: 'Childrens categories of the tasting category.',
   })
@@ -34,6 +40,7 @@ export const mapFromTastingCategory = (
     id: category.id,
     name: category.name,
     icon: category.icon,
+    color: category.color,
     childrens: category.childrens
       ? category.childrens.map(mapFromTastingCategory)
       : [],

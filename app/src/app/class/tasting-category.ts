@@ -3,13 +3,13 @@ export class TastingCategory {
   name: string;
   icon: string | null;
   color: string;
-  childrens: TastingCategory[];
+  parent: TastingCategory | null = null;
+  childrens: TastingCategory[] = [];
 
-  constructor(id: string, name: string, icon: string | null, color: string, childrens: TastingCategory[]) {
+  constructor(id: string, name: string, icon: string | null, color: string) {
     this.id = id;
     this.name = name;
     this.icon = icon;
     this.color = color;
-    this.childrens = childrens;
   }
 }

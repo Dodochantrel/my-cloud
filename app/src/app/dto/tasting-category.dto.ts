@@ -9,13 +9,17 @@ export interface TastingCategoryDto {
 }
 
 export function mapFromDtoToTastingCategory(
-  dto: TastingCategoryDto
+  dto: TastingCategoryDto,
+  parent: TastingCategory | null = null
 ): TastingCategory {
-  return new TastingCategory(dto.id, dto.name, dto.icon, dto.color, dto.childrens ? dto.childrens.map(mapFromDtoToTastingCategory) : []);
+  const category = new TastingCategory(dto.id, dto.name, dto.icon, dto.color);
+  category.parent = parent;
+  category.childrens = dto.childrens ? dto.childrens.map(child => mapFromDtoToTastingCategory(child, category)) : []
+  return category;
 }
 
 export function mapFromDtosToTastingCategories(
   dtos: TastingCategoryDto[]
 ): TastingCategory[] {
-  return dtos.map(mapFromDtoToTastingCategory);
+  return dtos.map(dto => mapFromDtoToTastingCategory(dto));
 }

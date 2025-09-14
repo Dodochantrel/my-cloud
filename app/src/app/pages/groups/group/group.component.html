@@ -29,9 +29,9 @@
             <div class="group">
                 <div class="group-header">
                     <p class="group-name">{{ group.name }}</p>
-                    <div class="icon-container">
-                        <i class="pi pi-pen-to-square"></i>
-                        <i class="pi pi-trash red" (click)="prepareDelete($event, group)"></i>
+                    <div>
+                        <button pButton pRipple type="button" icon="pi pi-pen-to-square" (click)="prepareDelete($event, group)" text rounded></button>
+                        <button pButton pRipple type="button" icon="pi pi-trash" (click)="prepareDelete($event, group)" text rounded severity="danger"></button>
                     </div>
                 </div>
                 <div class="group-member">

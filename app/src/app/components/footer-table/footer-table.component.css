@@ -1,15 +1,15 @@
-.container {
+.paginator {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.container > :first-child {
+.paginator > :first-child {
     flex: 1;
 }
 
-::ng-deep .p-select {
+::ng-deep .paginator .p-select {
     max-height: 38px;
     max-width: 200px;
 }

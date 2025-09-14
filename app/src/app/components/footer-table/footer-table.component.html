@@ -1,4 +1,4 @@
-<div class="container">
+<div class="paginator">
     @if(selectedSize() !== null) {
         <p-selectbutton [options]="sizes" [unselectable]="true" [(ngModel)]="selectedSize" [multiple]="false" optionLabel="name" optionValue="value" />
     } @else {

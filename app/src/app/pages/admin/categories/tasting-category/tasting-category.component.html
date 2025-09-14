@@ -13,7 +13,7 @@
                 </p-iconfield>
             </div>
 
-            <button pButton (click)="prepareCreate()">
+            <button pButton (click)="prepareCreate()" class="button">
                 <i class="pi pi-plus-circle" pButtonIcon></i>
                 <span pButtonLabel>Ajouter une catégorie</span>
             </button>
@@ -29,17 +29,50 @@
                     <th>Actions</th>
                 </tr>
             </ng-template>
-            <ng-template #body let-rowNode let-rowData="rowData">
-                <tr [ttRow]="rowNode">
+            <ng-template #body let-treeNodeElement let-rowData="rowData">
+                <tr [ttRow]="treeNodeElement">
                     <td>
-                        <p-treetable-toggler [rowNode]="rowNode" />
+                        <p-treetable-toggler [rowNode]="treeNodeElement" />
                         {{ rowData.name }}
                     </td>
                     <td>
-                        {{ rowData.icon }}
+                        <span class="material-icons-outlined">{{ rowData.icon }}</span>
                     </td>
                     <td>
                         {{ rowData.color }}
+                    </td>
+                    <td>
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-plus-circle"
+                            (click)="prepareCreate(treeNodeElement.node.data.id)"
+                            severity="secondary"
+                            text
+                            rounded
+                        ></button>
+                        
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-pen-to-square"
+                            (click)="prepareEdit(treeNodeElement.node.data)"
+                            text
+                            rounded
+                        ></button>
+
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-trash"
+                            (click)="prepareDelete(treeNodeElement.node.data, $event)"
+                            text
+                            rounded
+                            severity="danger"
+                        ></button>
                     </td>
                 </tr>
             </ng-template>

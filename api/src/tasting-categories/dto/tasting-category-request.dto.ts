@@ -28,5 +28,6 @@ export class TastingCategoryRequestDto {
 }
 
 export const mapFromRequestDtoToTastingCategory = (dto: TastingCategoryRequestDto): TastingCategory => {
-    return new TastingCategory({ name: dto.name, icon: dto.icon, color: dto.color, parent: new TastingCategory({ id: dto.parentId }) });
+  const parent = dto.parentId ? new TastingCategory({ id: dto.parentId }) : null;
+  return new TastingCategory({ name: dto.name, icon: dto.icon, color: dto.color, parent });
 };

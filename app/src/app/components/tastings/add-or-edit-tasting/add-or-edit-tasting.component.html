@@ -7,7 +7,7 @@
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('name')?.invalid && form.get('name')?.dirty}"
                     class="pi pi-user" />
-                <input type="text" pInputText placeholder="Le nom" formControlName="name"
+                <input type="text" pInputText placeholder="Le nom" formControlName="name" fluid
                     [ngClass]="{'p-invalid': form.get('name')?.invalid && form.get('name')?.dirty}" />
             </p-iconfield>
             @if(form.get('name')?.invalid && form.get('name')?.dirty) {
