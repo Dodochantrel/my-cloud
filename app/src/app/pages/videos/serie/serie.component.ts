@@ -33,7 +33,9 @@ export class SerieComponent implements OnInit {
 
   ngOnInit(): void {
     this.videoService.refresh();
-    this.videoService.refreshSeen();
+    this.videoService.searchToWatch.set('');
+    this.videoService.refreshToWatch();
+    this.videoService.type.set('serie');
   }
 
   onMovieSelect(event: any) {

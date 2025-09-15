@@ -113,10 +113,11 @@ export class VideosService {
   }
 
   async save(video: Video): Promise<Video> {
-    const videoInDb = await this.getMovieFromDbOrTmdb(
-      video.user.id,
-      video.tmdbId,
-    );
+    const videoInDb =
+      video.type === 'movie'
+        ? await this.getMovieFromDbOrTmdb(video.user.id, video.tmdbId)
+        : await this.getSerieFromDbOrTmdb(video.user.id, video.tmdbId);
+
     if (!video) {
       throw new NotFoundException('Video not found');
     }

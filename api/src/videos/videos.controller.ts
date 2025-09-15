@@ -120,6 +120,7 @@ export class VideosController {
       await this.videosService.save(
         new Video({
           tmdbId: Number(id),
+          type: dto.type,
           isToWatch: dto.isToWatch,
           isSeen: dto.isSeen,
           isFavorite: dto.isFavorite,

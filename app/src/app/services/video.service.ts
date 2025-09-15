@@ -95,11 +95,8 @@ export class VideoService {
   public itemCountSeen = computed(() => this.getMySeen.value()?.meta.itemCount ?? 0);
   public isLoadingSeen = computed(() => this.getMySeen.isLoading());
 
-  refreshSeen() {
-    this.getMySeen.reload();
-  }
-
   //! --- TO WATCH ---
+  public searchToWatch = signal<string>('');
   public pageToWatch = signal(1);
   public limitToWatch = signal(20);
 
@@ -112,6 +109,9 @@ export class VideoService {
   public videosToWatch = computed(() => this._videosToWatch());
   public itemCountToWatch = computed(() => this.getToWatch.value()?.meta.itemCount ?? 0);
   public isLoadingToWatch = computed(() => this.getToWatch.isLoading());
+  refreshToWatch() {
+    this.getToWatch.reload();
+  }
 
   constructorToWatchSync() {
     effect(() => {

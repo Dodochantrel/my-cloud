@@ -38,7 +38,9 @@ export class MovieComponent implements OnInit {
 
   ngOnInit(): void {
     this.videoService.refresh();
-    this.videoService.refreshSeen();
+    this.videoService.searchToWatch.set('');
+    this.videoService.refreshToWatch();
+    this.videoService.type.set('movie');
   }
 
   onMovieSelect(event: any) {

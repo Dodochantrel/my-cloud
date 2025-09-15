@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { VideoType } from '../video.entity';
 
 export class VideoRequestDto {
   @ApiProperty({
@@ -30,4 +31,10 @@ export class VideoRequestDto {
     example: '2023-10-01',
   })
   dateSeen: Date | null;
+
+  @ApiProperty({
+    description: 'Le type de la vidéo (movie ou serie)',
+    example: 'movie',
+  })
+  type: VideoType;
 }
