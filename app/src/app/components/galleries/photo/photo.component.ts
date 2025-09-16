@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { FileUpload } from 'primeng/fileupload';
 import { FileWidth } from '../../../tools/file-width.type';
 import { PictureCategory } from '../../../class/picture-category';
-import { LoaderComponent } from '../../loader/loader.component';
+import { LoaderComponent } from '../../loaders/loader/loader.component';
 import { ImageModule } from 'primeng/image';
 
 @Component({

@@ -16,7 +16,7 @@ import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { AddOrEditTastingComponent } from '../../../components/tastings/add-or-edit-tasting/add-or-edit-tasting.component';
 import { RatingModule } from 'primeng/rating';
-import { LoaderComponent } from '../../../components/loader/loader.component';
+import { LoaderComponent } from '../../../components/loaders/loader/loader.component';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { FooterTableComponent } from '../../../components/footer-table/footer-table.component';
 import { TastingCategoryService } from '../../../services/tasting-category.service';

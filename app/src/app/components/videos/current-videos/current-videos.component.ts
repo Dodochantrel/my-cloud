@@ -3,13 +3,13 @@ import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { Video, VideoType } from '../../../class/video';
 import { BrowserService } from '../../../services/browser.service';
-import { NotificationService } from '../../../services/notification.service';
 import { VideoService } from '../../../services/video.service';
 import { Router } from '@angular/router';
+import { LoaderComponent } from '../../loaders/loader/loader.component';
 
 @Component({
   selector: 'app-current-videos',
-  imports: [CarouselModule, ButtonModule],
+  imports: [CarouselModule, ButtonModule, LoaderComponent],
   templateUrl: './current-videos.component.html',
   styleUrl: './current-videos.component.css',
 })

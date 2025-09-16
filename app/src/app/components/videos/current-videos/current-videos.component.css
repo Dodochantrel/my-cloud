@@ -98,3 +98,7 @@
         padding: 60px 20px !important;
     }
 }
+
+.loader-component {
+    height: 400px;
+}

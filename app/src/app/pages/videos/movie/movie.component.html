@@ -6,7 +6,7 @@
 
         <div class="input-container">
             <p-iconfield>
-                <p-inputicon styleClass="pi pi-user" />
+                <p-inputicon class="pi pi-user" />
                 <p-autocomplete [suggestions]="videoService.videos()" [autoZIndex]="false" placeholder="Rechercher un film"
                     [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="videoService.search" (onSelect)="onMovieSelect($event)">
                     <ng-template let-movie #item>

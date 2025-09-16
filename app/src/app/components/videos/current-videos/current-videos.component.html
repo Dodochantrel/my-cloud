@@ -1,3 +1,11 @@
+@if(videoService.isLoading()) {
+
+<div class="loader-component">
+    <app-loader [loaderStyle]="'dark-vador'"></app-loader>
+</div>
+
+} @else {
+
 <p-carousel [value]="videoService.videos()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="4000"
     autoplay="true">
     <ng-template let-product pTemplate="item">
@@ -15,3 +23,5 @@
         </div>
     </ng-template>
 </p-carousel>
+
+}
