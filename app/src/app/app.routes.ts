@@ -3,8 +3,6 @@ import { WithLeftNavigationComponent } from './templates/with-left-navigation/wi
 import { RecipeComponent } from './pages/recipes/recipe/recipe.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { NoNavigationComponent } from './templates/no-navigation/no-navigation.component';
-import { MovieComponent } from './pages/videos/movie/movie.component';
-import { SerieComponent } from './pages/videos/serie/serie.component';
 import { VideoDetailsComponent } from './pages/videos/video-details/video-details.component';
 import { GroupComponent } from './pages/groups/group/group.component';
 import { CreateOrUpdateRecipeComponent } from './pages/recipes/add-recipe/create-or-update-recipe.component';
@@ -17,6 +15,7 @@ import { UserComponent } from './pages/admin/user/user.component';
 import { EventCategoryComponent } from './pages/admin/categories/event-category/event-category.component';
 import { TastingCategoryComponent } from './pages/admin/categories/tasting-category/tasting-category.component';
 import { authGuard } from './guards/auth.guard';
+import { VideoComponent } from './pages/videos/video/video.component';
 
 export const routes: Routes = [
   {
@@ -81,7 +80,7 @@ export const routes: Routes = [
       {
         path: 'videos/movies',
         title: 'Videos - Movies',
-        component: MovieComponent,
+        component: VideoComponent,
         data: {
           title: 'Films',
           breadcrumb: [{ label: 'Vidéos' }, { label: 'Films' }],
@@ -90,7 +89,7 @@ export const routes: Routes = [
       {
         path: 'videos/series',
         title: 'Videos - Series',
-        component: SerieComponent,
+        component: VideoComponent,
         data: {
           title: 'Series',
           breadcrumb: [{ label: 'Vidéos' }, { label: 'Séries' }],

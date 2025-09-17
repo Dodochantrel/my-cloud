@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, linkedSignal, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import {
   mapFromDtosToVideos,
@@ -45,21 +45,6 @@ export class VideoService {
         this.limitSeen.set(20);
         this.limitToWatch.set(20);
       }
-
-      const resource = this.getMyResource.value();
-      if (resource) {
-        this._videos.set(mapFromDtosToVideos(resource));
-      }
-
-      const seenResource = this.getMySeen.value();
-      if (seenResource) {
-        this._videosSeen.set(mapFromDtosToVideos(seenResource.data));
-      }
-
-      const toWatchResource = this.getToWatch.value();
-      if (toWatchResource) {
-        this._videosToWatch.set(mapFromDtosToVideos(toWatchResource.data));
-      }
     });
   }
 
@@ -73,8 +58,12 @@ export class VideoService {
       `${environment.apiUrl}videos/${this.type()}s?search=${this.search()}&page=1&limit=20`
   );
 
-  private readonly _videos = signal<Video[]>([]);
-  public videos = computed(() => this._videos());
+  videos = linkedSignal(() => {
+    const resource = this.getMyResource.value();
+    return resource
+      ? mapFromDtosToVideos(resource)
+      : [];
+  });
   public isLoading = computed(() => this.getMyResource.isLoading());
 
   refresh() {
@@ -90,8 +79,12 @@ export class VideoService {
       `${environment.apiUrl}videos/my-seen?search=${this.search()}&page=${this.pageSeen()}&limit=${this.limitSeen()}&type=${this.type()}`
   );
 
-  private readonly _videosSeen = signal<Video[]>([]);
-  public videosSeen = computed(() => this._videosSeen());
+  videosSeen = linkedSignal(() => {
+    const resource = this.getMySeen.value();
+    return resource
+      ? mapFromDtosToVideos(resource.data)
+      : [];
+  });
   public itemCountSeen = computed(() => this.getMySeen.value()?.meta.itemCount ?? 0);
   public isLoadingSeen = computed(() => this.getMySeen.isLoading());
 
@@ -105,21 +98,16 @@ export class VideoService {
       `${environment.apiUrl}videos/my-to-watch?search=${this.search()}&page=${this.pageToWatch()}&limit=${this.limitToWatch()}&type=${this.type()}`
   );
 
-  private readonly _videosToWatch = signal<Video[]>([]);
-  public videosToWatch = computed(() => this._videosToWatch());
+  videosToWatch = linkedSignal(() => {
+    const resource = this.getToWatch.value();
+    return resource
+      ? mapFromDtosToVideos(resource.data)
+      : [];
+  });
   public itemCountToWatch = computed(() => this.getToWatch.value()?.meta.itemCount ?? 0);
   public isLoadingToWatch = computed(() => this.getToWatch.isLoading());
   refreshToWatch() {
     this.getToWatch.reload();
-  }
-
-  constructorToWatchSync() {
-    effect(() => {
-      const data = this.getToWatch.value();
-      if (data) {
-        this._videosToWatch.set(mapFromDtosToVideos(data.data));
-      }
-    });
   }
 
   //! --- ACTIONS ---

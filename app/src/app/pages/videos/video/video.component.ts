@@ -1,44 +1,52 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { CurrentVideosComponent } from '../../../components/videos/current-videos/current-videos.component';
 import { WatchVideosComponent } from '../../../components/videos/watch-videos/watch-videos.component';
-import { FormsModule } from '@angular/forms';
 import { VideoService } from '../../../services/video.service';
-import { Router } from '@angular/router';
+import { Router, RouterEvent, Event } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
-  selector: 'app-serie',
+  selector: 'app-video',
   imports: [
     CommonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
     AutoCompleteModule,
+    ButtonModule,
     CurrentVideosComponent,
     WatchVideosComponent,
     FormsModule,
   ],
-  templateUrl: './serie.component.html',
-  styleUrl: './serie.component.css',
+  templateUrl: './video.component.html',
+  styleUrl: './video.component.css'
 })
-export class SerieComponent implements OnInit {
+export class VideoComponent implements OnInit {
   constructor(
     protected readonly videoService: VideoService,
-    private readonly router: Router
-  ) {}
+    private readonly router: Router,
+  ) { }
 
   ngOnInit(): void {
-    this.videoService.refresh();
-    this.videoService.searchToWatch.set('');
-    this.videoService.refreshToWatch();
-    this.videoService.type.set('serie');
+    this.router.events.pipe(
+      filter((e: Event | RouterEvent): e is RouterEvent => e instanceof RouterEvent)
+    ).subscribe((e: RouterEvent) => {
+      if (this.router.url.includes('movies')) {
+        this.videoService.type.set('movie');
+      } else if (this.router.url.includes('series')) {
+        this.videoService.type.set('serie');
+      }
+    });
   }
 
-  onMovieSelect(event: any) {
-    this.router.navigate([`videos/details/serie/${event.value.id}`]);
+  onVideoSelect(event: any) {
+    this.router.navigate([`videos/details/${this.videoService.type()}/${event.value.id}`]);
   }
 }
