@@ -98,7 +98,7 @@ export class AuthenticationsController {
   ): Response {
     res.cookie('accessToken', accessToken, {
       httpOnly: false,
-      secure: true,
+      secure: false,
       sameSite: 'none',
     });
     return res;
