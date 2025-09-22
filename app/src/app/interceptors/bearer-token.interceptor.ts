@@ -4,7 +4,8 @@ import { CookieService } from 'ngx-cookie-service';
 
 export const BearerTokenInterceptor: HttpInterceptorFn = (req, next) => {
   const cookieService = inject(CookieService);
-    const accessToken = cookieService.get('accessToken');
+  const accessToken = cookieService.get('accessToken');
+  console.log('Access Token from Cookie:', accessToken);
 
   if (accessToken) {
     const cloned = req.clone({
