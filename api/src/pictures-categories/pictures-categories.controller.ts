@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { PicturesCategoriesService } from './pictures-categories.service';
 import {
   mapFromPicturesCategoriesToResponseDtos,
@@ -12,6 +21,7 @@ import { PicturesCategory } from './pictures-category.entity';
 import { User } from 'src/users/user.entity';
 import { Group } from 'src/groups/group.entity';
 import { PicturesCategoryParentRequestDto } from './dto/picture-category-parent-request.dto';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('pictures-categories')
 export class PicturesCategoriesController {
@@ -20,6 +30,7 @@ export class PicturesCategoriesController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiBody({
     type: PicturesCategoryRequestDto,
     description: 'Create a new pictures category',
@@ -50,6 +61,7 @@ export class PicturesCategoriesController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   @ApiBody({
     type: PicturesCategoryRequestDto,
     description: 'Update an existing pictures category',
@@ -74,6 +86,7 @@ export class PicturesCategoriesController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   async getMy(
     @TokenPayload() tokenPayload: AccessTokenPayload,
   ): Promise<PicturesCategoryResponseDto[]> {
@@ -86,6 +99,7 @@ export class PicturesCategoriesController {
   }
 
   @Patch(':id/parent')
+  @UseGuards(AuthGuard)
   @ApiBody({
     type: PicturesCategoryParentRequestDto,
     description: 'Update the parent of an existing pictures category',
@@ -111,13 +125,12 @@ export class PicturesCategoriesController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'The pictures category has been successfully deleted.',
   })
-  async delete(
-    @Param('id') id: string,
-  ): Promise<void> {
+  async delete(@Param('id') id: string): Promise<void> {
     return this.picturesCategoriesService.delete(id);
   }
 }

@@ -5,7 +5,7 @@ export interface RecipeDto {
   id: number;
   name: string;
   description: string;
-  type: string;
+  type: 'other' | 'starter' | 'main' | 'dessert' | 'drink';
   createdAt: string;
   updatedAt: string;
   groups: GroupDto[];

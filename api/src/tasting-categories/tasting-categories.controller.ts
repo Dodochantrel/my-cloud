@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   mapFromTastingCategories,
@@ -22,6 +23,7 @@ import {
   mapFromRequestDtoToTastingCategory,
   TastingCategoryRequestDto,
 } from './dto/tasting-category-request.dto';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('tasting-categories')
 export class TastingCategoriesController {
@@ -30,6 +32,7 @@ export class TastingCategoriesController {
   ) {}
 
   @Get('')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Returns all tasting categories.',
@@ -51,6 +54,7 @@ export class TastingCategoriesController {
   }
 
   @Post('')
+  @UseGuards(AuthGuard)
   @ApiBody({ type: TastingCategoryRequestDto })
   @ApiResponse({
     status: 200,
@@ -67,6 +71,7 @@ export class TastingCategoriesController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @ApiBody({ type: TastingCategoryRequestDto })
   @ApiResponse({
     status: 200,
@@ -80,18 +85,18 @@ export class TastingCategoriesController {
     const category = mapFromRequestDtoToTastingCategory(body);
     category.id = id;
     return mapFromTastingCategory(
-      await this.tastingCategoriesService.update(
-        category,
-      ),
+      await this.tastingCategoriesService.update(category),
     );
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   async delete(@Param('id') id: string) {
     return this.tastingCategoriesService.delete(id);
   }
 
   @Get('icons')
+  @UseGuards(AuthGuard)
   getIcons(): string[] {
     return this.tastingCategoriesService.getIcons();
   }

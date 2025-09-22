@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
-import { Video, VideoType } from '../../../class/video';
 import { BrowserService } from '../../../services/browser.service';
 import { VideoService } from '../../../services/video.service';
 import { Router } from '@angular/router';
@@ -13,31 +12,16 @@ import { LoaderComponent } from '../../loaders/loader/loader.component';
   templateUrl: './current-videos.component.html',
   styleUrl: './current-videos.component.css',
 })
-export class CurrentVideosComponent implements OnInit {
+export class CurrentVideosComponent {
   constructor(
     protected readonly videoService: VideoService,
     private readonly browserService: BrowserService,
     private readonly router: Router
   ) {}
 
-  @Input() public type: VideoType = 'movie';
   public isLoadingData: boolean = false;
 
-  ngOnInit(): void {
-    if (this.browserService.isBrowser) {
-      this.getData();
-    }
-  }
-
   goToDetails(id: number) {
-    this.router.navigate([`videos/details/${this.type}/${id}`]);
-  }
-
-  getData() {
-    if(this.type === 'movie') {
-      this.videoService.type.set('movie');
-    } else if(this.type === 'serie') {
-      this.videoService.type.set('serie');
-    }
+    this.router.navigate([`videos/details/${this.videoService.type()}/${id}`]);
   }
 }

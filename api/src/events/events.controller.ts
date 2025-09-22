@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
@@ -21,12 +22,14 @@ import { AccessTokenPayload, TokenPayload } from 'src/utils/tokens.service';
 import { User } from 'src/users/user.entity';
 import { Group } from 'src/groups/group.entity';
 import { EventsDataCategory } from 'src/events-categories/events-data-category.entity';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
+    @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of events',
@@ -45,6 +48,7 @@ export class EventsController {
   }
 
   @Post()
+    @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     description: 'Event created successfully',
@@ -88,6 +92,7 @@ export class EventsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Event deleted successfully',
@@ -100,6 +105,7 @@ export class EventsController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Event updated successfully',

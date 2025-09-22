@@ -50,6 +50,7 @@ export class GroupsController {
   }
 
   @Get('minimal')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Minimal data of groups',
@@ -63,6 +64,7 @@ export class GroupsController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 201,
     description: 'Group created successfully',
@@ -84,6 +86,7 @@ export class GroupsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Group updated successfully',
@@ -107,6 +110,7 @@ export class GroupsController {
   }
 
   @Post(':id/add-user')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Users added to group successfully',
@@ -127,6 +131,7 @@ export class GroupsController {
   }
 
   @Post(':id/remove-user')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Users removed from group successfully',
@@ -147,6 +152,7 @@ export class GroupsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Group deleted successfully',

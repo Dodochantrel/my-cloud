@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
   mapFromUsersToUsersResponseDto,
@@ -18,12 +18,14 @@ import { ApiPaginatedResponse } from 'src/pagination/response-paginated.decorato
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
 import { PageQuery } from 'src/pagination/page-query';
 import { PaginatedResponse } from 'src/pagination/paginated-response';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('minimal')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Returns a list of users with minimal information.',
@@ -39,6 +41,7 @@ export class UsersController {
   }
 
   @Get('me')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Returns the authenticated user with full information.',
@@ -53,6 +56,7 @@ export class UsersController {
   }
 
   @Patch('authorize')
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
@@ -72,6 +76,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
   @ApiPaginatedResponse(
     UserResponseDto,

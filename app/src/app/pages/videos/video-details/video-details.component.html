@@ -100,7 +100,7 @@
             <h2 class="title">Films similaires</h2>
 
             <div class="similar-container">
-                @for (item of video.getSimilarToDisplay(); track $index) {
+                @for (item of video.similars; track $index) {
                     <div class="similar-informations" (click)="goToDetails(item.id)">
                         <img class="similar-image" [src]="setImageUrl(item.fileUrl)" alt="Movie Poster">
                         <p class="similar-name">{{ item.title }}</p>

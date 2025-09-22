@@ -5,7 +5,7 @@ export class Recipe {
   id: number;
   name: string;
   description: string;
-  type: string;
+  type: RecipeType;
   createdAt: Date;
   updatedAt: Date;
   fileBlobUrl: string | null = null;
@@ -15,7 +15,7 @@ export class Recipe {
     id: number,
     name: string,
     description: string,
-    type: string,
+    type: RecipeType,
     createdAt: Date,
     updatedAt: Date
   ) {
@@ -35,3 +35,5 @@ export class Recipe {
     { label: 'Autre', value: 'other' },
   ];
 }
+
+export type RecipeType = 'starter' | 'main' | 'dessert' | 'drink' | 'other';

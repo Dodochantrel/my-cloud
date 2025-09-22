@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { computed, Injectable, linkedSignal, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { mapFromDtosToUsers, mapFromUserDtoToUser, UserDto } from '../dto/user.dto';
 import { map, Observable } from 'rxjs';
@@ -17,12 +17,6 @@ export class UserService {
     private readonly cookieService: CookieService,
     private readonly notificationService: NotificationService
   ) {
-    effect(() => {
-      const resource = this.getMyResource.value();
-      if (resource) {
-        this._users.set(mapFromDtosToUsers(resource.data));
-      }
-    });
   }
 
   refresh() {
@@ -66,8 +60,12 @@ export class UserService {
   public page = signal(1);
   public limit = signal(20);
 
-  private readonly _users = signal<User[]>([]);
-  users = computed(() => this._users());
+  users = linkedSignal(() => {
+    const resource = this.getMyResource.value();
+    return resource
+      ? mapFromDtosToUsers(resource.data)
+      : [];
+  });
   itemCount = computed(() => this.getMyResource.value()?.meta.itemCount ?? 0);
   isLoading = computed(() => this.getMyResource.isLoading());
 
@@ -84,7 +82,7 @@ export class UserService {
       .pipe(map(mapFromUserDtoToUser))
       .subscribe({
         next: (updatedUser) => {
-          this._users.update((current) =>
+          this.users.update((current) =>
             current.map((u) => (u.id === updatedUser.id ? updatedUser : u))
           );
         },

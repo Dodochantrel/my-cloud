@@ -8,6 +8,7 @@ import {
   Query,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
@@ -29,12 +30,14 @@ import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto'
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RecipeFileResponseDto } from './dtos/recipe-file-request.dto';
 import { Response } from 'express';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('recipes')
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   @ApiBody({
     description: 'Create a new recipe',
     type: RecipeRequestDto,
@@ -62,6 +65,7 @@ export class RecipesController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiPaginatedResponse(
     RecipeResponseDto,
     'The recipes have been successfully retrieved.',
@@ -86,6 +90,7 @@ export class RecipesController {
   }
 
   @Post('files')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiBody({
     description: 'Upload a file',
@@ -103,6 +108,7 @@ export class RecipesController {
   }
 
   @Get('files/:id')
+  @UseGuards(AuthGuard)
   async getFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,
@@ -112,6 +118,7 @@ export class RecipesController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'The recipe has been successfully retrieved.',
@@ -127,6 +134,7 @@ export class RecipesController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   @ApiBody({
     description: 'Update a recipe',
     type: RecipeRequestDto,

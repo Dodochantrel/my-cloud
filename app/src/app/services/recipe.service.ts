@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, Injectable, linkedSignal, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import {
   mapFromDtosToRecipes,
@@ -8,7 +8,7 @@ import {
 } from '../dto/recipe.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { map, Observable } from 'rxjs';
-import { Recipe } from '../class/recipe';
+import { Recipe, RecipeType } from '../class/recipe';
 import { Paginated } from '../class/paginated';
 
 @Injectable({
@@ -17,25 +17,21 @@ import { Paginated } from '../class/paginated';
 export class RecipeService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getRecipes(
-    type: string,
-    search: string,
-    page: number,
-    limit: number
-  ): Observable<Paginated<Recipe>> {
-    return this.httpClient
-      .get<PaginatedDto<RecipeDto>>(
-        `${environment.apiUrl}recipes?type=${type}&search=${search}&page=${page}&limit=${limit}`
-      )
-      .pipe(
-        map((response: PaginatedDto<RecipeDto>) => {
-          return new Paginated<Recipe>(
-            mapFromDtosToRecipes(response.data),
-            response.meta
-          );
-        })
-      );
-  }
+  public search = signal<string>('');
+  public type = signal<RecipeType>('main');
+
+  private getMyResource = httpResource<PaginatedDto<RecipeDto>>(
+    () =>
+      `${environment.apiUrl}recipes?type=${this.type()}search=${this.search()}&page=1&limit=20`
+  );
+
+  recipes = linkedSignal(() => {
+    const resource = this.getMyResource.value();
+    return resource
+      ? mapFromDtosToRecipes(resource.data)
+      : [];
+  });
+  public isLoading = computed(() => this.getMyResource.isLoading());
 
   getFile(id: number): Observable<Blob> {
     return this.httpClient.get(`${environment.apiUrl}recipes/files/${id}`, {

@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   Query,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { PicturesService } from './pictures.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -16,12 +17,14 @@ import { Response } from 'express';
 import { WidthOptions } from 'src/files/files.manager';
 import { PictureByCategoryResponseDto } from './dto/pictures-by-category-response.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('pictures')
 export class PicturesController {
   constructor(private readonly picturesService: PicturesService) {}
 
   @Post('')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FilesInterceptor('files'))
   async uploadPicture(
     @UploadedFiles() files: Array<Express.Multer.File>,
@@ -36,6 +39,7 @@ export class PicturesController {
   }
 
   @Get('categories/:categoryId')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description:
@@ -51,6 +55,7 @@ export class PicturesController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async getPictureById(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,

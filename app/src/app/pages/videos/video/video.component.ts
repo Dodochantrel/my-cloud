@@ -38,15 +38,20 @@ export class VideoComponent implements OnInit {
     this.router.events.pipe(
       filter((e: Event | RouterEvent): e is RouterEvent => e instanceof RouterEvent)
     ).subscribe((e: RouterEvent) => {
-      if (this.router.url.includes('movies')) {
-        this.videoService.type.set('movie');
-      } else if (this.router.url.includes('series')) {
-        this.videoService.type.set('serie');
-      }
+      this.setTypeWithUrl();
     });
+    this.setTypeWithUrl();
   }
 
   onVideoSelect(event: any) {
     this.router.navigate([`videos/details/${this.videoService.type()}/${event.value.id}`]);
+  }
+
+  setTypeWithUrl() {
+    if (this.router.url.includes('movies')) {
+      this.videoService.type.set('movie');
+    } else if (this.router.url.includes('series')) {
+      this.videoService.type.set('serie');
+    }
   }
 }

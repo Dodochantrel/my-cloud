@@ -1,4 +1,4 @@
-@if(videoService.isLoading()) {
+@if(videoService.isLoadingCurrent()) {
 
 <div class="loader-component">
     <app-loader [loaderStyle]="'dark-vador'"></app-loader>
@@ -6,7 +6,7 @@
 
 } @else {
 
-<p-carousel [value]="videoService.videos()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="4000"
+<p-carousel [value]="videoService.currentVideos()" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="4000"
     autoplay="true">
     <ng-template let-product pTemplate="item">
         <div class="banner-card">

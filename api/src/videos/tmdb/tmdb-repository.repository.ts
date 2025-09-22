@@ -59,13 +59,36 @@ export class TmdbRepositoryRepository {
   }
 
   async getSimilar(id: number, type: VideoType): Promise<Video[]> {
-    const url = `https://api.themoviedb.org/3/${this.mapFromVideoTypeToType(type)}/${id}/similar?api_key=${this.apiKey}&language=fr-FR&page=1`;
-    const [response, genres] = await Promise.all([
-      firstValueFrom(this.httpService.get(url)),
+    // 1. Récupère le film original pour extraire ses genres
+    const movie = await firstValueFrom(
+      this.httpService.get(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${this.apiKey}&language=fr-FR`,
+      ),
+    );
+    const genreIds = movie.data.genres.map((g: any) => g.id).join(',');
+
+    // 2. Charger plusieurs pages Discover
+    const pagesToFetch = [1, 2, 3]; // => 100 résultats
+    const requests = pagesToFetch.map((page) =>
+      this.httpService.get(
+        `https://api.themoviedb.org/3/discover/movie?api_key=${this.apiKey}&language=fr-FR&with_genres=${genreIds}&sort_by=popularity.desc&primary_release_date.gte=2000-01-01&page=${page}`,
+      ),
+    );
+
+    const [responses, genres] = await Promise.all([
+      Promise.all(requests.map((r) => firstValueFrom(r))),
       this.getGenres(true),
     ]);
 
-    return this.mapFromTmdbResponseToVideo(response.data.results, genres, type);
+    // 3. Fusionner toutes les pages
+    let results = responses.flatMap((res) => res.data.results);
+
+    // 4. Supprimer les doublons (même id)
+    results = results.filter(
+      (movie, index, self) => index === self.findIndex((m) => m.id === movie.id),
+    );
+
+    return this.mapFromTmdbResponseToVideo(results, genres, type);
   }
 
   async getMovies(search: string): Promise<Video[]> {

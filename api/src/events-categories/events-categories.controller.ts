@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsCategoriesService } from './events-categories.service';
 import { PageQuery } from 'src/pagination/page-query';
@@ -25,6 +26,7 @@ import {
   EventsDataCategoryRequestDto,
   mapFromEventsDataCategoryRequestDtoToEventsDataCategory,
 } from './dto/events-data-category-request.dto';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('events-categories')
 export class EventsCategoriesController {
@@ -33,6 +35,7 @@ export class EventsCategoriesController {
   ) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiPaginatedResponse(
     EventsDataCategoryResponseDto,
     'Returns a list of all events data categories with full information.',
@@ -52,6 +55,7 @@ export class EventsCategoriesController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
   @ApiBody({
     description: 'Create a new event category',
@@ -71,6 +75,7 @@ export class EventsCategoriesController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
   @ApiBody({
     description: 'Update an existing event category',
@@ -94,6 +99,7 @@ export class EventsCategoriesController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   @Roles(Role.Admin)
   @ApiResponse({
     status: 200,

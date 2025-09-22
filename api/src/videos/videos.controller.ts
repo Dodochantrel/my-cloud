@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { QueryGetWithParamsDto } from 'src/pagination/query-get-with-params.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
@@ -30,12 +38,14 @@ import {
   mapFromEpisodesToVideoEpisodeResponseDtos,
   VideoEpisodeResponseDto,
 } from './dtos/video-episode-reponse.dto';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('videos')
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Get('movies')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of movies',
@@ -48,6 +58,7 @@ export class VideosController {
   }
 
   @Get('series')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of series',
@@ -60,6 +71,7 @@ export class VideosController {
   }
 
   @Get('my-seen')
+  @UseGuards(AuthGuard)
   @ApiPaginatedResponse(VideoResponseDto, 'List of watched videos')
   async getMyVideosSeen(
     @Query() params: QueryGetWithParamsDto,
@@ -81,6 +93,7 @@ export class VideosController {
   }
 
   @Get('my-to-watch')
+  @UseGuards(AuthGuard)
   @ApiPaginatedResponse(VideoResponseDto, 'List of watched videos')
   async getMyVideosToWatch(
     @Query() params: QueryGetWithParamsDto,
@@ -102,6 +115,7 @@ export class VideosController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Add video to watched list',
@@ -135,6 +149,7 @@ export class VideosController {
   }
 
   @Get('casting/:id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of video casting',
@@ -150,6 +165,7 @@ export class VideosController {
   }
 
   @Get('similars/:id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of similar videos',
@@ -165,6 +181,7 @@ export class VideosController {
   }
 
   @Get('providers/:id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'List of video providers',
@@ -180,6 +197,7 @@ export class VideosController {
   }
 
   @Get('director/:id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Get movie by id',
@@ -195,6 +213,7 @@ export class VideosController {
   }
 
   @Get('movie/:id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Get movie by id',
@@ -213,6 +232,7 @@ export class VideosController {
   }
 
   @Get('serie/:id')
+  @UseGuards(AuthGuard)
   async getSeriesFromDbOrTmdb(
     @Param('id') id: string,
     @TokenPayload() tokenPayload: AccessTokenPayload,
@@ -226,6 +246,7 @@ export class VideosController {
   }
 
   @Get('serie/:id/episodes')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Get episodes of a serie',

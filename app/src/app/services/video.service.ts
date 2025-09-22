@@ -48,11 +48,10 @@ export class VideoService {
     });
   }
 
-  //! Filtres globaux
+  //! --- LISTE POUR RECHERCHE ---
   public search = signal<string>('');
   public type = signal<VideoType>('movie');
 
-  //! --- LISTE GLOBALE ---
   private getMyResource = httpResource<VideoDto[]>(
     () =>
       `${environment.apiUrl}videos/${this.type()}s?search=${this.search()}&page=1&limit=20`
@@ -66,17 +65,32 @@ export class VideoService {
   });
   public isLoading = computed(() => this.getMyResource.isLoading());
 
-  refresh() {
+  //! --- LISTE POUR CURRENT ---
+  private getCurrent = httpResource<VideoDto[]>(
+    () =>
+      `${environment.apiUrl}videos/${this.type()}s?page=1&limit=20`
+  );
+
+  currentVideos = linkedSignal(() => {
+    const resource = this.getCurrent.value();
+    return resource
+      ? mapFromDtosToVideos(resource)
+      : [];
+  });
+  public isLoadingCurrent = computed(() => this.getCurrent.isLoading());
+
+  refreshCurrent() {
     this.getMyResource.reload();
   }
 
   //! --- SEEN ---
+  public searchSeen = signal<string>('');
   public pageSeen = signal(1);
   public limitSeen = signal(20);
 
   private getMySeen = httpResource<PaginatedDto<VideoDto>>(
     () =>
-      `${environment.apiUrl}videos/my-seen?search=${this.search()}&page=${this.pageSeen()}&limit=${this.limitSeen()}&type=${this.type()}`
+      `${environment.apiUrl}videos/my-seen?search=${this.searchSeen()}&page=${this.pageSeen()}&limit=${this.limitSeen()}&type=${this.type()}`
   );
 
   videosSeen = linkedSignal(() => {
@@ -95,7 +109,7 @@ export class VideoService {
 
   private getToWatch = httpResource<PaginatedDto<VideoDto>>(
     () =>
-      `${environment.apiUrl}videos/my-to-watch?search=${this.search()}&page=${this.pageToWatch()}&limit=${this.limitToWatch()}&type=${this.type()}`
+      `${environment.apiUrl}videos/my-to-watch?search=${this.searchToWatch()}&page=${this.pageToWatch()}&limit=${this.limitToWatch()}&type=${this.type()}`
   );
 
   videosToWatch = linkedSignal(() => {

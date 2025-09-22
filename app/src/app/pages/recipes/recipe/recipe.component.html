@@ -2,9 +2,11 @@
 
     <div class="bloc-default">
 
+        <h2>Mes recettes</h2>
+
         <div class="card-container">
 
-            @for (recipe of paginatedRecipes.data; track $index) {
+            @for (recipe of recipeService.recipes(); track $index) {
                 <div class="card">
                     <div class="first-line">
                         <p class="recipe-name">{{ recipe.name }}</p>

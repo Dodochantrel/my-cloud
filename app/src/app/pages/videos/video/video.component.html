@@ -2,13 +2,14 @@
 
     <div class="bloc-default">
 
-        <h2>Les films du moment</h2>
+        <h2>Les {{ videoService.type() === 'movie' ? 'films' : "series" }} du moment</h2>
 
         <div class="input-container">
             <p-iconfield>
                 <p-inputicon class="pi pi-user" />
-                <p-autocomplete [suggestions]="videoService.videos()" [autoZIndex]="false" placeholder="Rechercher un film"
-                    [delay]="500" optionLabel="title" [completeOnFocus]="true" [(ngModel)]="videoService.search" (onSelect)="onVideoSelect($event)">
+                <p-autocomplete [suggestions]="videoService.videos()" [autoZIndex]="false"
+                    placeholder="Rechercher un film" [delay]="500" optionLabel="title" [completeOnFocus]="true"
+                    [(ngModel)]="videoService.search" (onSelect)="onVideoSelect($event)">
                     <ng-template let-movie #item>
                         <div class="line-movie-search">
                             <img [src]="movie.fileUrl" style="width: 26px" />

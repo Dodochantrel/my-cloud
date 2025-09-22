@@ -9,6 +9,7 @@ import {
   Query,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { TastingsService } from './tastings.service';
@@ -30,12 +31,14 @@ import { Response } from 'express';
 import { WidthOptions } from 'src/files/files.manager';
 import { User } from 'src/users/user.entity';
 import { TastingCategory } from '../tasting-categories/tasting-category.entity';
+import { AuthGuard } from 'src/authentications/auth.guard';
 
 @Controller('tastings')
 export class TastingsController {
   constructor(private readonly tastingsService: TastingsService) {}
 
   @Post('')
+  @UseGuards(AuthGuard)
   @ApiBody({
     type: TastingRequestDto,
     description: 'Create a new tasting request.',
@@ -63,6 +66,7 @@ export class TastingsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   @ApiPaginatedResponse(TastingResponseDto, 'Returns all tastings.')
   async findAll(
     @TokenPayload() tokenPayload: AccessTokenPayload,
@@ -91,6 +95,7 @@ export class TastingsController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Returns a tasting by ID.',
@@ -105,6 +110,7 @@ export class TastingsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard)
   @ApiBody({
     type: TastingRequestDto,
     description: 'Update an existing tasting.',
@@ -132,6 +138,7 @@ export class TastingsController {
   }
 
   @Post('file')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @TokenPayload() tokenPayload: AccessTokenPayload,
@@ -142,6 +149,7 @@ export class TastingsController {
   }
 
   @Get('file/:id')
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Returns the file of a tasting by ID.',
@@ -159,6 +167,7 @@ export class TastingsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   async delete(
     @TokenPayload() tokenPayload: AccessTokenPayload,
     @Param('id') id: string,
