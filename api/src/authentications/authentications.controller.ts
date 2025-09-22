@@ -99,6 +99,7 @@ export class AuthenticationsController {
     res.cookie('accessToken', accessToken, {
       httpOnly: false,
       sameSite: 'strict',
+      expires: new Date(Date.now() + 31536000000),
     });
     return res;
   }
@@ -110,6 +111,7 @@ export class AuthenticationsController {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'strict',
+      expires: new Date(Date.now() + 31536000000),
     });
     return res;
   }
