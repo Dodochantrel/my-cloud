@@ -98,7 +98,6 @@ export class AuthenticationsController {
   ): Response {
     res.cookie('accessToken', accessToken, {
       httpOnly: false,
-      secure: true,
       sameSite: 'strict',
     });
     return res;
@@ -110,7 +109,6 @@ export class AuthenticationsController {
   ): Response {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true,
       sameSite: 'strict',
     });
     return res;
