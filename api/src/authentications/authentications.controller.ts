@@ -98,8 +98,8 @@ export class AuthenticationsController {
   ): Response {
     res.cookie('accessToken', accessToken, {
       httpOnly: false,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + 31536000000),
+      secure: true,
+      sameSite: 'none',
     });
     return res;
   }
@@ -110,8 +110,8 @@ export class AuthenticationsController {
   ): Response {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + 31536000000),
+      secure: true,
+      sameSite: 'none',
     });
     return res;
   }
