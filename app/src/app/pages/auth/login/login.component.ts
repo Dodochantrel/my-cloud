@@ -74,8 +74,8 @@ export class LoginComponent {
             'Connexion réussie',
             'Vous êtes maintenant connecté.'
           );
-          this.userService.getMe();
           this.router.navigate(['/']);
+          this.userService.getMe();
         },
         error: (error) => {
           this.isLoading = false;
