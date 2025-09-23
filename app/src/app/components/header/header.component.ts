@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, model } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -16,10 +16,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent implements OnInit {
-  @Output() changeNavigation: EventEmitter<boolean> =
-    new EventEmitter<boolean>();
+  public isOpenNaviation = model.required<boolean>();
 
-  public isOpenNaviation: boolean = true;
   public breadcrumbItems: any[] = [];
   public home: any;
 
@@ -60,8 +58,7 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleNavigation() {
-    this.isOpenNaviation = !this.isOpenNaviation;
-    this.changeNavigation.emit(this.isOpenNaviation);
+    this.isOpenNaviation.set(!this.isOpenNaviation());
   }
 
   openMenu(event: MouseEvent, menu: any) {

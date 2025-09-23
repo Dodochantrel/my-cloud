@@ -30,6 +30,9 @@ export const appConfig: ApplicationConfig = {
       translation: fr,
       theme: {
         preset: MyPreset,
+        options: {
+          darkModeSelector: false || 'none'
+        }
       },
     }),
     importProvidersFrom(

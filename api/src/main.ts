@@ -13,12 +13,9 @@ async function bootstrap() {
   // Définition d'un préfixe globale de l'API
   app.setGlobalPrefix('my-cloud-api');
   app.enableCors({
-  origin: [
-    'http://192.168.1.126',
-    'http://192.168.1.126:4200', // si Angular tourne sur ng serve
-  ],
-  credentials: true,
-});
+    origin: true,
+    credentials: true,
+  });
 
   app.use(cookieParser());
 

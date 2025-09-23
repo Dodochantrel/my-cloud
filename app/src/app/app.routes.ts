@@ -24,6 +24,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'videos/movies',
+      },
+      {
         path: 'recipes/starters',
         title: 'Recipes - Starters',
         component: RecipeComponent,

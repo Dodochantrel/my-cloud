@@ -11,8 +11,4 @@ import { HeaderComponent } from '../../components/header/header.component';
 })
 export class WithLeftNavigationComponent {
   public isOpenNaviation: boolean = true;
-
-  handleNavigation(isOpen: boolean) {
-    this.isOpenNaviation = isOpen;
-  }
 }
