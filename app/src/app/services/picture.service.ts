@@ -1,7 +1,7 @@
 import { NotificationService } from './notification.service';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, effect, Injectable, signal } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import {
   mapFromPictureCategoriesDto,
   mapFromPictureCategoryDto,

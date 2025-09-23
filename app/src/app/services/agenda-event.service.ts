@@ -7,7 +7,7 @@ import {
   AgendaEventDto,
   mapFromDtosToAgendaEvents,
 } from '../dto/agenda-event.dto';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { AgendaEventCategory } from '../class/agenda-event-category';
 
 @Injectable({

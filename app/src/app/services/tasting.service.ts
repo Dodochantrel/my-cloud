@@ -8,7 +8,7 @@ import {
   TastingDto,
 } from '../dto/tasting.dto';
 import { PaginatedDto } from '../dto/paginated-response.dto';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { FileWidth } from '../tools/file-width.type';
 import { NotificationService } from './notification.service';
 

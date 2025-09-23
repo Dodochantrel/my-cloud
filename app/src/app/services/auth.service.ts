@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { CookieService } from './cookie.service';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';

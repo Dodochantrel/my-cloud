@@ -1,6 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, effect, Injectable, linkedSignal, signal } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { PaginatedDto } from '../dto/paginated-response.dto';
 import { NotificationService } from './notification.service';
 import { mapFromDtosToTastingCategories, mapFromDtoToTastingCategory, TastingCategoryDto } from '../dto/tasting-category.dto';

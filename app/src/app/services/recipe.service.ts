@@ -1,6 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, Injectable, linkedSignal, signal } from '@angular/core';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import {
   mapFromDtosToRecipes,
   mapFromDtoToRecipe,
