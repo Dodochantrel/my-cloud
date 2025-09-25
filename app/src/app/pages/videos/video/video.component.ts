@@ -11,6 +11,7 @@ import { WatchVideosComponent } from '../../../components/videos/watch-videos/wa
 import { VideoService } from '../../../services/video.service';
 import { Router, RouterEvent, Event } from '@angular/router';
 import { filter } from 'rxjs';
+import { TabsModule } from 'primeng/tabs';
 
 @Component({
   selector: 'app-video',
@@ -24,6 +25,7 @@ import { filter } from 'rxjs';
     CurrentVideosComponent,
     WatchVideosComponent,
     FormsModule,
+    TabsModule,
   ],
   templateUrl: './video.component.html',
   styleUrl: './video.component.css'
@@ -53,5 +55,9 @@ export class VideoComponent implements OnInit {
     } else if (this.router.url.includes('series')) {
       this.videoService.type.set('serie');
     }
+  }
+
+  getTypeString(): string {
+    return this.videoService.type() === 'movie' ? 'films' : 'séries';
   }
 }

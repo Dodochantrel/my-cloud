@@ -13,11 +13,8 @@
                 </p-iconfield>
             </div>
 
-            <button pButton (click)="prepareCreate()" class="button">
-                <i class="pi pi-plus-circle" pButtonIcon></i>
-                <span pButtonLabel>Ajouter une catégorie</span>
-            </button>
-            
+            <p-button (click)="prepareCreate()" label="Ajouter une catégorie" icon="pi pi-plus-circle" />
+
         </div>
 
         <p-treetable [value]="treeTable" [scrollable]="true" [tableStyle]="{'min-width':'50rem'}" [class]="mapSizeToClass(selectedSize)">

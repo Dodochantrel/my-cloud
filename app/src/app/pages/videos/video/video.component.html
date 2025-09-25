@@ -2,8 +2,6 @@
 
     <div class="bloc-default">
 
-        <h2>Les {{ videoService.type() === 'movie' ? 'films' : "series" }} du moment</h2>
-
         <div class="input-container">
             <p-iconfield>
                 <p-inputicon class="pi pi-user" />
@@ -20,9 +18,26 @@
             </p-iconfield>
         </div>
 
-        <app-current-videos></app-current-videos>
-
-        <app-watch-videos></app-watch-videos>
+        <div class="card">
+            <p-tabs value="0">
+                <p-tablist>
+                    <p-tab value="0">À l’affiche</p-tab> <!-- autre noms possible (Sur grand écran / Les sorties du moment)-->
+                    <p-tab value="1">Dans le viseur</p-tab> <!-- autre noms possible (À caser un soir / Prochainement chez moi)-->
+                    <p-tab value="2">C’est checké</p-tab> <!-- autre noms possible (Mission terminée)-->
+                </p-tablist>
+                <p-tabpanels>
+                    <p-tabpanel value="0">
+                        <app-current-videos></app-current-videos>
+                    </p-tabpanel>
+                    <p-tabpanel value="1">
+                        <app-watch-videos></app-watch-videos>
+                    </p-tabpanel>
+                    <p-tabpanel value="2">
+                        
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
+        </div>
 
     </div>
 

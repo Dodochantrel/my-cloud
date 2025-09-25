@@ -2,6 +2,15 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    width: 100%;
+}
+
+.input-container {
+    flex: 1;
+}
+
+.button {
+    flex: 0 0 auto;
 }
 
 ::ng-deep .p-datatable .p-button, ng-deep .p-datatable .p-button-icon-only.p-button-rounded {

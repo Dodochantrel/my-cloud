@@ -13,10 +13,7 @@
                 </p-iconfield>
             </div>
 
-            <button pButton (click)="agendaEventCategoryService.isAddingOrEditing.set(true)">
-                <i class="pi pi-plus-circle" pButtonIcon></i>
-                <span pButtonLabel>Ajouter</span>
-            </button>
+            <p-button (click)="agendaEventCategoryService.isAddingOrEditing.set(true)" label="Ajouter une catégorie" icon="pi pi-plus-circle" />
             
         </div>
 
