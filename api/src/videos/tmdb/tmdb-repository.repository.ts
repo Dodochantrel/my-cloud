@@ -120,11 +120,13 @@ export class TmdbRepositoryRepository {
   private async getMoviesWithSearch(
     search: string,
   ): Promise<TmdbDataResultResponse[]> {
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=fr-FR&query=${search}}&page=1&include_adult=false`;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&language=fr-FR&query=${search}&page=1&include_adult=false`;
+    
     const response = await firstValueFrom(
       this.httpService.get<TmdbDataResponse>(url),
     );
-    return response.data.results;
+  
+    return response.data.results.sort((a, b) => b.popularity - a.popularity);
   }
 
   async getSeries(search: string): Promise<Video[]> {

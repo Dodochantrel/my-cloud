@@ -12,6 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,7 @@ import { UserService } from '../../../services/user.service';
     PasswordModule,
     RouterLink,
     CheckboxModule,
+    AutoFocusModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',

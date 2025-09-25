@@ -9,8 +9,8 @@
         <div class="input-container">
             <label for="email" class="label">Adresse email</label>
             <p-iconfield>
-                <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}"
-                    styleClass="pi pi-user" />
+                <p-inputicon [ngClass]="{'p-error': form.get('email')?.invalid && form.get('email')?.dirty}" [pAutoFocus]="true"
+                    class="pi pi-user" />
                 <input type="text" pInputText placeholder="michel.dumas@orange.fr" formControlName="email"
                     [ngClass]="{'p-invalid': form.get('email')?.invalid && form.get('email')?.dirty}" />
             </p-iconfield>
@@ -28,7 +28,7 @@
             <label for="password" class="label">Mot de passe</label>
             <p-iconfield>
                 <p-inputicon [ngClass]="{'p-error': form.get('password')?.invalid && form.get('password')?.dirty}"
-                    styleClass="pi pi-lock" />
+                    class="pi pi-lock" />
                 <p-password [feedback]="false" formControlName="password" [toggleMask]="true" placeholder="Votre mot de passe"
                     [ngClass]="{'p-invalid': form.get('password')?.invalid && form.get('password')?.dirty}" />
             </p-iconfield>
