@@ -1,1 +1,8 @@
-<p>seen-videos works!</p>
+<div class="container">
+    <app-seen-video-stat-bloc [value]="seenVideoService.stat()!.count.toString()" [icon]="'movie'" [title]="'Films'"></app-seen-video-stat-bloc>
+    <app-seen-video-stat-bloc [value]="seenVideoService.stat()!.timeSpent.toString()" [icon]="'schedule'" [title]="'Regardées'"></app-seen-video-stat-bloc>
+    <app-seen-video-stat-bloc [value]="seenVideoService.stat()!.rating.toString()" [icon]="'star'" [title]="'Moyenne'"></app-seen-video-stat-bloc>
+    <app-seen-video-stat-bloc [value]="seenVideoService.stat()!.countThisMonth.toString()" [icon]="'calendar_today'" [title]="'Ce mois'"></app-seen-video-stat-bloc>
+    <app-seen-video-stat-bloc [value]="seenVideoService.stat()!.countThisYear.toString()" [icon]="'radar'" [title]="'Cette année'"></app-seen-video-stat-bloc>
+    <app-seen-video-stat-bloc [value]="seenVideoService.stat()!.favoriteType" [icon]="'emoji_events'" [title]="'Préféré'"></app-seen-video-stat-bloc>
+</div>

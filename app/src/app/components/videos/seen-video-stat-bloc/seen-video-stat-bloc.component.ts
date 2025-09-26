@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-seen-video-stat-bloc',
@@ -7,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './seen-video-stat-bloc.component.css'
 })
 export class SeenVideoStatBlocComponent {
-
+  public icon = input.required<string>();
+  public title = input.required<string>();
+  public value = input.required<string>();
 }

@@ -260,4 +260,19 @@ export class VideosController {
       await this.videosService.getEpisodes(Number(id), season),
     );
   }
+
+  @Get('stats')
+  async geType(
+    @TokenPayload() tokenPayload: AccessTokenPayload,
+    @Query('type') type: VideoType,
+  ) {
+    return {
+      count: 1,
+      timeSpent: 1,
+      rating: 1,
+      countThisMonth: 1,
+      countThisYear: 1,
+      favoriteType: 'guerre'
+    }
+  }
 }

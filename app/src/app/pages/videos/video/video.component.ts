@@ -12,6 +12,7 @@ import { VideoService } from '../../../services/video.service';
 import { Router, RouterEvent, Event } from '@angular/router';
 import { filter } from 'rxjs';
 import { TabsModule } from 'primeng/tabs';
+import { SeenVideosComponent } from '../../../components/videos/seen-videos/seen-videos.component';
 
 @Component({
   selector: 'app-video',
@@ -26,6 +27,7 @@ import { TabsModule } from 'primeng/tabs';
     WatchVideosComponent,
     FormsModule,
     TabsModule,
+    SeenVideosComponent,
   ],
   templateUrl: './video.component.html',
   styleUrl: './video.component.css'
