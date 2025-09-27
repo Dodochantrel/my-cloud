@@ -3,6 +3,10 @@
   [@navigationAnimation]="isOpenNaviation() ? 'open' : 'closed'"
 >
 
+    <div class="close-container">
+        <p-button icon="pi pi-align-justify" [rounded]="true" [text]="true" (click)="toggleNavigation()" severity="secondary" />
+    </div>
+
     <div class="top">
         <h2 class="title first-color">My Cloud</h2>
     </div>

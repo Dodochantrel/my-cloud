@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, model, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, Input, model, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   trigger,
@@ -11,10 +11,11 @@ import {
 import { adminNavigationItems, navigationItems } from './left-navigations-items';
 import { UserService } from '../../../services/user.service';
 import { filter, Subscription } from 'rxjs';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-left-navigation',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ButtonModule],
   templateUrl: './left-navigation.component.html',
   styleUrl: './left-navigation.component.css',
   animations: [
@@ -25,7 +26,7 @@ import { filter, Subscription } from 'rxjs';
     ]),
     trigger('navigationAnimation', [
       state('closed', style({ width: '0px', opacity: 0, overflow: 'hidden' })),
-      state('open', style({ width: '300px', opacity: 1 })),
+      state('open', style({ opacity: 1 })),
       transition('closed <=> open', animate('500ms ease-in-out')),
     ]),
   ],
@@ -37,7 +38,12 @@ export class LeftNavigationComponent implements OnInit, OnDestroy {
   constructor(
     protected readonly userService: UserService,
     private readonly router: Router
-  ) {}
+  ) {
+  }
+
+  toggleNavigation() {
+    this.isOpenNaviation.set(!this.isOpenNaviation());
+  }
 
   public navigationItems: NavigationItem[] = navigationItems;
   public adminNavigationItems: NavigationItem[] = adminNavigationItems;

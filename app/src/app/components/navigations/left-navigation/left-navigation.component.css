@@ -10,6 +10,30 @@
     top: 0;
 }
 
+.close-container {
+    display: none;
+}
+
+/* Quand on est sur mobile, alors la navigation prend tout l'espace disponible */
+@media (max-width: 768px) {
+    .container {
+        position: fixed;
+        left: 0;
+        top: 0;
+        max-width: 100vw;
+        background-color: white;
+        z-index: 1000;
+    }
+
+    .close-container {
+        display: flex;
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
+        z-index: 1001;
+    }
+} 
+
 .block {
     padding: .5rem 1rem;
     display: flex;
