@@ -42,7 +42,7 @@ export class AuthenticationsController {
       res,
     )
       .status(200)
-      .json(mapFromUserToLoginResponseDto(loginResponse.user));
+      .json(mapFromUserToLoginResponseDto(loginResponse.user, loginResponse.accessToken, loginResponse.refreshToken));
   }
 
   @Post('register')
@@ -79,7 +79,7 @@ export class AuthenticationsController {
     );
     return this.prepareAccessTokenCookie(refreshResponse.accessToken, res)
       .status(200)
-      .json(mapFromUserToLoginResponseDto(refreshResponse.user));
+      .json(mapFromUserToLoginResponseDto(refreshResponse.user, refreshResponse.accessToken));
   }
 
   private prepareCookies(

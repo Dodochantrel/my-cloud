@@ -20,15 +20,29 @@ export class LoginResponseDto {
   })
   lastName: string;
 
+  @ApiProperty({
+    description: `Access token for authentication`,
+    required: true,
+  })
+  accessToken?: string;
+
+  @ApiProperty({
+    description: `Refresh token for obtaining new access tokens`,
+    required: true,
+  })
+  refreshToken?: string;
+
   constructor(partial: Partial<LoginResponseDto>) {
     Object.assign(this, partial);
   }
 }
 
-export const mapFromUserToLoginResponseDto = (user: User): LoginResponseDto => {
+export const mapFromUserToLoginResponseDto = (user: User, accessToken: string, refreshToken?: string): LoginResponseDto => {
   return new LoginResponseDto({
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    accessToken,
+    refreshToken,
   });
 };
